@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package api.equipment.service.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/open-farms/inventory/api/equipment/service/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.equipment.service.v1";
+
+service Equipment {
+	rpc CreateEquipment (CreateEquipmentRequest) returns (CreateEquipmentReply);
+	rpc UpdateEquipment (UpdateEquipmentRequest) returns (UpdateEquipmentReply);
+	rpc DeleteEquipment (DeleteEquipmentRequest) returns (DeleteEquipmentReply);
+	rpc GetEquipment (GetEquipmentRequest) returns (GetEquipmentReply);
+	rpc ListEquipment (ListEquipmentRequest) returns (ListEquipmentReply);
+}
+
+message CreateEquipmentRequest {}
+message CreateEquipmentReply {}
+
+message UpdateEquipmentRequest {}
+message UpdateEquipmentReply {}
+
+message DeleteEquipmentRequest {}
+message DeleteEquipmentReply {}
+
+message GetEquipmentRequest {}
+message GetEquipmentReply {}
+
+message ListEquipmentRequest {}
+message ListEquipmentReply {}

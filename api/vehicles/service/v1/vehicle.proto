@@ -1,0 +1,100 @@
+syntax = "proto3";
+
+package vehicles.service.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/open-farms/inventory/api/vehicles/service/v1;v1";
+option java_multiple_files = true;
+option java_package = "vehicles.service.v1";
+
+service VehicleService {
+	rpc CreateVehicle (CreateVehicleRequest) returns (CreateVehicleReply){
+		option (google.api.http)= {
+			post: "/vehicles",
+			body: "vehicle",
+		};
+	};
+
+	rpc UpdateVehicle (UpdateVehicleRequest) returns (UpdateVehicleReply) {
+		option (google.api.http)= {
+			put: "/vehicles",
+			body: "vehicle",
+		};
+	};
+
+	rpc DeleteVehicle (DeleteVehicleRequest) returns (DeleteVehicleReply){
+		option (google.api.http)= {
+			delete: "/vehicles/{id}",
+		};
+	};
+
+	rpc GetVehicle (GetVehicleRequest) returns (GetVehicleReply){
+		option (google.api.http)= {
+			delete: "/vehicles/{id}",
+		};
+	};
+
+	rpc ListVehicle (ListVehicleRequest) returns (ListVehicleReply){
+		option (google.api.http)= {
+			get: "/vehicles/",
+		};
+	};
+}
+
+
+message Vehicle {
+	int64 id = 1 ;
+	string make = 2;
+	string model = 3;
+	string year = 4;
+	bool active = 5;
+	repeated string tags = 6;
+
+	enum Condition {
+		MINT = 0;
+		GOOD = 1;
+		POOR = 2;
+		BROKEN = 3;
+	}
+
+	Condition condition = 7;
+}
+
+message CreateVehicleRequest {
+	Vehicle vehicle = 1;
+}
+
+message CreateVehicleReply {
+	Vehicle vehicle = 1;
+}
+
+message UpdateVehicleRequest {
+	Vehicle vehicle = 1;
+}
+
+message UpdateVehicleReply {
+	Vehicle vehicle = 1;
+}
+
+message DeleteVehicleRequest {
+	int64 id = 1;
+}
+
+message DeleteVehicleReply {
+	Vehicle vehicle = 1;
+}
+
+message GetVehicleRequest {
+	int64 id = 1;
+}
+
+message GetVehicleReply {
+	Vehicle vehicle = 1;
+}
+
+message ListVehicleRequest {}
+
+message ListVehicleReply {
+	repeated Vehicle vehicles = 1;
+}
