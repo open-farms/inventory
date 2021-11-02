@@ -35,6 +35,10 @@ build:
 	go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/ ./cmd/inventory
 	go build -o ./bin/ ./cmd/inventoryctl
 
+.PHONY: migrate
+migrate:
+	go run cmd/inventoryctl/main.go migrate
+
 .PHONY: generate
 # run go generators
 generate:

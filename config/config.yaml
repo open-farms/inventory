@@ -5,7 +5,7 @@ server:
   grpc:
     addr: 0.0.0.0:9000
     timeout: 1s
-data:
+storage:
   database:
-    driver: mysql
-    source: root:password@tcp(127.0.0.1:3306)/testdb?parseTime=True
+    driver: "${DB_DRIVER:postgres}"
+    source: "${DB_URI:postgres://postgres:postgres@localhost/postgres?sslmode=disable}"

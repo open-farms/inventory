@@ -113,6 +113,13 @@ func Year(v string) predicate.Vehicle {
 	})
 }
 
+// Active applies equality check predicate on the "active" field. It's identical to ActiveEQ.
+func Active(v bool) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldActive), v))
+	})
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
@@ -457,6 +464,20 @@ func YearEqualFold(v string) predicate.Vehicle {
 func YearContainsFold(v string) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.ContainsFold(s.C(FieldYear), v))
+	})
+}
+
+// ActiveEQ applies the EQ predicate on the "active" field.
+func ActiveEQ(v bool) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldActive), v))
+	})
+}
+
+// ActiveNEQ applies the NEQ predicate on the "active" field.
+func ActiveNEQ(v bool) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldActive), v))
 	})
 }
 

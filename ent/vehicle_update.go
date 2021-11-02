@@ -45,6 +45,12 @@ func (vu *VehicleUpdate) SetYear(s string) *VehicleUpdate {
 	return vu
 }
 
+// SetActive sets the "active" field.
+func (vu *VehicleUpdate) SetActive(b bool) *VehicleUpdate {
+	vu.mutation.SetActive(b)
+	return vu
+}
+
 // SetTags sets the "tags" field.
 func (vu *VehicleUpdate) SetTags(s []string) *VehicleUpdate {
 	vu.mutation.SetTags(s)
@@ -77,14 +83,6 @@ func (vu *VehicleUpdate) SetUpdatedAt(t time.Time) *VehicleUpdate {
 	return vu
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (vu *VehicleUpdate) SetNillableUpdatedAt(t *time.Time) *VehicleUpdate {
-	if t != nil {
-		vu.SetUpdatedAt(*t)
-	}
-	return vu
-}
-
 // Mutation returns the VehicleMutation object of the builder.
 func (vu *VehicleUpdate) Mutation() *VehicleMutation {
 	return vu.mutation
@@ -96,6 +94,7 @@ func (vu *VehicleUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	vu.defaults()
 	if len(vu.hooks) == 0 {
 		if err = vu.check(); err != nil {
 			return 0, err
@@ -150,6 +149,14 @@ func (vu *VehicleUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (vu *VehicleUpdate) defaults() {
+	if _, ok := vu.mutation.UpdatedAt(); !ok {
+		v := vehicle.UpdateDefaultUpdatedAt()
+		vu.mutation.SetUpdatedAt(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (vu *VehicleUpdate) check() error {
 	if v, ok := vu.mutation.Condition(); ok {
@@ -197,6 +204,13 @@ func (vu *VehicleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Type:   field.TypeString,
 			Value:  value,
 			Column: vehicle.FieldYear,
+		})
+	}
+	if value, ok := vu.mutation.Active(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: vehicle.FieldActive,
 		})
 	}
 	if value, ok := vu.mutation.Tags(); ok {
@@ -264,6 +278,12 @@ func (vuo *VehicleUpdateOne) SetYear(s string) *VehicleUpdateOne {
 	return vuo
 }
 
+// SetActive sets the "active" field.
+func (vuo *VehicleUpdateOne) SetActive(b bool) *VehicleUpdateOne {
+	vuo.mutation.SetActive(b)
+	return vuo
+}
+
 // SetTags sets the "tags" field.
 func (vuo *VehicleUpdateOne) SetTags(s []string) *VehicleUpdateOne {
 	vuo.mutation.SetTags(s)
@@ -296,14 +316,6 @@ func (vuo *VehicleUpdateOne) SetUpdatedAt(t time.Time) *VehicleUpdateOne {
 	return vuo
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (vuo *VehicleUpdateOne) SetNillableUpdatedAt(t *time.Time) *VehicleUpdateOne {
-	if t != nil {
-		vuo.SetUpdatedAt(*t)
-	}
-	return vuo
-}
-
 // Mutation returns the VehicleMutation object of the builder.
 func (vuo *VehicleUpdateOne) Mutation() *VehicleMutation {
 	return vuo.mutation
@@ -322,6 +334,7 @@ func (vuo *VehicleUpdateOne) Save(ctx context.Context) (*Vehicle, error) {
 		err  error
 		node *Vehicle
 	)
+	vuo.defaults()
 	if len(vuo.hooks) == 0 {
 		if err = vuo.check(); err != nil {
 			return nil, err
@@ -373,6 +386,14 @@ func (vuo *VehicleUpdateOne) Exec(ctx context.Context) error {
 func (vuo *VehicleUpdateOne) ExecX(ctx context.Context) {
 	if err := vuo.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (vuo *VehicleUpdateOne) defaults() {
+	if _, ok := vuo.mutation.UpdatedAt(); !ok {
+		v := vehicle.UpdateDefaultUpdatedAt()
+		vuo.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -440,6 +461,13 @@ func (vuo *VehicleUpdateOne) sqlSave(ctx context.Context) (_node *Vehicle, err e
 			Type:   field.TypeString,
 			Value:  value,
 			Column: vehicle.FieldYear,
+		})
+	}
+	if value, ok := vuo.mutation.Active(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: vehicle.FieldActive,
 		})
 	}
 	if value, ok := vuo.mutation.Tags(); ok {

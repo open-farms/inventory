@@ -5,8 +5,6 @@ import (
 	"os"
 
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/config"
-	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
@@ -15,6 +13,7 @@ import (
 
 	equipment "github.com/open-farms/inventory/api/equipment/service/v1"
 	vehicles "github.com/open-farms/inventory/api/vehicles/service/v1"
+	"github.com/open-farms/inventory/internal/biz"
 	"github.com/open-farms/inventory/internal/service"
 	"github.com/open-farms/inventory/internal/settings"
 )
@@ -31,34 +30,16 @@ var (
 
 	// flagconf is the config flag.
 	flagconf string
+
+	bootstrap settings.Bootstrap
 )
 
 func init() {
 	flag.StringVar(&flagconf, "conf", "./config", "config path, eg: -conf config.yaml")
 }
 
-func setupConfig() (*settings.Server, *settings.Storage) {
-	c := config.New(
-		config.WithSource(
-			file.NewSource(flagconf),
-		),
-	)
-	if err := c.Load(); err != nil {
-		panic(err)
-	}
-
-	var bc settings.Bootstrap
-	if err := c.Scan(&bc); err != nil {
-		panic(err)
-	}
-
-	return bc.Server, bc.Storage
-}
-
 func main() {
 	flag.Parse()
-
-	server, _ := setupConfig()
 
 	logger := log.With(log.NewStdLogger(os.Stdout),
 		"ts", log.DefaultTimestamp,
@@ -66,8 +47,19 @@ func main() {
 		"service.version", Version,
 	)
 
+	cfg, err := biz.Configure(flagconf)
+	if err != nil {
+		logger.Log(log.LevelFatal, err)
+	}
+
+	err = cfg.Scan(&bootstrap)
+	if err != nil {
+		logger.Log(log.LevelFatal, err)
+	}
+
 	httpSrv := http.NewServer(
-		http.Address(server.Http.Addr),
+		http.Address(bootstrap.Server.Http.Addr),
+		http.Timeout(bootstrap.Server.Http.Timeout.AsDuration()),
 		http.Middleware(
 			logging.Server(logger),
 			recovery.Recovery(),
@@ -75,7 +67,8 @@ func main() {
 	)
 
 	grpcSrv := grpc.NewServer(
-		grpc.Address(server.Grpc.Addr),
+		grpc.Address(bootstrap.Server.Grpc.Addr),
+		grpc.Timeout(bootstrap.Server.Grpc.Timeout.AsDuration()),
 		grpc.Middleware(
 			logging.Server(logger),
 			recovery.Recovery(),
@@ -86,7 +79,7 @@ func main() {
 	equipment.RegisterEquipmentServiceServer(grpcSrv, equipmentSvc)
 	equipment.RegisterEquipmentServiceHTTPServer(httpSrv, equipmentSvc)
 
-	vehicleSvc := service.NewVehicleService()
+	vehicleSvc := service.NewVehicleService(logger, flagconf)
 	vehicles.RegisterVehicleServiceServer(grpcSrv, vehicleSvc)
 	vehicles.RegisterVehicleServiceHTTPServer(httpSrv, vehicleSvc)
 

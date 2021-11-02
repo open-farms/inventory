@@ -23,6 +23,8 @@ type Vehicle struct {
 	Model string `json:"model,omitempty"`
 	// Year holds the value of the "year" field.
 	Year string `json:"year,omitempty"`
+	// Active holds the value of the "active" field.
+	Active bool `json:"active,omitempty"`
 	// Tags holds the value of the "tags" field.
 	Tags []string `json:"tags,omitempty"`
 	// Condition holds the value of the "condition" field.
@@ -40,6 +42,8 @@ func (*Vehicle) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case vehicle.FieldTags:
 			values[i] = new([]byte)
+		case vehicle.FieldActive:
+			values[i] = new(sql.NullBool)
 		case vehicle.FieldID:
 			values[i] = new(sql.NullInt64)
 		case vehicle.FieldMake, vehicle.FieldModel, vehicle.FieldYear, vehicle.FieldCondition:
@@ -84,6 +88,12 @@ func (v *Vehicle) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field year", values[i])
 			} else if value.Valid {
 				v.Year = value.String
+			}
+		case vehicle.FieldActive:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field active", values[i])
+			} else if value.Valid {
+				v.Active = value.Bool
 			}
 		case vehicle.FieldTags:
 			if value, ok := values[i].(*[]byte); !ok {
@@ -145,6 +155,8 @@ func (v *Vehicle) String() string {
 	builder.WriteString(v.Model)
 	builder.WriteString(", year=")
 	builder.WriteString(v.Year)
+	builder.WriteString(", active=")
+	builder.WriteString(fmt.Sprintf("%v", v.Active))
 	builder.WriteString(", tags=")
 	builder.WriteString(fmt.Sprintf("%v", v.Tags))
 	builder.WriteString(", condition=")

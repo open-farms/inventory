@@ -21,26 +21,28 @@ func (Vehicle) Fields() []ent.Field {
 		field.String("make"),
 		field.String("model"),
 		field.String("year"),
+		field.Bool("active"),
 		field.Strings("tags"),
 		field.Enum("condition").
 			Values(
-				"CONDITION_UNSPECIFIED",
-				"CONDITION_MINT",
-				"CONDITION_GOOD",
-				"CONDITION_POOR",
-				"CONDITION_BROKEN",
+				"UNSPECIFIED",
+				"MINT",
+				"GOOD",
+				"POOR",
+				"BROKEN",
 			),
 		field.Time("created_at").
 			Default(time.Now).
 			SchemaType(map[string]string{
 				dialect.MySQL:    "datetime",
-				dialect.Postgres: "time with time zone",
+				dialect.Postgres: "timestamp",
 			}),
 		field.Time("updated_at").
 			Default(time.Now).
+			UpdateDefault(time.Now).
 			SchemaType(map[string]string{
 				dialect.MySQL:    "datetime",
-				dialect.Postgres: "time with time zone",
+				dialect.Postgres: "timestamp",
 			}),
 	}
 }

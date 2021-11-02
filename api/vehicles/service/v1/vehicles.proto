@@ -3,7 +3,7 @@ syntax = "proto3";
 package api.vehicles.service.v1;
 
 import "google/api/annotations.proto";
-import "google/type/datetime.proto";
+import "google/protobuf/timestamp.proto";
 import "google/api/field_behavior.proto";
 
 option go_package = "github.com/open-farms/inventory/api/vehicles/service/v1;v1";
@@ -54,17 +54,17 @@ message Vehicle {
 	repeated string tags = 6;
 
 	enum Condition {
-		CONDITION_UNSPECIFIED = 0;
-		CONDITION_MINT = 1;
-		CONDITION_GOOD = 2;
-		CONDITION_POOR = 3;
-		CONDITION_BROKEN = 4;
+		UNSPECIFIED = 0;
+		MINT = 1;
+		GOOD = 2;
+		POOR = 3;
+		BROKEN = 4;
 	}
 
 	Condition condition = 7;
 
-	google.type.DateTime created_at = 8;
-	google.type.DateTime updated_at = 9;
+	google.protobuf.Timestamp created_at = 8;
+	google.protobuf.Timestamp updated_at = 9;
 }
 
 message CreateVehicleRequest {
@@ -76,7 +76,7 @@ message CreateVehicleResponse {
 }
 
 message UpdateVehicleRequest {
-	int64 id = 1;
+	uint64 id = 1;
 	Vehicle vehicle = 2;
 }
 
@@ -85,15 +85,15 @@ message UpdateVehicleResponse {
 }
 
 message DeleteVehicleRequest {
-	int64 id = 1;
+	uint64 id = 1;
 }
 
 message DeleteVehicleResponse {
-	Vehicle vehicle = 1;
+	uint64 id = 1;
 }
 
 message GetVehicleRequest {
-	int64 id = 1;
+	uint64 id = 1;
 }
 
 message GetVehicleResponse {

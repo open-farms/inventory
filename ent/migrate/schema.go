@@ -13,9 +13,9 @@ var (
 		{Name: "id", Type: field.TypeUint64, Increment: true},
 		{Name: "name", Type: field.TypeString, Default: "unknown"},
 		{Name: "tags", Type: field.TypeJSON},
-		{Name: "condition", Type: field.TypeEnum, Enums: []string{"CONDITION_UNSPECIFIED", "CONDITION_MINT", "CONDITION_GOOD", "CONDITION_POOR", "CONDITION_BROKEN"}},
-		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "time with time zone"}},
-		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "time with time zone"}},
+		{Name: "condition", Type: field.TypeEnum, Enums: []string{"UNSPECIFIED", "MINT", "GOOD", "POOR", "BROKEN"}},
+		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "timestamp"}},
+		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "timestamp"}},
 	}
 	// EquipmentTable holds the schema information for the "equipment" table.
 	EquipmentTable = &schema.Table{
@@ -29,10 +29,11 @@ var (
 		{Name: "make", Type: field.TypeString},
 		{Name: "model", Type: field.TypeString},
 		{Name: "year", Type: field.TypeString},
+		{Name: "active", Type: field.TypeBool},
 		{Name: "tags", Type: field.TypeJSON},
-		{Name: "condition", Type: field.TypeEnum, Enums: []string{"CONDITION_UNSPECIFIED", "CONDITION_MINT", "CONDITION_GOOD", "CONDITION_POOR", "CONDITION_BROKEN"}},
-		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "time with time zone"}},
-		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "time with time zone"}},
+		{Name: "condition", Type: field.TypeEnum, Enums: []string{"UNSPECIFIED", "MINT", "GOOD", "POOR", "BROKEN"}},
+		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "timestamp"}},
+		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "timestamp"}},
 	}
 	// VehiclesTable holds the schema information for the "vehicles" table.
 	VehiclesTable = &schema.Table{

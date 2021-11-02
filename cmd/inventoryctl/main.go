@@ -5,13 +5,27 @@ import (
 	"github.com/open-farms/inventory/cmd/inventoryctl/commands"
 )
 
-var cli struct {
+type CLI struct {
+	commands.Globals
 	Migrate commands.MigrateCmd `cmd:"" help:"Perform database migrations."`
 }
 
 func main() {
-	ctx := kong.Parse(&cli)
 
-	err := ctx.Run(&commands.Context{})
+	cli := CLI{
+		Globals: commands.Globals{},
+	}
+
+	ctx := kong.Parse(
+		&cli,
+		kong.Name("inventoryctl"),
+		kong.Description("Administration command line for the inventory agriculture service"),
+		kong.UsageOnError(),
+		kong.ConfigureHelp(kong.HelpOptions{
+			Compact: true,
+		}),
+	)
+
+	err := ctx.Run(&cli.Globals)
 	ctx.FatalIfErrorf(err)
 }

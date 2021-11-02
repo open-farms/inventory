@@ -38,6 +38,12 @@ func (vc *VehicleCreate) SetYear(s string) *VehicleCreate {
 	return vc
 }
 
+// SetActive sets the "active" field.
+func (vc *VehicleCreate) SetActive(b bool) *VehicleCreate {
+	vc.mutation.SetActive(b)
+	return vc
+}
+
 // SetTags sets the "tags" field.
 func (vc *VehicleCreate) SetTags(s []string) *VehicleCreate {
 	vc.mutation.SetTags(s)
@@ -176,6 +182,9 @@ func (vc *VehicleCreate) check() error {
 	if _, ok := vc.mutation.Year(); !ok {
 		return &ValidationError{Name: "year", err: errors.New(`ent: missing required field "year"`)}
 	}
+	if _, ok := vc.mutation.Active(); !ok {
+		return &ValidationError{Name: "active", err: errors.New(`ent: missing required field "active"`)}
+	}
 	if _, ok := vc.mutation.Tags(); !ok {
 		return &ValidationError{Name: "tags", err: errors.New(`ent: missing required field "tags"`)}
 	}
@@ -254,6 +263,14 @@ func (vc *VehicleCreate) createSpec() (*Vehicle, *sqlgraph.CreateSpec) {
 			Column: vehicle.FieldYear,
 		})
 		_node.Year = value
+	}
+	if value, ok := vc.mutation.Active(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Value:  value,
+			Column: vehicle.FieldActive,
+		})
+		_node.Active = value
 	}
 	if value, ok := vc.mutation.Tags(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{

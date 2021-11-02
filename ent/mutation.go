@@ -551,6 +551,7 @@ type VehicleMutation struct {
 	make          *string
 	model         *string
 	year          *string
+	active        *bool
 	tags          *[]string
 	condition     *vehicle.Condition
 	created_at    *time.Time
@@ -754,6 +755,42 @@ func (m *VehicleMutation) ResetYear() {
 	m.year = nil
 }
 
+// SetActive sets the "active" field.
+func (m *VehicleMutation) SetActive(b bool) {
+	m.active = &b
+}
+
+// Active returns the value of the "active" field in the mutation.
+func (m *VehicleMutation) Active() (r bool, exists bool) {
+	v := m.active
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldActive returns the old "active" field's value of the Vehicle entity.
+// If the Vehicle object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *VehicleMutation) OldActive(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldActive is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldActive requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldActive: %w", err)
+	}
+	return oldValue.Active, nil
+}
+
+// ResetActive resets all changes to the "active" field.
+func (m *VehicleMutation) ResetActive() {
+	m.active = nil
+}
+
 // SetTags sets the "tags" field.
 func (m *VehicleMutation) SetTags(s []string) {
 	m.tags = &s
@@ -917,7 +954,7 @@ func (m *VehicleMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *VehicleMutation) Fields() []string {
-	fields := make([]string, 0, 7)
+	fields := make([]string, 0, 8)
 	if m.make != nil {
 		fields = append(fields, vehicle.FieldMake)
 	}
@@ -926,6 +963,9 @@ func (m *VehicleMutation) Fields() []string {
 	}
 	if m.year != nil {
 		fields = append(fields, vehicle.FieldYear)
+	}
+	if m.active != nil {
+		fields = append(fields, vehicle.FieldActive)
 	}
 	if m.tags != nil {
 		fields = append(fields, vehicle.FieldTags)
@@ -953,6 +993,8 @@ func (m *VehicleMutation) Field(name string) (ent.Value, bool) {
 		return m.Model()
 	case vehicle.FieldYear:
 		return m.Year()
+	case vehicle.FieldActive:
+		return m.Active()
 	case vehicle.FieldTags:
 		return m.Tags()
 	case vehicle.FieldCondition:
@@ -976,6 +1018,8 @@ func (m *VehicleMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldModel(ctx)
 	case vehicle.FieldYear:
 		return m.OldYear(ctx)
+	case vehicle.FieldActive:
+		return m.OldActive(ctx)
 	case vehicle.FieldTags:
 		return m.OldTags(ctx)
 	case vehicle.FieldCondition:
@@ -1013,6 +1057,13 @@ func (m *VehicleMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetYear(v)
+		return nil
+	case vehicle.FieldActive:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetActive(v)
 		return nil
 	case vehicle.FieldTags:
 		v, ok := value.([]string)
@@ -1099,6 +1150,9 @@ func (m *VehicleMutation) ResetField(name string) error {
 		return nil
 	case vehicle.FieldYear:
 		m.ResetYear()
+		return nil
+	case vehicle.FieldActive:
+		m.ResetActive()
 		return nil
 	case vehicle.FieldTags:
 		m.ResetTags()

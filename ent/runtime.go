@@ -35,13 +35,15 @@ func init() {
 	vehicleFields := schema.Vehicle{}.Fields()
 	_ = vehicleFields
 	// vehicleDescCreatedAt is the schema descriptor for created_at field.
-	vehicleDescCreatedAt := vehicleFields[6].Descriptor()
+	vehicleDescCreatedAt := vehicleFields[7].Descriptor()
 	// vehicle.DefaultCreatedAt holds the default value on creation for the created_at field.
 	vehicle.DefaultCreatedAt = vehicleDescCreatedAt.Default.(func() time.Time)
 	// vehicleDescUpdatedAt is the schema descriptor for updated_at field.
-	vehicleDescUpdatedAt := vehicleFields[7].Descriptor()
+	vehicleDescUpdatedAt := vehicleFields[8].Descriptor()
 	// vehicle.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	vehicle.DefaultUpdatedAt = vehicleDescUpdatedAt.Default.(func() time.Time)
+	// vehicle.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
+	vehicle.UpdateDefaultUpdatedAt = vehicleDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// vehicleDescID is the schema descriptor for id field.
 	vehicleDescID := vehicleFields[0].Descriptor()
 	// vehicle.IDValidator is a validator for the "id" field. It is called by the builders before save.

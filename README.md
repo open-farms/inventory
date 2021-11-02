@@ -56,8 +56,19 @@ VERSION="<x.x.x>" make build
 docker build -t <your-docker-image-name> .
 
 # Run the docker image, exposing http and gRPC services
-docker run --rm -v ./config:/data/confifg -p 8000:8000 -p 9000:9000 <your-docker-image-name>
+docker run --rm -v ./config:/data/config -p 8000:8000 -p 9000:9000 <your-docker-image-name>
 ```
+
+## Manage the inventory database with the [inventoryctl](./cmd/inventoryctl) CLI
+
+```shell
+# Start the postgres database
+docker-compose up
+
+# Run the inventoryctl cli to performa database migration
+make migrate
+```
+
 
 ## Generate code 🏗️
 
@@ -89,17 +100,17 @@ message Vehicle {
 	repeated string tags = 6;
 
 	enum Condition {
-		CONDITION_UNSPECIFIED = 0;
-		CONDITION_MINT = 1;
-		CONDITION_GOOD = 2;
-		CONDITION_POOR = 3;
-		CONDITION_BROKEN = 4;
+		UNSPECIFIED = 0;
+		MINT = 1;
+		GOOD = 2;
+		POOR = 3;
+		BROKEN = 4;
 	}
 
 	Condition condition = 7;
 
-	google.type.DateTime created_at = 8;
-	google.type.DateTime updated_at = 9;
+	google.protobuf.Timestamp created_at = 8;
+	google.protobuf.Timestamp updated_at = 9;
 }
 ```
 
@@ -114,15 +125,15 @@ message Equipment {
 	repeated string tags = 3;
 
 	enum Condition {
-		CONDITION_UNSPECIFIED = 0;
-		CONDITION_MINT = 1;
-		CONDITION_GOOD = 2;
-		CONDITION_POOR = 3;
-		CONDITION_BROKEN = 4;
+		UNSPECIFIED = 0;
+		MINT = 1;
+		GOOD = 2;
+		POOR = 3;
+		BROKEN = 4;
 	};
 
 	Condition condition = 4;
-	google.type.DateTime created_at = 5;
-	google.type.DateTime updated_at = 6;
+	google.protobuf.Timestamp created_at = 5;
+	google.protobuf.Timestamp updated_at = 6;
 }
 ```

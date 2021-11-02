@@ -3,7 +3,7 @@ syntax = "proto3";
 package api.equipment.service.v1;
 
 import "google/api/annotations.proto";
-import "google/type/datetime.proto";
+import "google/protobuf/timestamp.proto";
 
 option go_package = "github.com/open-farms/inventory/api/equipment/service/v1;v1";
 option java_multiple_files = true;
@@ -49,16 +49,16 @@ message Equipment {
 	repeated string tags = 3;
 
 	enum Condition {
-		CONDITION_UNSPECIFIED = 0;
-		CONDITION_MINT = 1;
-		CONDITION_GOOD = 2;
-		CONDITION_POOR = 3;
-		CONDITION_BROKEN = 4;
+		UNSPECIFIED = 0;
+		MINT = 1;
+		GOOD = 2;
+		POOR = 3;
+		BROKEN = 4;
 	};
 
 	Condition condition = 4;
-	google.type.DateTime created_at = 5;
-	google.type.DateTime updated_at = 6;
+	google.protobuf.Timestamp created_at = 5;
+	google.protobuf.Timestamp updated_at = 6;
 }
 
 message CreateEquipmentRequest {
@@ -70,7 +70,7 @@ message CreateEquipmentResponse {
 }
 
 message UpdateEquipmentRequest {
-	int64 id = 1;
+	uint64 id = 1;
 	Equipment equipment = 2;
 }
 
@@ -79,7 +79,7 @@ message UpdateEquipmentResponse {
 }
 
 message DeleteEquipmentRequest {
-	int64 id = 1;
+	uint64 id = 1;
 }
 
 message DeleteEquipmentResponse {
@@ -87,7 +87,7 @@ message DeleteEquipmentResponse {
 }
 
 message GetEquipmentRequest {
-	int64 id = 1;
+	uint64 id = 1;
 }
 
 message GetEquipmentResponse {

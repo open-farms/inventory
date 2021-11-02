@@ -62,11 +62,11 @@ type Condition string
 
 // Condition values.
 const (
-	ConditionCONDITION_UNSPECIFIED Condition = "CONDITION_UNSPECIFIED"
-	ConditionCONDITION_MINT        Condition = "CONDITION_MINT"
-	ConditionCONDITION_GOOD        Condition = "CONDITION_GOOD"
-	ConditionCONDITION_POOR        Condition = "CONDITION_POOR"
-	ConditionCONDITION_BROKEN      Condition = "CONDITION_BROKEN"
+	ConditionUNSPECIFIED Condition = "UNSPECIFIED"
+	ConditionMINT        Condition = "MINT"
+	ConditionGOOD        Condition = "GOOD"
+	ConditionPOOR        Condition = "POOR"
+	ConditionBROKEN      Condition = "BROKEN"
 )
 
 func (c Condition) String() string {
@@ -76,7 +76,7 @@ func (c Condition) String() string {
 // ConditionValidator is a validator for the "condition" field enum values. It is called by the builders before save.
 func ConditionValidator(c Condition) error {
 	switch c {
-	case ConditionCONDITION_UNSPECIFIED, ConditionCONDITION_MINT, ConditionCONDITION_GOOD, ConditionCONDITION_POOR, ConditionCONDITION_BROKEN:
+	case ConditionUNSPECIFIED, ConditionMINT, ConditionGOOD, ConditionPOOR, ConditionBROKEN:
 		return nil
 	default:
 		return fmt.Errorf("equipment: invalid enum value for condition field: %q", c)
