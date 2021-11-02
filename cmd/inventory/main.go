@@ -18,9 +18,9 @@ import (
 // go build -ldflags "-X main.Version=x.y.z"
 var (
 	// Name is the name of the compiled software.
-	Name string
+	Name string = "inventory"
 	// Version is the version of the compiled software.
-	Version string
+	Version string = "x.y.z"
 
 	id, _ = os.Hostname()
 )

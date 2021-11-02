@@ -3,6 +3,7 @@ syntax = "proto3";
 package api.equipment.service.v1;
 
 import "google/api/annotations.proto";
+import "google/type/datetime.proto";
 
 option go_package = "github.com/open-farms/inventory/api/equipment/service/v1;v1";
 option java_multiple_files = true;
@@ -11,33 +12,33 @@ option java_package = "api.equipment.service.v1";
 service EquipmentService {
 	rpc CreateEquipment (CreateEquipmentRequest) returns (CreateEquipmentResponse){
 		option (google.api.http)= {
-			post: "/equipment",
+			post: "/v1/equipment",
 			body: "equipment",
 		};
 	};
 
 	rpc UpdateEquipment (UpdateEquipmentRequest) returns (UpdateEquipmentResponse){
 		option (google.api.http)= {
-			put: "/equipment/{id}",
+			put: "/v1/equipment/{id}",
 			body: "equipment",
 		};
 	};
 
 	rpc DeleteEquipment (DeleteEquipmentRequest) returns (DeleteEquipmentResponse){
 		option (google.api.http)= {
-			delete: "/equipment/{id}",
+			delete: "/v1/equipment/{id}",
 		};
 	};
 
 	rpc GetEquipment (GetEquipmentRequest) returns (GetEquipmentResponse){
 		option (google.api.http)= {
-			get: "/equipment/{id}",
+			get: "/v1/equipment/{id}",
 		};
 	};
 
 	rpc ListEquipment (ListEquipmentRequest) returns (ListEquipmentResponse){
 		option (google.api.http)= {
-			get: "/equipment",
+			get: "/v1/equipment",
 		};
 	};
 }
@@ -56,6 +57,8 @@ message Equipment {
 	};
 
 	Condition condition = 4;
+	google.type.DateTime created_at = 5;
+	google.type.DateTime updated_at = 6;
 }
 
 message CreateEquipmentRequest {

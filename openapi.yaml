@@ -6,7 +6,7 @@ info:
     title: EquipmentService
     version: 0.0.1
 paths:
-    /equipment:
+    /v1/equipment:
         get:
             operationId: EquipmentService_ListEquipment
             responses:
@@ -31,7 +31,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/CreateEquipmentResponse'
-    /equipment/{id}:
+    /v1/equipment/{id}:
         get:
             operationId: EquipmentService_GetEquipment
             parameters:
@@ -80,7 +80,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/DeleteEquipmentResponse'
-    /vehicles:
+    /v1/vehicles:
         post:
             operationId: VehicleService_CreateVehicle
             requestBody:
@@ -96,7 +96,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/CreateVehicleResponse'
-    /vehicles/:
+    /v1/vehicles/:
         get:
             operationId: VehicleService_ListVehicle
             responses:
@@ -106,7 +106,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/ListVehicleResponse'
-    /vehicles/{id}:
+    /v1/vehicles/{id}:
         get:
             operationId: VehicleService_GetVehicle
             parameters:
@@ -177,7 +177,22 @@ components:
             properties:
                 id:
                     type: integer
-                    format: int64
+                    format: uint64
+                name:
+                    type: string
+                tags:
+                    type: array
+                    items:
+                        type: string
+                condition:
+                    type: integer
+                    format: enum
+                created_at:
+                    type: string
+                    format: date-time
+                updated_at:
+                    type: string
+                    format: date-time
         GetEquipmentResponse:
             properties:
                 equipment:
@@ -209,9 +224,8 @@ components:
         Vehicle:
             properties:
                 id:
-                    readOnly: true
                     type: integer
-                    format: int64
+                    format: uint64
                 make:
                     type: string
                 model:
@@ -227,3 +241,9 @@ components:
                 condition:
                     type: integer
                     format: enum
+                created_at:
+                    type: string
+                    format: date-time
+                updated_at:
+                    type: string
+                    format: date-time

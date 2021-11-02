@@ -27,11 +27,11 @@ type EquipmentServiceHTTPServer interface {
 
 func RegisterEquipmentServiceHTTPServer(s *http.Server, srv EquipmentServiceHTTPServer) {
 	r := s.Route("/")
-	r.POST("/equipment", _EquipmentService_CreateEquipment0_HTTP_Handler(srv))
-	r.PUT("/equipment/{id}", _EquipmentService_UpdateEquipment0_HTTP_Handler(srv))
-	r.DELETE("/equipment/{id}", _EquipmentService_DeleteEquipment0_HTTP_Handler(srv))
-	r.GET("/equipment/{id}", _EquipmentService_GetEquipment0_HTTP_Handler(srv))
-	r.GET("/equipment", _EquipmentService_ListEquipment0_HTTP_Handler(srv))
+	r.POST("/v1/equipment", _EquipmentService_CreateEquipment0_HTTP_Handler(srv))
+	r.PUT("/v1/equipment/{id}", _EquipmentService_UpdateEquipment0_HTTP_Handler(srv))
+	r.DELETE("/v1/equipment/{id}", _EquipmentService_DeleteEquipment0_HTTP_Handler(srv))
+	r.GET("/v1/equipment/{id}", _EquipmentService_GetEquipment0_HTTP_Handler(srv))
+	r.GET("/v1/equipment", _EquipmentService_ListEquipment0_HTTP_Handler(srv))
 }
 
 func _EquipmentService_CreateEquipment0_HTTP_Handler(srv EquipmentServiceHTTPServer) func(ctx http.Context) error {
@@ -156,7 +156,7 @@ func NewEquipmentServiceHTTPClient(client *http.Client) EquipmentServiceHTTPClie
 
 func (c *EquipmentServiceHTTPClientImpl) CreateEquipment(ctx context.Context, in *CreateEquipmentRequest, opts ...http.CallOption) (*CreateEquipmentResponse, error) {
 	var out CreateEquipmentResponse
-	pattern := "/equipment"
+	pattern := "/v1/equipment"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation("/api.equipment.service.v1.EquipmentService/CreateEquipment"))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -169,7 +169,7 @@ func (c *EquipmentServiceHTTPClientImpl) CreateEquipment(ctx context.Context, in
 
 func (c *EquipmentServiceHTTPClientImpl) DeleteEquipment(ctx context.Context, in *DeleteEquipmentRequest, opts ...http.CallOption) (*DeleteEquipmentResponse, error) {
 	var out DeleteEquipmentResponse
-	pattern := "/equipment/{id}"
+	pattern := "/v1/equipment/{id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation("/api.equipment.service.v1.EquipmentService/DeleteEquipment"))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -182,7 +182,7 @@ func (c *EquipmentServiceHTTPClientImpl) DeleteEquipment(ctx context.Context, in
 
 func (c *EquipmentServiceHTTPClientImpl) GetEquipment(ctx context.Context, in *GetEquipmentRequest, opts ...http.CallOption) (*GetEquipmentResponse, error) {
 	var out GetEquipmentResponse
-	pattern := "/equipment/{id}"
+	pattern := "/v1/equipment/{id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation("/api.equipment.service.v1.EquipmentService/GetEquipment"))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -195,7 +195,7 @@ func (c *EquipmentServiceHTTPClientImpl) GetEquipment(ctx context.Context, in *G
 
 func (c *EquipmentServiceHTTPClientImpl) ListEquipment(ctx context.Context, in *ListEquipmentRequest, opts ...http.CallOption) (*ListEquipmentResponse, error) {
 	var out ListEquipmentResponse
-	pattern := "/equipment"
+	pattern := "/v1/equipment"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation("/api.equipment.service.v1.EquipmentService/ListEquipment"))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -208,7 +208,7 @@ func (c *EquipmentServiceHTTPClientImpl) ListEquipment(ctx context.Context, in *
 
 func (c *EquipmentServiceHTTPClientImpl) UpdateEquipment(ctx context.Context, in *UpdateEquipmentRequest, opts ...http.CallOption) (*UpdateEquipmentResponse, error) {
 	var out UpdateEquipmentResponse
-	pattern := "/equipment/{id}"
+	pattern := "/v1/equipment/{id}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation("/api.equipment.service.v1.EquipmentService/UpdateEquipment"))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -3,6 +3,7 @@ syntax = "proto3";
 package api.vehicles.service.v1;
 
 import "google/api/annotations.proto";
+import "google/type/datetime.proto";
 import "google/api/field_behavior.proto";
 
 option go_package = "github.com/open-farms/inventory/api/vehicles/service/v1;v1";
@@ -12,33 +13,33 @@ option java_package = "api.vehicles.service.v1";
 service VehicleService {
 	rpc CreateVehicle (CreateVehicleRequest) returns (CreateVehicleResponse){
 		option (google.api.http)= {
-			post: "/vehicles",
+			post: "/v1/vehicles",
 			body: "vehicle",
 		};
 	};
 
 	rpc UpdateVehicle (UpdateVehicleRequest) returns (UpdateVehicleResponse) {
 		option (google.api.http)= {
-			put: "/vehicles/{id}",
+			put: "/v1/vehicles/{id}",
 			body: "vehicle",
 		};
 	};
 
 	rpc DeleteVehicle (DeleteVehicleRequest) returns (DeleteVehicleResponse){
 		option (google.api.http)= {
-			delete: "/vehicles/{id}",
+			delete: "/v1/vehicles/{id}",
 		};
 	};
 
 	rpc GetVehicle (GetVehicleRequest) returns (GetVehicleResponse){
 		option (google.api.http)= {
-			get: "/vehicles/{id}",
+			get: "/v1/vehicles/{id}",
 		};
 	};
 
 	rpc ListVehicle (ListVehicleRequest) returns (ListVehicleResponse){
 		option (google.api.http)= {
-			get: "/vehicles/",
+			get: "/v1/vehicles/",
 		};
 	};
 }
@@ -61,6 +62,9 @@ message Vehicle {
 	}
 
 	Condition condition = 7;
+
+	google.type.DateTime created_at = 8;
+	google.type.DateTime updated_at = 9;
 }
 
 message CreateVehicleRequest {
