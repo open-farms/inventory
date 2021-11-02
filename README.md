@@ -84,7 +84,7 @@ message Vehicle {
 
 ### Equipment Service
 
-The Equipment schema and service of allow for the management of equipment on the farm.
+The Equipment schema and service allow for the management of equipment on the farm.
 
 ```proto
 message Equipment {
