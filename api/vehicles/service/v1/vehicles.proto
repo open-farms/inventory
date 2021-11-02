@@ -45,7 +45,7 @@ service VehicleService {
 
 
 message Vehicle {
-	int64 id = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
+	uint64 id = 1;
 	string make = 2;
 	string model = 3;
 	string year = 4;

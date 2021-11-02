@@ -43,7 +43,19 @@ service EquipmentService {
 }
 
 message Equipment {
-	int64 id = 1;
+	uint64 id = 1;
+	string name = 2;
+	repeated string tags = 3;
+
+	enum Condition {
+		CONDITION_UNSPECIFIED = 0;
+		CONDITION_MINT = 1;
+		CONDITION_GOOD = 2;
+		CONDITION_POOR = 3;
+		CONDITION_BROKEN = 4;
+	};
+
+	Condition condition = 4;
 }
 
 message CreateEquipmentRequest {
