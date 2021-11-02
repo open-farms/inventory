@@ -9,6 +9,7 @@ require (
 	github.com/go-kratos/kratos/cmd/protoc-gen-go-errors/v2 v2.0.0-20211028030931-143dc584cb8a // indirect
 	github.com/go-kratos/kratos/cmd/protoc-gen-go-http/v2 v2.0.0-20211028030931-143dc584cb8a // indirect
 	github.com/go-kratos/kratos/v2 v2.1.1
+	github.com/google/gnostic v0.5.6 // indirect
 	github.com/google/wire v0.5.0
 	github.com/mattn/go-colorable v0.1.11 // indirect
 	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect

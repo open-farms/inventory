@@ -28,9 +28,9 @@ type VehicleServiceHTTPServer interface {
 func RegisterVehicleServiceHTTPServer(s *http.Server, srv VehicleServiceHTTPServer) {
 	r := s.Route("/")
 	r.POST("/vehicles", _VehicleService_CreateVehicle0_HTTP_Handler(srv))
-	r.PUT("/vehicles", _VehicleService_UpdateVehicle0_HTTP_Handler(srv))
+	r.PUT("/vehicles/{id}", _VehicleService_UpdateVehicle0_HTTP_Handler(srv))
 	r.DELETE("/vehicles/{id}", _VehicleService_DeleteVehicle0_HTTP_Handler(srv))
-	r.DELETE("/vehicles/{id}", _VehicleService_GetVehicle0_HTTP_Handler(srv))
+	r.GET("/vehicles/{id}", _VehicleService_GetVehicle0_HTTP_Handler(srv))
 	r.GET("/vehicles/", _VehicleService_ListVehicle0_HTTP_Handler(srv))
 }
 
@@ -57,6 +57,9 @@ func _VehicleService_UpdateVehicle0_HTTP_Handler(srv VehicleServiceHTTPServer) f
 	return func(ctx http.Context) error {
 		var in UpdateVehicleRequest
 		if err := ctx.Bind(&in.Vehicle); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
 		http.SetOperation(ctx, "/vehicles.service.v1.VehicleService/UpdateVehicle")
@@ -183,7 +186,7 @@ func (c *VehicleServiceHTTPClientImpl) GetVehicle(ctx context.Context, in *GetVe
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation("/vehicles.service.v1.VehicleService/GetVehicle"))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -205,7 +208,7 @@ func (c *VehicleServiceHTTPClientImpl) ListVehicle(ctx context.Context, in *List
 
 func (c *VehicleServiceHTTPClientImpl) UpdateVehicle(ctx context.Context, in *UpdateVehicleRequest, opts ...http.CallOption) (*UpdateVehicleReply, error) {
 	var out UpdateVehicleReply
-	pattern := "/vehicles"
+	pattern := "/vehicles/{id}"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation("/vehicles.service.v1.VehicleService/UpdateVehicle"))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -3,6 +3,9 @@ syntax = "proto3";
 package vehicles.service.v1;
 
 import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/type/date.proto";
+import "google/type/datetime.proto";
 
 option go_package = "github.com/open-farms/inventory/api/vehicles/service/v1;v1";
 option java_multiple_files = true;
@@ -18,7 +21,7 @@ service VehicleService {
 
 	rpc UpdateVehicle (UpdateVehicleRequest) returns (UpdateVehicleReply) {
 		option (google.api.http)= {
-			put: "/vehicles",
+			put: "/vehicles/{id}",
 			body: "vehicle",
 		};
 	};
@@ -31,7 +34,7 @@ service VehicleService {
 
 	rpc GetVehicle (GetVehicleRequest) returns (GetVehicleReply){
 		option (google.api.http)= {
-			delete: "/vehicles/{id}",
+			get: "/vehicles/{id}",
 		};
 	};
 
@@ -44,7 +47,7 @@ service VehicleService {
 
 
 message Vehicle {
-	int64 id = 1 ;
+	int64 id = 1 [(google.api.field_behavior) = OUTPUT_ONLY];
 	string make = 2;
 	string model = 3;
 	string year = 4;
@@ -59,6 +62,7 @@ message Vehicle {
 	}
 
 	Condition condition = 7;
+	google.type.DateTime created_at = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
 message CreateVehicleRequest {
@@ -70,7 +74,8 @@ message CreateVehicleReply {
 }
 
 message UpdateVehicleRequest {
-	Vehicle vehicle = 1;
+	int64 id = 1;
+	Vehicle vehicle = 2;
 }
 
 message UpdateVehicleReply {

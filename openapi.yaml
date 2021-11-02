@@ -1,0 +1,228 @@
+# Generated with protoc-gen-openapi
+# https://github.com/googleapis/gnostic/tree/master/apps/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: EquipmentService
+    version: 0.0.1
+paths:
+    /equipment:
+        get:
+            operationId: EquipmentService_ListEquipment
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListEquipmentReply'
+        post:
+            operationId: EquipmentService_CreateEquipment
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Equipment'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateEquipmentReply'
+    /equipment/{id}:
+        get:
+            operationId: EquipmentService_GetEquipment
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetEquipmentReply'
+        put:
+            operationId: EquipmentService_UpdateEquipment
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Equipment'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateEquipmentReply'
+        delete:
+            operationId: EquipmentService_DeleteEquipment
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteEquipmentReply'
+    /vehicles:
+        post:
+            operationId: VehicleService_CreateVehicle
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Vehicle'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateVehicleReply'
+    /vehicles/:
+        get:
+            operationId: VehicleService_ListVehicle
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListVehicleReply'
+    /vehicles/{id}:
+        get:
+            operationId: VehicleService_GetVehicle
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetVehicleReply'
+        put:
+            operationId: VehicleService_UpdateVehicle
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/Vehicle'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateVehicleReply'
+        delete:
+            operationId: VehicleService_DeleteVehicle
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteVehicleReply'
+components:
+    schemas:
+        CreateEquipmentReply:
+            properties:
+                equipment:
+                    $ref: '#/components/schemas/Equipment'
+        CreateVehicleReply:
+            properties:
+                vehicle:
+                    $ref: '#/components/schemas/Vehicle'
+        DeleteEquipmentReply:
+            properties:
+                equipment:
+                    $ref: '#/components/schemas/Equipment'
+        DeleteVehicleReply:
+            properties:
+                vehicle:
+                    $ref: '#/components/schemas/Vehicle'
+        Equipment:
+            properties:
+                id:
+                    type: integer
+                    format: int64
+        GetEquipmentReply:
+            properties:
+                equipment:
+                    $ref: '#/components/schemas/Equipment'
+        GetVehicleReply:
+            properties:
+                vehicle:
+                    $ref: '#/components/schemas/Vehicle'
+        ListEquipmentReply:
+            properties:
+                equipment:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Equipment'
+        ListVehicleReply:
+            properties:
+                vehicles:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Vehicle'
+        UpdateEquipmentReply:
+            properties:
+                equipment:
+                    $ref: '#/components/schemas/Equipment'
+        UpdateVehicleReply:
+            properties:
+                vehicle:
+                    $ref: '#/components/schemas/Vehicle'
+        Vehicle:
+            properties:
+                id:
+                    type: integer
+                    format: int64
+                make:
+                    type: string
+                model:
+                    type: string
+                year:
+                    type: string
+                active:
+                    type: boolean
+                tags:
+                    type: array
+                    items:
+                        type: string
+                condition:
+                    type: integer
+                    format: enum

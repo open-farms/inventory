@@ -1,0 +1,10 @@
+version: v1
+deps:
+  - git://github.com/googleapis/googleapis.git#branch=master
+  - git://github.com/go-kratos/grpc-gateway.git#branch=master
+lint:
+  use:
+    - DEFAULT
+breaking:
+  use:
+    - FILE

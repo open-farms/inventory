@@ -1,32 +1,86 @@
 syntax = "proto3";
 
-package api.equipment.service.v1;
+package equipment.service.v1;
 
 import "google/api/annotations.proto";
 
 option go_package = "github.com/open-farms/inventory/api/equipment/service/v1;v1";
 option java_multiple_files = true;
-option java_package = "api.equipment.service.v1";
+option java_package = "equipment.service.v1";
 
-service Equipment {
-	rpc CreateEquipment (CreateEquipmentRequest) returns (CreateEquipmentReply);
-	rpc UpdateEquipment (UpdateEquipmentRequest) returns (UpdateEquipmentReply);
-	rpc DeleteEquipment (DeleteEquipmentRequest) returns (DeleteEquipmentReply);
-	rpc GetEquipment (GetEquipmentRequest) returns (GetEquipmentReply);
-	rpc ListEquipment (ListEquipmentRequest) returns (ListEquipmentReply);
+service EquipmentService {
+	rpc CreateEquipment (CreateEquipmentRequest) returns (CreateEquipmentReply){
+		option (google.api.http)= {
+			post: "/equipment",
+			body: "equipment",
+		};
+	};
+
+	rpc UpdateEquipment (UpdateEquipmentRequest) returns (UpdateEquipmentReply){
+		option (google.api.http)= {
+			put: "/equipment/{id}",
+			body: "equipment",
+		};
+	};
+
+	rpc DeleteEquipment (DeleteEquipmentRequest) returns (DeleteEquipmentReply){
+		option (google.api.http)= {
+			delete: "/equipment/{id}",
+		};
+	};
+
+	rpc GetEquipment (GetEquipmentRequest) returns (GetEquipmentReply){
+		option (google.api.http)= {
+			get: "/equipment/{id}",
+		};
+	};
+
+	rpc ListEquipment (ListEquipmentRequest) returns (ListEquipmentReply){
+		option (google.api.http)= {
+			get: "/equipment",
+		};
+	};
 }
 
-message CreateEquipmentRequest {}
-message CreateEquipmentReply {}
+message Equipment {
+	int64 id = 1;
+}
 
-message UpdateEquipmentRequest {}
-message UpdateEquipmentReply {}
+message CreateEquipmentRequest {
+	Equipment equipment = 1;
+}
 
-message DeleteEquipmentRequest {}
-message DeleteEquipmentReply {}
+message CreateEquipmentReply {
+	Equipment equipment = 1;
+}
 
-message GetEquipmentRequest {}
-message GetEquipmentReply {}
+message UpdateEquipmentRequest {
+	int64 id = 1;
+	Equipment equipment = 2;
+}
+
+message UpdateEquipmentReply {
+	Equipment equipment = 1;
+}
+
+message DeleteEquipmentRequest {
+	int64 id = 1;
+}
+
+message DeleteEquipmentReply {
+	Equipment equipment = 1;
+}
+
+message GetEquipmentRequest {
+	int64 id = 1;
+}
+
+message GetEquipmentReply {
+	Equipment equipment = 1;
+}
 
 message ListEquipmentRequest {}
-message ListEquipmentReply {}
+
+message ListEquipmentReply {
+	repeated Equipment equipment = 1;
+}
