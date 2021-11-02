@@ -1,53 +1,38 @@
-# Kratos Project Template
+# Inventory 📦
 
-## Install Kratos
-```
-go get -u github.com/go-kratos/kratos/cmd/kratos/v2@latest
-```
-## Create a service
-```
-# Create a template project
-kratos new server
+> An inventory service for managing farming vehicles, equipment, and resources.
 
-cd server
-# Add a proto template
-kratos proto add api/server/server.proto
-# Generate the proto code
-kratos proto client api/server/server.proto
-# Generate the source code of service by proto file
-kratos proto server api/server/server.proto -t internal/service
+## Quickstart ⚡
 
-go generate ./...
-go build -o ./bin/ ./...
-./bin/server -conf ./configs
-```
-## Generate other auxiliary files by Makefile
-```
-# Download and update dependencies
+```shell
 make init
-# Generate API swagger json files by proto file
-make swagger
-# Generate API files (include: pb.go, http, grpc, validate, swagger) by proto file
-make api
-# Generate all files
-make all
-```
-## Automated Initialization (wire)
-```
-# install wire
-go get github.com/google/wire/cmd/wire
-
-# generate wire
-cd cmd/server
-wire
 ```
 
-## Docker
-```bash
-# build
+## Start the service 🏃
+
+Start the service directly with go or containerize it with Docker.
+
+```shell
+# Build the binary
+VERSION="<x.x.x>" make build
+
+# Run the service
+./bin/inventory
+```
+
+```shell
+# Build the docker image
 docker build -t <your-docker-image-name> .
 
-# run
-docker run --rm -p 8000:8000 -p 9000:9000 -v </path/to/your/configs>:/data/conf <your-docker-image-name>
+# Run the docker image, exposing http and gRPC services
+docker run --rm -p 8000:8000 -p 9000:9000 <your-docker-image-name>
 ```
 
+## Generate code 🏗️
+
+Generate the protobuf code, openapi spec, 
+
+```
+# Generate API files (include: pb.go, http, grpc, validate) by proto
+make api
+```
