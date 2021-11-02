@@ -56,7 +56,7 @@ VERSION="<x.x.x>" make build
 docker build -t <your-docker-image-name> .
 
 # Run the docker image, exposing http and gRPC services
-docker run --rm -v ./configs:/data/conf -p 8000:8000 -p 9000:9000 <your-docker-image-name>
+docker run --rm -v ./config:/data/confifg -p 8000:8000 -p 9000:9000 <your-docker-image-name>
 ```
 
 ## Generate code 🏗️
@@ -73,7 +73,7 @@ make proto
 
 [View the openapi specification](./openapi.yaml)
 
-[View the .proto definitions](./api/)
+[View the .proto definitions](https://github.com/search?q=repo%3Aopen-farms%2Finventory+extension%3Aproto+path%3Aapi%2F&type=Code)
 
 ### Vehicles Service
 
