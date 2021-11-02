@@ -13,17 +13,17 @@ The inventory service enables users to keep track of farm inventory across multi
 
 ## Structure
 
-```
-/api 				- protobuf schemas, generated client, generated server
-/cmd/inventory 		- api server
-/cmd/inventoryctl 	- cli tool for service administration  
-/config				- default application configurations
-/ent				- database models, migrations, and drivers
-/ent/schemas		- editable database models
-/internal/biz		- business logic used by both api and cli
-/internal/service	- handlers for gRPC and HTTP endpoints
-/internal/settings	- settings package to read in application configs
-/third_party		- protobuf libraries
+```shell
+/api # protobuf schemas, generated client, generated server
+/cmd/inventory # api server
+/cmd/inventoryctl # cli tool for service administration  
+/config # default application configurations
+/ent # database models, migrations, and drivers
+/ent/schemas # editable database models
+/internal/biz # business logic used by both api and cli
+/internal/service # handlers for gRPC and HTTP endpoints
+/internal/settings # settings package to read in application configs
+/third_party # protobuf libraries
 ```
 
 ## Quickstart ⚡
