@@ -9,9 +9,10 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/go-kratos/kratos/v2/transport/http"
-	"github.com/open-farms/inventory/internal/vehicle"
 
-	vehicleService "github.com/open-farms/inventory/api/vehicles/service/v1"
+	equipment "github.com/open-farms/inventory/api/equipment/service/v1"
+	vehicles "github.com/open-farms/inventory/api/vehicles/service/v1"
+	"github.com/open-farms/inventory/internal/service"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -50,9 +51,13 @@ func main() {
 		),
 	)
 
-	svc := vehicle.NewVehicleService()
-	vehicleService.RegisterVehicleServiceServer(grpcSrv, svc)
-	vehicleService.RegisterVehicleServiceHTTPServer(httpSrv, svc)
+	equipmentSvc := service.NewEquipmentService()
+	equipment.RegisterEquipmentServiceServer(grpcSrv, equipmentSvc)
+	equipment.RegisterEquipmentServiceHTTPServer(httpSrv, equipmentSvc)
+
+	vehicleSvc := service.NewVehicleService()
+	vehicles.RegisterVehicleServiceServer(grpcSrv, vehicleSvc)
+	vehicles.RegisterVehicleServiceHTTPServer(httpSrv, vehicleSvc)
 
 	app := kratos.New(
 		kratos.ID(id),

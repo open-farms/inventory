@@ -15,7 +15,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ListEquipmentReply'
+                                $ref: '#/components/schemas/ListEquipmentResponse'
         post:
             operationId: EquipmentService_CreateEquipment
             requestBody:
@@ -30,7 +30,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateEquipmentReply'
+                                $ref: '#/components/schemas/CreateEquipmentResponse'
     /equipment/{id}:
         get:
             operationId: EquipmentService_GetEquipment
@@ -45,7 +45,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetEquipmentReply'
+                                $ref: '#/components/schemas/GetEquipmentResponse'
         put:
             operationId: EquipmentService_UpdateEquipment
             parameters:
@@ -65,7 +65,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateEquipmentReply'
+                                $ref: '#/components/schemas/UpdateEquipmentResponse'
         delete:
             operationId: EquipmentService_DeleteEquipment
             parameters:
@@ -79,7 +79,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/DeleteEquipmentReply'
+                                $ref: '#/components/schemas/DeleteEquipmentResponse'
     /vehicles:
         post:
             operationId: VehicleService_CreateVehicle
@@ -95,7 +95,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/CreateVehicleReply'
+                                $ref: '#/components/schemas/CreateVehicleResponse'
     /vehicles/:
         get:
             operationId: VehicleService_ListVehicle
@@ -105,7 +105,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/ListVehicleReply'
+                                $ref: '#/components/schemas/ListVehicleResponse'
     /vehicles/{id}:
         get:
             operationId: VehicleService_GetVehicle
@@ -120,7 +120,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/GetVehicleReply'
+                                $ref: '#/components/schemas/GetVehicleResponse'
         put:
             operationId: VehicleService_UpdateVehicle
             parameters:
@@ -140,7 +140,7 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/UpdateVehicleReply'
+                                $ref: '#/components/schemas/UpdateVehicleResponse'
         delete:
             operationId: VehicleService_DeleteVehicle
             parameters:
@@ -154,22 +154,22 @@ paths:
                     content:
                         application/json:
                             schema:
-                                $ref: '#/components/schemas/DeleteVehicleReply'
+                                $ref: '#/components/schemas/DeleteVehicleResponse'
 components:
     schemas:
-        CreateEquipmentReply:
+        CreateEquipmentResponse:
             properties:
                 equipment:
                     $ref: '#/components/schemas/Equipment'
-        CreateVehicleReply:
+        CreateVehicleResponse:
             properties:
                 vehicle:
                     $ref: '#/components/schemas/Vehicle'
-        DeleteEquipmentReply:
+        DeleteEquipmentResponse:
             properties:
                 equipment:
                     $ref: '#/components/schemas/Equipment'
-        DeleteVehicleReply:
+        DeleteVehicleResponse:
             properties:
                 vehicle:
                     $ref: '#/components/schemas/Vehicle'
@@ -178,37 +178,38 @@ components:
                 id:
                     type: integer
                     format: int64
-        GetEquipmentReply:
+        GetEquipmentResponse:
             properties:
                 equipment:
                     $ref: '#/components/schemas/Equipment'
-        GetVehicleReply:
+        GetVehicleResponse:
             properties:
                 vehicle:
                     $ref: '#/components/schemas/Vehicle'
-        ListEquipmentReply:
+        ListEquipmentResponse:
             properties:
                 equipment:
                     type: array
                     items:
                         $ref: '#/components/schemas/Equipment'
-        ListVehicleReply:
+        ListVehicleResponse:
             properties:
                 vehicles:
                     type: array
                     items:
                         $ref: '#/components/schemas/Vehicle'
-        UpdateEquipmentReply:
+        UpdateEquipmentResponse:
             properties:
                 equipment:
                     $ref: '#/components/schemas/Equipment'
-        UpdateVehicleReply:
+        UpdateVehicleResponse:
             properties:
                 vehicle:
                     $ref: '#/components/schemas/Vehicle'
         Vehicle:
             properties:
                 id:
+                    readOnly: true
                     type: integer
                     format: int64
                 make:

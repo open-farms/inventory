@@ -1,44 +1,42 @@
 syntax = "proto3";
 
-package vehicles.service.v1;
+package api.vehicles.service.v1;
 
 import "google/api/annotations.proto";
 import "google/api/field_behavior.proto";
-import "google/type/date.proto";
-import "google/type/datetime.proto";
 
 option go_package = "github.com/open-farms/inventory/api/vehicles/service/v1;v1";
 option java_multiple_files = true;
-option java_package = "vehicles.service.v1";
+option java_package = "api.vehicles.service.v1";
 
 service VehicleService {
-	rpc CreateVehicle (CreateVehicleRequest) returns (CreateVehicleReply){
+	rpc CreateVehicle (CreateVehicleRequest) returns (CreateVehicleResponse){
 		option (google.api.http)= {
 			post: "/vehicles",
 			body: "vehicle",
 		};
 	};
 
-	rpc UpdateVehicle (UpdateVehicleRequest) returns (UpdateVehicleReply) {
+	rpc UpdateVehicle (UpdateVehicleRequest) returns (UpdateVehicleResponse) {
 		option (google.api.http)= {
 			put: "/vehicles/{id}",
 			body: "vehicle",
 		};
 	};
 
-	rpc DeleteVehicle (DeleteVehicleRequest) returns (DeleteVehicleReply){
+	rpc DeleteVehicle (DeleteVehicleRequest) returns (DeleteVehicleResponse){
 		option (google.api.http)= {
 			delete: "/vehicles/{id}",
 		};
 	};
 
-	rpc GetVehicle (GetVehicleRequest) returns (GetVehicleReply){
+	rpc GetVehicle (GetVehicleRequest) returns (GetVehicleResponse){
 		option (google.api.http)= {
 			get: "/vehicles/{id}",
 		};
 	};
 
-	rpc ListVehicle (ListVehicleRequest) returns (ListVehicleReply){
+	rpc ListVehicle (ListVehicleRequest) returns (ListVehicleResponse){
 		option (google.api.http)= {
 			get: "/vehicles/",
 		};
@@ -55,21 +53,21 @@ message Vehicle {
 	repeated string tags = 6;
 
 	enum Condition {
-		MINT = 0;
-		GOOD = 1;
-		POOR = 2;
-		BROKEN = 3;
+		CONDITION_UNSPECIFIED = 0;
+		CONDITION_MINT = 1;
+		CONDITION_GOOD = 2;
+		CONDITION_POOR = 3;
+		CONDITION_BROKEN = 4;
 	}
 
 	Condition condition = 7;
-	google.type.DateTime created_at = 8 [(google.api.field_behavior) = OUTPUT_ONLY];
 }
 
 message CreateVehicleRequest {
 	Vehicle vehicle = 1;
 }
 
-message CreateVehicleReply {
+message CreateVehicleResponse {
 	Vehicle vehicle = 1;
 }
 
@@ -78,7 +76,7 @@ message UpdateVehicleRequest {
 	Vehicle vehicle = 2;
 }
 
-message UpdateVehicleReply {
+message UpdateVehicleResponse {
 	Vehicle vehicle = 1;
 }
 
@@ -86,7 +84,7 @@ message DeleteVehicleRequest {
 	int64 id = 1;
 }
 
-message DeleteVehicleReply {
+message DeleteVehicleResponse {
 	Vehicle vehicle = 1;
 }
 
@@ -94,12 +92,12 @@ message GetVehicleRequest {
 	int64 id = 1;
 }
 
-message GetVehicleReply {
+message GetVehicleResponse {
 	Vehicle vehicle = 1;
 }
 
 message ListVehicleRequest {}
 
-message ListVehicleReply {
+message ListVehicleResponse {
 	repeated Vehicle vehicles = 1;
 }

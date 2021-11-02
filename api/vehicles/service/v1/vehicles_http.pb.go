@@ -18,11 +18,11 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 type VehicleServiceHTTPServer interface {
-	CreateVehicle(context.Context, *CreateVehicleRequest) (*CreateVehicleReply, error)
-	DeleteVehicle(context.Context, *DeleteVehicleRequest) (*DeleteVehicleReply, error)
-	GetVehicle(context.Context, *GetVehicleRequest) (*GetVehicleReply, error)
-	ListVehicle(context.Context, *ListVehicleRequest) (*ListVehicleReply, error)
-	UpdateVehicle(context.Context, *UpdateVehicleRequest) (*UpdateVehicleReply, error)
+	CreateVehicle(context.Context, *CreateVehicleRequest) (*CreateVehicleResponse, error)
+	DeleteVehicle(context.Context, *DeleteVehicleRequest) (*DeleteVehicleResponse, error)
+	GetVehicle(context.Context, *GetVehicleRequest) (*GetVehicleResponse, error)
+	ListVehicle(context.Context, *ListVehicleRequest) (*ListVehicleResponse, error)
+	UpdateVehicle(context.Context, *UpdateVehicleRequest) (*UpdateVehicleResponse, error)
 }
 
 func RegisterVehicleServiceHTTPServer(s *http.Server, srv VehicleServiceHTTPServer) {
@@ -40,7 +40,7 @@ func _VehicleService_CreateVehicle0_HTTP_Handler(srv VehicleServiceHTTPServer) f
 		if err := ctx.Bind(&in.Vehicle); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/vehicles.service.v1.VehicleService/CreateVehicle")
+		http.SetOperation(ctx, "/api.vehicles.service.v1.VehicleService/CreateVehicle")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.CreateVehicle(ctx, req.(*CreateVehicleRequest))
 		})
@@ -48,7 +48,7 @@ func _VehicleService_CreateVehicle0_HTTP_Handler(srv VehicleServiceHTTPServer) f
 		if err != nil {
 			return err
 		}
-		reply := out.(*CreateVehicleReply)
+		reply := out.(*CreateVehicleResponse)
 		return ctx.Result(200, reply)
 	}
 }
@@ -62,7 +62,7 @@ func _VehicleService_UpdateVehicle0_HTTP_Handler(srv VehicleServiceHTTPServer) f
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/vehicles.service.v1.VehicleService/UpdateVehicle")
+		http.SetOperation(ctx, "/api.vehicles.service.v1.VehicleService/UpdateVehicle")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateVehicle(ctx, req.(*UpdateVehicleRequest))
 		})
@@ -70,7 +70,7 @@ func _VehicleService_UpdateVehicle0_HTTP_Handler(srv VehicleServiceHTTPServer) f
 		if err != nil {
 			return err
 		}
-		reply := out.(*UpdateVehicleReply)
+		reply := out.(*UpdateVehicleResponse)
 		return ctx.Result(200, reply)
 	}
 }
@@ -84,7 +84,7 @@ func _VehicleService_DeleteVehicle0_HTTP_Handler(srv VehicleServiceHTTPServer) f
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/vehicles.service.v1.VehicleService/DeleteVehicle")
+		http.SetOperation(ctx, "/api.vehicles.service.v1.VehicleService/DeleteVehicle")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.DeleteVehicle(ctx, req.(*DeleteVehicleRequest))
 		})
@@ -92,7 +92,7 @@ func _VehicleService_DeleteVehicle0_HTTP_Handler(srv VehicleServiceHTTPServer) f
 		if err != nil {
 			return err
 		}
-		reply := out.(*DeleteVehicleReply)
+		reply := out.(*DeleteVehicleResponse)
 		return ctx.Result(200, reply)
 	}
 }
@@ -106,7 +106,7 @@ func _VehicleService_GetVehicle0_HTTP_Handler(srv VehicleServiceHTTPServer) func
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/vehicles.service.v1.VehicleService/GetVehicle")
+		http.SetOperation(ctx, "/api.vehicles.service.v1.VehicleService/GetVehicle")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetVehicle(ctx, req.(*GetVehicleRequest))
 		})
@@ -114,7 +114,7 @@ func _VehicleService_GetVehicle0_HTTP_Handler(srv VehicleServiceHTTPServer) func
 		if err != nil {
 			return err
 		}
-		reply := out.(*GetVehicleReply)
+		reply := out.(*GetVehicleResponse)
 		return ctx.Result(200, reply)
 	}
 }
@@ -125,7 +125,7 @@ func _VehicleService_ListVehicle0_HTTP_Handler(srv VehicleServiceHTTPServer) fun
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/vehicles.service.v1.VehicleService/ListVehicle")
+		http.SetOperation(ctx, "/api.vehicles.service.v1.VehicleService/ListVehicle")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.ListVehicle(ctx, req.(*ListVehicleRequest))
 		})
@@ -133,17 +133,17 @@ func _VehicleService_ListVehicle0_HTTP_Handler(srv VehicleServiceHTTPServer) fun
 		if err != nil {
 			return err
 		}
-		reply := out.(*ListVehicleReply)
+		reply := out.(*ListVehicleResponse)
 		return ctx.Result(200, reply)
 	}
 }
 
 type VehicleServiceHTTPClient interface {
-	CreateVehicle(ctx context.Context, req *CreateVehicleRequest, opts ...http.CallOption) (rsp *CreateVehicleReply, err error)
-	DeleteVehicle(ctx context.Context, req *DeleteVehicleRequest, opts ...http.CallOption) (rsp *DeleteVehicleReply, err error)
-	GetVehicle(ctx context.Context, req *GetVehicleRequest, opts ...http.CallOption) (rsp *GetVehicleReply, err error)
-	ListVehicle(ctx context.Context, req *ListVehicleRequest, opts ...http.CallOption) (rsp *ListVehicleReply, err error)
-	UpdateVehicle(ctx context.Context, req *UpdateVehicleRequest, opts ...http.CallOption) (rsp *UpdateVehicleReply, err error)
+	CreateVehicle(ctx context.Context, req *CreateVehicleRequest, opts ...http.CallOption) (rsp *CreateVehicleResponse, err error)
+	DeleteVehicle(ctx context.Context, req *DeleteVehicleRequest, opts ...http.CallOption) (rsp *DeleteVehicleResponse, err error)
+	GetVehicle(ctx context.Context, req *GetVehicleRequest, opts ...http.CallOption) (rsp *GetVehicleResponse, err error)
+	ListVehicle(ctx context.Context, req *ListVehicleRequest, opts ...http.CallOption) (rsp *ListVehicleResponse, err error)
+	UpdateVehicle(ctx context.Context, req *UpdateVehicleRequest, opts ...http.CallOption) (rsp *UpdateVehicleResponse, err error)
 }
 
 type VehicleServiceHTTPClientImpl struct {
@@ -154,11 +154,11 @@ func NewVehicleServiceHTTPClient(client *http.Client) VehicleServiceHTTPClient {
 	return &VehicleServiceHTTPClientImpl{client}
 }
 
-func (c *VehicleServiceHTTPClientImpl) CreateVehicle(ctx context.Context, in *CreateVehicleRequest, opts ...http.CallOption) (*CreateVehicleReply, error) {
-	var out CreateVehicleReply
+func (c *VehicleServiceHTTPClientImpl) CreateVehicle(ctx context.Context, in *CreateVehicleRequest, opts ...http.CallOption) (*CreateVehicleResponse, error) {
+	var out CreateVehicleResponse
 	pattern := "/vehicles"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/vehicles.service.v1.VehicleService/CreateVehicle"))
+	opts = append(opts, http.Operation("/api.vehicles.service.v1.VehicleService/CreateVehicle"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in.Vehicle, &out, opts...)
 	if err != nil {
@@ -167,11 +167,11 @@ func (c *VehicleServiceHTTPClientImpl) CreateVehicle(ctx context.Context, in *Cr
 	return &out, err
 }
 
-func (c *VehicleServiceHTTPClientImpl) DeleteVehicle(ctx context.Context, in *DeleteVehicleRequest, opts ...http.CallOption) (*DeleteVehicleReply, error) {
-	var out DeleteVehicleReply
+func (c *VehicleServiceHTTPClientImpl) DeleteVehicle(ctx context.Context, in *DeleteVehicleRequest, opts ...http.CallOption) (*DeleteVehicleResponse, error) {
+	var out DeleteVehicleResponse
 	pattern := "/vehicles/{id}"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/vehicles.service.v1.VehicleService/DeleteVehicle"))
+	opts = append(opts, http.Operation("/api.vehicles.service.v1.VehicleService/DeleteVehicle"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
 	if err != nil {
@@ -180,11 +180,11 @@ func (c *VehicleServiceHTTPClientImpl) DeleteVehicle(ctx context.Context, in *De
 	return &out, err
 }
 
-func (c *VehicleServiceHTTPClientImpl) GetVehicle(ctx context.Context, in *GetVehicleRequest, opts ...http.CallOption) (*GetVehicleReply, error) {
-	var out GetVehicleReply
+func (c *VehicleServiceHTTPClientImpl) GetVehicle(ctx context.Context, in *GetVehicleRequest, opts ...http.CallOption) (*GetVehicleResponse, error) {
+	var out GetVehicleResponse
 	pattern := "/vehicles/{id}"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/vehicles.service.v1.VehicleService/GetVehicle"))
+	opts = append(opts, http.Operation("/api.vehicles.service.v1.VehicleService/GetVehicle"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -193,11 +193,11 @@ func (c *VehicleServiceHTTPClientImpl) GetVehicle(ctx context.Context, in *GetVe
 	return &out, err
 }
 
-func (c *VehicleServiceHTTPClientImpl) ListVehicle(ctx context.Context, in *ListVehicleRequest, opts ...http.CallOption) (*ListVehicleReply, error) {
-	var out ListVehicleReply
+func (c *VehicleServiceHTTPClientImpl) ListVehicle(ctx context.Context, in *ListVehicleRequest, opts ...http.CallOption) (*ListVehicleResponse, error) {
+	var out ListVehicleResponse
 	pattern := "/vehicles/"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/vehicles.service.v1.VehicleService/ListVehicle"))
+	opts = append(opts, http.Operation("/api.vehicles.service.v1.VehicleService/ListVehicle"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -206,11 +206,11 @@ func (c *VehicleServiceHTTPClientImpl) ListVehicle(ctx context.Context, in *List
 	return &out, err
 }
 
-func (c *VehicleServiceHTTPClientImpl) UpdateVehicle(ctx context.Context, in *UpdateVehicleRequest, opts ...http.CallOption) (*UpdateVehicleReply, error) {
-	var out UpdateVehicleReply
+func (c *VehicleServiceHTTPClientImpl) UpdateVehicle(ctx context.Context, in *UpdateVehicleRequest, opts ...http.CallOption) (*UpdateVehicleResponse, error) {
+	var out UpdateVehicleResponse
 	pattern := "/vehicles/{id}"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/vehicles.service.v1.VehicleService/UpdateVehicle"))
+	opts = append(opts, http.Operation("/api.vehicles.service.v1.VehicleService/UpdateVehicle"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "PUT", path, in.Vehicle, &out, opts...)
 	if err != nil {

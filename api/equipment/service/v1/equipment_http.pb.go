@@ -18,11 +18,11 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 type EquipmentServiceHTTPServer interface {
-	CreateEquipment(context.Context, *CreateEquipmentRequest) (*CreateEquipmentReply, error)
-	DeleteEquipment(context.Context, *DeleteEquipmentRequest) (*DeleteEquipmentReply, error)
-	GetEquipment(context.Context, *GetEquipmentRequest) (*GetEquipmentReply, error)
-	ListEquipment(context.Context, *ListEquipmentRequest) (*ListEquipmentReply, error)
-	UpdateEquipment(context.Context, *UpdateEquipmentRequest) (*UpdateEquipmentReply, error)
+	CreateEquipment(context.Context, *CreateEquipmentRequest) (*CreateEquipmentResponse, error)
+	DeleteEquipment(context.Context, *DeleteEquipmentRequest) (*DeleteEquipmentResponse, error)
+	GetEquipment(context.Context, *GetEquipmentRequest) (*GetEquipmentResponse, error)
+	ListEquipment(context.Context, *ListEquipmentRequest) (*ListEquipmentResponse, error)
+	UpdateEquipment(context.Context, *UpdateEquipmentRequest) (*UpdateEquipmentResponse, error)
 }
 
 func RegisterEquipmentServiceHTTPServer(s *http.Server, srv EquipmentServiceHTTPServer) {
@@ -40,7 +40,7 @@ func _EquipmentService_CreateEquipment0_HTTP_Handler(srv EquipmentServiceHTTPSer
 		if err := ctx.Bind(&in.Equipment); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/equipment.service.v1.EquipmentService/CreateEquipment")
+		http.SetOperation(ctx, "/api.equipment.service.v1.EquipmentService/CreateEquipment")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.CreateEquipment(ctx, req.(*CreateEquipmentRequest))
 		})
@@ -48,7 +48,7 @@ func _EquipmentService_CreateEquipment0_HTTP_Handler(srv EquipmentServiceHTTPSer
 		if err != nil {
 			return err
 		}
-		reply := out.(*CreateEquipmentReply)
+		reply := out.(*CreateEquipmentResponse)
 		return ctx.Result(200, reply)
 	}
 }
@@ -62,7 +62,7 @@ func _EquipmentService_UpdateEquipment0_HTTP_Handler(srv EquipmentServiceHTTPSer
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/equipment.service.v1.EquipmentService/UpdateEquipment")
+		http.SetOperation(ctx, "/api.equipment.service.v1.EquipmentService/UpdateEquipment")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.UpdateEquipment(ctx, req.(*UpdateEquipmentRequest))
 		})
@@ -70,7 +70,7 @@ func _EquipmentService_UpdateEquipment0_HTTP_Handler(srv EquipmentServiceHTTPSer
 		if err != nil {
 			return err
 		}
-		reply := out.(*UpdateEquipmentReply)
+		reply := out.(*UpdateEquipmentResponse)
 		return ctx.Result(200, reply)
 	}
 }
@@ -84,7 +84,7 @@ func _EquipmentService_DeleteEquipment0_HTTP_Handler(srv EquipmentServiceHTTPSer
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/equipment.service.v1.EquipmentService/DeleteEquipment")
+		http.SetOperation(ctx, "/api.equipment.service.v1.EquipmentService/DeleteEquipment")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.DeleteEquipment(ctx, req.(*DeleteEquipmentRequest))
 		})
@@ -92,7 +92,7 @@ func _EquipmentService_DeleteEquipment0_HTTP_Handler(srv EquipmentServiceHTTPSer
 		if err != nil {
 			return err
 		}
-		reply := out.(*DeleteEquipmentReply)
+		reply := out.(*DeleteEquipmentResponse)
 		return ctx.Result(200, reply)
 	}
 }
@@ -106,7 +106,7 @@ func _EquipmentService_GetEquipment0_HTTP_Handler(srv EquipmentServiceHTTPServer
 		if err := ctx.BindVars(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/equipment.service.v1.EquipmentService/GetEquipment")
+		http.SetOperation(ctx, "/api.equipment.service.v1.EquipmentService/GetEquipment")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetEquipment(ctx, req.(*GetEquipmentRequest))
 		})
@@ -114,7 +114,7 @@ func _EquipmentService_GetEquipment0_HTTP_Handler(srv EquipmentServiceHTTPServer
 		if err != nil {
 			return err
 		}
-		reply := out.(*GetEquipmentReply)
+		reply := out.(*GetEquipmentResponse)
 		return ctx.Result(200, reply)
 	}
 }
@@ -125,7 +125,7 @@ func _EquipmentService_ListEquipment0_HTTP_Handler(srv EquipmentServiceHTTPServe
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, "/equipment.service.v1.EquipmentService/ListEquipment")
+		http.SetOperation(ctx, "/api.equipment.service.v1.EquipmentService/ListEquipment")
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.ListEquipment(ctx, req.(*ListEquipmentRequest))
 		})
@@ -133,17 +133,17 @@ func _EquipmentService_ListEquipment0_HTTP_Handler(srv EquipmentServiceHTTPServe
 		if err != nil {
 			return err
 		}
-		reply := out.(*ListEquipmentReply)
+		reply := out.(*ListEquipmentResponse)
 		return ctx.Result(200, reply)
 	}
 }
 
 type EquipmentServiceHTTPClient interface {
-	CreateEquipment(ctx context.Context, req *CreateEquipmentRequest, opts ...http.CallOption) (rsp *CreateEquipmentReply, err error)
-	DeleteEquipment(ctx context.Context, req *DeleteEquipmentRequest, opts ...http.CallOption) (rsp *DeleteEquipmentReply, err error)
-	GetEquipment(ctx context.Context, req *GetEquipmentRequest, opts ...http.CallOption) (rsp *GetEquipmentReply, err error)
-	ListEquipment(ctx context.Context, req *ListEquipmentRequest, opts ...http.CallOption) (rsp *ListEquipmentReply, err error)
-	UpdateEquipment(ctx context.Context, req *UpdateEquipmentRequest, opts ...http.CallOption) (rsp *UpdateEquipmentReply, err error)
+	CreateEquipment(ctx context.Context, req *CreateEquipmentRequest, opts ...http.CallOption) (rsp *CreateEquipmentResponse, err error)
+	DeleteEquipment(ctx context.Context, req *DeleteEquipmentRequest, opts ...http.CallOption) (rsp *DeleteEquipmentResponse, err error)
+	GetEquipment(ctx context.Context, req *GetEquipmentRequest, opts ...http.CallOption) (rsp *GetEquipmentResponse, err error)
+	ListEquipment(ctx context.Context, req *ListEquipmentRequest, opts ...http.CallOption) (rsp *ListEquipmentResponse, err error)
+	UpdateEquipment(ctx context.Context, req *UpdateEquipmentRequest, opts ...http.CallOption) (rsp *UpdateEquipmentResponse, err error)
 }
 
 type EquipmentServiceHTTPClientImpl struct {
@@ -154,11 +154,11 @@ func NewEquipmentServiceHTTPClient(client *http.Client) EquipmentServiceHTTPClie
 	return &EquipmentServiceHTTPClientImpl{client}
 }
 
-func (c *EquipmentServiceHTTPClientImpl) CreateEquipment(ctx context.Context, in *CreateEquipmentRequest, opts ...http.CallOption) (*CreateEquipmentReply, error) {
-	var out CreateEquipmentReply
+func (c *EquipmentServiceHTTPClientImpl) CreateEquipment(ctx context.Context, in *CreateEquipmentRequest, opts ...http.CallOption) (*CreateEquipmentResponse, error) {
+	var out CreateEquipmentResponse
 	pattern := "/equipment"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/equipment.service.v1.EquipmentService/CreateEquipment"))
+	opts = append(opts, http.Operation("/api.equipment.service.v1.EquipmentService/CreateEquipment"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in.Equipment, &out, opts...)
 	if err != nil {
@@ -167,11 +167,11 @@ func (c *EquipmentServiceHTTPClientImpl) CreateEquipment(ctx context.Context, in
 	return &out, err
 }
 
-func (c *EquipmentServiceHTTPClientImpl) DeleteEquipment(ctx context.Context, in *DeleteEquipmentRequest, opts ...http.CallOption) (*DeleteEquipmentReply, error) {
-	var out DeleteEquipmentReply
+func (c *EquipmentServiceHTTPClientImpl) DeleteEquipment(ctx context.Context, in *DeleteEquipmentRequest, opts ...http.CallOption) (*DeleteEquipmentResponse, error) {
+	var out DeleteEquipmentResponse
 	pattern := "/equipment/{id}"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/equipment.service.v1.EquipmentService/DeleteEquipment"))
+	opts = append(opts, http.Operation("/api.equipment.service.v1.EquipmentService/DeleteEquipment"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
 	if err != nil {
@@ -180,11 +180,11 @@ func (c *EquipmentServiceHTTPClientImpl) DeleteEquipment(ctx context.Context, in
 	return &out, err
 }
 
-func (c *EquipmentServiceHTTPClientImpl) GetEquipment(ctx context.Context, in *GetEquipmentRequest, opts ...http.CallOption) (*GetEquipmentReply, error) {
-	var out GetEquipmentReply
+func (c *EquipmentServiceHTTPClientImpl) GetEquipment(ctx context.Context, in *GetEquipmentRequest, opts ...http.CallOption) (*GetEquipmentResponse, error) {
+	var out GetEquipmentResponse
 	pattern := "/equipment/{id}"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/equipment.service.v1.EquipmentService/GetEquipment"))
+	opts = append(opts, http.Operation("/api.equipment.service.v1.EquipmentService/GetEquipment"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -193,11 +193,11 @@ func (c *EquipmentServiceHTTPClientImpl) GetEquipment(ctx context.Context, in *G
 	return &out, err
 }
 
-func (c *EquipmentServiceHTTPClientImpl) ListEquipment(ctx context.Context, in *ListEquipmentRequest, opts ...http.CallOption) (*ListEquipmentReply, error) {
-	var out ListEquipmentReply
+func (c *EquipmentServiceHTTPClientImpl) ListEquipment(ctx context.Context, in *ListEquipmentRequest, opts ...http.CallOption) (*ListEquipmentResponse, error) {
+	var out ListEquipmentResponse
 	pattern := "/equipment"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation("/equipment.service.v1.EquipmentService/ListEquipment"))
+	opts = append(opts, http.Operation("/api.equipment.service.v1.EquipmentService/ListEquipment"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -206,11 +206,11 @@ func (c *EquipmentServiceHTTPClientImpl) ListEquipment(ctx context.Context, in *
 	return &out, err
 }
 
-func (c *EquipmentServiceHTTPClientImpl) UpdateEquipment(ctx context.Context, in *UpdateEquipmentRequest, opts ...http.CallOption) (*UpdateEquipmentReply, error) {
-	var out UpdateEquipmentReply
+func (c *EquipmentServiceHTTPClientImpl) UpdateEquipment(ctx context.Context, in *UpdateEquipmentRequest, opts ...http.CallOption) (*UpdateEquipmentResponse, error) {
+	var out UpdateEquipmentResponse
 	pattern := "/equipment/{id}"
 	path := binding.EncodeURL(pattern, in, false)
-	opts = append(opts, http.Operation("/equipment.service.v1.EquipmentService/UpdateEquipment"))
+	opts = append(opts, http.Operation("/api.equipment.service.v1.EquipmentService/UpdateEquipment"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "PUT", path, in.Equipment, &out, opts...)
 	if err != nil {

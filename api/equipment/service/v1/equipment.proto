@@ -1,41 +1,41 @@
 syntax = "proto3";
 
-package equipment.service.v1;
+package api.equipment.service.v1;
 
 import "google/api/annotations.proto";
 
 option go_package = "github.com/open-farms/inventory/api/equipment/service/v1;v1";
 option java_multiple_files = true;
-option java_package = "equipment.service.v1";
+option java_package = "api.equipment.service.v1";
 
 service EquipmentService {
-	rpc CreateEquipment (CreateEquipmentRequest) returns (CreateEquipmentReply){
+	rpc CreateEquipment (CreateEquipmentRequest) returns (CreateEquipmentResponse){
 		option (google.api.http)= {
 			post: "/equipment",
 			body: "equipment",
 		};
 	};
 
-	rpc UpdateEquipment (UpdateEquipmentRequest) returns (UpdateEquipmentReply){
+	rpc UpdateEquipment (UpdateEquipmentRequest) returns (UpdateEquipmentResponse){
 		option (google.api.http)= {
 			put: "/equipment/{id}",
 			body: "equipment",
 		};
 	};
 
-	rpc DeleteEquipment (DeleteEquipmentRequest) returns (DeleteEquipmentReply){
+	rpc DeleteEquipment (DeleteEquipmentRequest) returns (DeleteEquipmentResponse){
 		option (google.api.http)= {
 			delete: "/equipment/{id}",
 		};
 	};
 
-	rpc GetEquipment (GetEquipmentRequest) returns (GetEquipmentReply){
+	rpc GetEquipment (GetEquipmentRequest) returns (GetEquipmentResponse){
 		option (google.api.http)= {
 			get: "/equipment/{id}",
 		};
 	};
 
-	rpc ListEquipment (ListEquipmentRequest) returns (ListEquipmentReply){
+	rpc ListEquipment (ListEquipmentRequest) returns (ListEquipmentResponse){
 		option (google.api.http)= {
 			get: "/equipment",
 		};
@@ -50,7 +50,7 @@ message CreateEquipmentRequest {
 	Equipment equipment = 1;
 }
 
-message CreateEquipmentReply {
+message CreateEquipmentResponse {
 	Equipment equipment = 1;
 }
 
@@ -59,7 +59,7 @@ message UpdateEquipmentRequest {
 	Equipment equipment = 2;
 }
 
-message UpdateEquipmentReply {
+message UpdateEquipmentResponse {
 	Equipment equipment = 1;
 }
 
@@ -67,7 +67,7 @@ message DeleteEquipmentRequest {
 	int64 id = 1;
 }
 
-message DeleteEquipmentReply {
+message DeleteEquipmentResponse {
 	Equipment equipment = 1;
 }
 
@@ -75,12 +75,12 @@ message GetEquipmentRequest {
 	int64 id = 1;
 }
 
-message GetEquipmentReply {
+message GetEquipmentResponse {
 	Equipment equipment = 1;
 }
 
 message ListEquipmentRequest {}
 
-message ListEquipmentReply {
+message ListEquipmentResponse {
 	repeated Equipment equipment = 1;
 }
