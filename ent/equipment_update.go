@@ -59,9 +59,25 @@ func (eu *EquipmentUpdate) SetCreatedAt(t time.Time) *EquipmentUpdate {
 	return eu
 }
 
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (eu *EquipmentUpdate) SetNillableCreatedAt(t *time.Time) *EquipmentUpdate {
+	if t != nil {
+		eu.SetCreatedAt(*t)
+	}
+	return eu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (eu *EquipmentUpdate) SetUpdatedAt(t time.Time) *EquipmentUpdate {
 	eu.mutation.SetUpdatedAt(t)
+	return eu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (eu *EquipmentUpdate) SetNillableUpdatedAt(t *time.Time) *EquipmentUpdate {
+	if t != nil {
+		eu.SetUpdatedAt(*t)
+	}
 	return eu
 }
 
@@ -244,9 +260,25 @@ func (euo *EquipmentUpdateOne) SetCreatedAt(t time.Time) *EquipmentUpdateOne {
 	return euo
 }
 
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (euo *EquipmentUpdateOne) SetNillableCreatedAt(t *time.Time) *EquipmentUpdateOne {
+	if t != nil {
+		euo.SetCreatedAt(*t)
+	}
+	return euo
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (euo *EquipmentUpdateOne) SetUpdatedAt(t time.Time) *EquipmentUpdateOne {
 	euo.mutation.SetUpdatedAt(t)
+	return euo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (euo *EquipmentUpdateOne) SetNillableUpdatedAt(t *time.Time) *EquipmentUpdateOne {
+	if t != nil {
+		euo.SetUpdatedAt(*t)
+	}
 	return euo
 }
 

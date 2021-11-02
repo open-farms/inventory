@@ -56,9 +56,25 @@ func (vc *VehicleCreate) SetCreatedAt(t time.Time) *VehicleCreate {
 	return vc
 }
 
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (vc *VehicleCreate) SetNillableCreatedAt(t *time.Time) *VehicleCreate {
+	if t != nil {
+		vc.SetCreatedAt(*t)
+	}
+	return vc
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (vc *VehicleCreate) SetUpdatedAt(t time.Time) *VehicleCreate {
 	vc.mutation.SetUpdatedAt(t)
+	return vc
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (vc *VehicleCreate) SetNillableUpdatedAt(t *time.Time) *VehicleCreate {
+	if t != nil {
+		vc.SetUpdatedAt(*t)
+	}
 	return vc
 }
 
@@ -79,6 +95,7 @@ func (vc *VehicleCreate) Save(ctx context.Context) (*Vehicle, error) {
 		err  error
 		node *Vehicle
 	)
+	vc.defaults()
 	if len(vc.hooks) == 0 {
 		if err = vc.check(); err != nil {
 			return nil, err
@@ -133,6 +150,18 @@ func (vc *VehicleCreate) Exec(ctx context.Context) error {
 func (vc *VehicleCreate) ExecX(ctx context.Context) {
 	if err := vc.Exec(ctx); err != nil {
 		panic(err)
+	}
+}
+
+// defaults sets the default values of the builder before save.
+func (vc *VehicleCreate) defaults() {
+	if _, ok := vc.mutation.CreatedAt(); !ok {
+		v := vehicle.DefaultCreatedAt()
+		vc.mutation.SetCreatedAt(v)
+	}
+	if _, ok := vc.mutation.UpdatedAt(); !ok {
+		v := vehicle.DefaultUpdatedAt()
+		vc.mutation.SetUpdatedAt(v)
 	}
 }
 
@@ -275,6 +304,7 @@ func (vcb *VehicleCreateBulk) Save(ctx context.Context) ([]*Vehicle, error) {
 	for i := range vcb.builders {
 		func(i int, root context.Context) {
 			builder := vcb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*VehicleMutation)
 				if !ok {

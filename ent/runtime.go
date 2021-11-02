@@ -3,6 +3,8 @@
 package ent
 
 import (
+	"time"
+
 	"github.com/open-farms/inventory/ent/equipment"
 	"github.com/open-farms/inventory/ent/schema"
 	"github.com/open-farms/inventory/ent/vehicle"
@@ -18,12 +20,28 @@ func init() {
 	equipmentDescName := equipmentFields[1].Descriptor()
 	// equipment.DefaultName holds the default value on creation for the name field.
 	equipment.DefaultName = equipmentDescName.Default.(string)
+	// equipmentDescCreatedAt is the schema descriptor for created_at field.
+	equipmentDescCreatedAt := equipmentFields[4].Descriptor()
+	// equipment.DefaultCreatedAt holds the default value on creation for the created_at field.
+	equipment.DefaultCreatedAt = equipmentDescCreatedAt.Default.(func() time.Time)
+	// equipmentDescUpdatedAt is the schema descriptor for updated_at field.
+	equipmentDescUpdatedAt := equipmentFields[5].Descriptor()
+	// equipment.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	equipment.DefaultUpdatedAt = equipmentDescUpdatedAt.Default.(func() time.Time)
 	// equipmentDescID is the schema descriptor for id field.
 	equipmentDescID := equipmentFields[0].Descriptor()
 	// equipment.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	equipment.IDValidator = equipmentDescID.Validators[0].(func(uint64) error)
 	vehicleFields := schema.Vehicle{}.Fields()
 	_ = vehicleFields
+	// vehicleDescCreatedAt is the schema descriptor for created_at field.
+	vehicleDescCreatedAt := vehicleFields[6].Descriptor()
+	// vehicle.DefaultCreatedAt holds the default value on creation for the created_at field.
+	vehicle.DefaultCreatedAt = vehicleDescCreatedAt.Default.(func() time.Time)
+	// vehicleDescUpdatedAt is the schema descriptor for updated_at field.
+	vehicleDescUpdatedAt := vehicleFields[7].Descriptor()
+	// vehicle.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	vehicle.DefaultUpdatedAt = vehicleDescUpdatedAt.Default.(func() time.Time)
 	// vehicleDescID is the schema descriptor for id field.
 	vehicleDescID := vehicleFields[0].Descriptor()
 	// vehicle.IDValidator is a validator for the "id" field. It is called by the builders before save.

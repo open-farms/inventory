@@ -4,6 +4,7 @@ package vehicle
 
 import (
 	"fmt"
+	"time"
 )
 
 const (
@@ -52,6 +53,10 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
+	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
+	DefaultUpdatedAt func() time.Time
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(uint64) error
 )

@@ -11,6 +11,21 @@
 
 The inventory service enables users to keep track of farm inventory across multiple IoT devices, servers, applications, or databases. This service provides a foundational interface for inventory management and interaction.
 
+## Structure
+
+```
+/api 				- protobuf schemas, generated client, generated server
+/cmd/inventory 		- api server
+/cmd/inventoryctl 	- cli tool for service administration  
+/config				- default application configurations
+/ent				- database models, migrations, and drivers
+/ent/schemas		- editable database models
+/internal/biz		- business logic used by both api and cli
+/internal/service	- handlers for gRPC and HTTP endpoints
+/internal/settings	- settings package to read in application configs
+/third_party		- protobuf libraries
+```
+
 ## Quickstart ⚡
 
 ```shell
@@ -82,6 +97,9 @@ message Vehicle {
 	}
 
 	Condition condition = 7;
+
+	google.type.DateTime created_at = 8;
+	google.type.DateTime updated_at = 9;
 }
 ```
 
@@ -104,5 +122,7 @@ message Equipment {
 	};
 
 	Condition condition = 4;
+	google.type.DateTime created_at = 5;
+	google.type.DateTime updated_at = 6;
 }
 ```

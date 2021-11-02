@@ -63,9 +63,25 @@ func (vu *VehicleUpdate) SetCreatedAt(t time.Time) *VehicleUpdate {
 	return vu
 }
 
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (vu *VehicleUpdate) SetNillableCreatedAt(t *time.Time) *VehicleUpdate {
+	if t != nil {
+		vu.SetCreatedAt(*t)
+	}
+	return vu
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (vu *VehicleUpdate) SetUpdatedAt(t time.Time) *VehicleUpdate {
 	vu.mutation.SetUpdatedAt(t)
+	return vu
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (vu *VehicleUpdate) SetNillableUpdatedAt(t *time.Time) *VehicleUpdate {
+	if t != nil {
+		vu.SetUpdatedAt(*t)
+	}
 	return vu
 }
 
@@ -266,9 +282,25 @@ func (vuo *VehicleUpdateOne) SetCreatedAt(t time.Time) *VehicleUpdateOne {
 	return vuo
 }
 
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (vuo *VehicleUpdateOne) SetNillableCreatedAt(t *time.Time) *VehicleUpdateOne {
+	if t != nil {
+		vuo.SetCreatedAt(*t)
+	}
+	return vuo
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (vuo *VehicleUpdateOne) SetUpdatedAt(t time.Time) *VehicleUpdateOne {
 	vuo.mutation.SetUpdatedAt(t)
+	return vuo
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (vuo *VehicleUpdateOne) SetNillableUpdatedAt(t *time.Time) *VehicleUpdateOne {
+	if t != nil {
+		vuo.SetUpdatedAt(*t)
+	}
 	return vuo
 }
 

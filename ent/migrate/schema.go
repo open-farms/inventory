@@ -14,8 +14,8 @@ var (
 		{Name: "name", Type: field.TypeString, Default: "unknown"},
 		{Name: "tags", Type: field.TypeJSON},
 		{Name: "condition", Type: field.TypeEnum, Enums: []string{"CONDITION_UNSPECIFIED", "CONDITION_MINT", "CONDITION_GOOD", "CONDITION_POOR", "CONDITION_BROKEN"}},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "time with time zone"}},
+		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "time with time zone"}},
 	}
 	// EquipmentTable holds the schema information for the "equipment" table.
 	EquipmentTable = &schema.Table{
@@ -31,8 +31,8 @@ var (
 		{Name: "year", Type: field.TypeString},
 		{Name: "tags", Type: field.TypeJSON},
 		{Name: "condition", Type: field.TypeEnum, Enums: []string{"CONDITION_UNSPECIFIED", "CONDITION_MINT", "CONDITION_GOOD", "CONDITION_POOR", "CONDITION_BROKEN"}},
-		{Name: "created_at", Type: field.TypeTime},
-		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "time with time zone"}},
+		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "time with time zone"}},
 	}
 	// VehiclesTable holds the schema information for the "vehicles" table.
 	VehiclesTable = &schema.Table{

@@ -26,6 +26,7 @@ api:
  	       --go-grpc_out=paths=source_relative:. \
 		   --openapi_out=paths=source_relative:. \
 	       $(API_PROTO_FILES)
+	sed -i -e 's/title: EquipmentService/title: Inventory/g' openapi.yaml
 
 .PHONY: build
 # build binary

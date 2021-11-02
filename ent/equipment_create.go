@@ -52,9 +52,25 @@ func (ec *EquipmentCreate) SetCreatedAt(t time.Time) *EquipmentCreate {
 	return ec
 }
 
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableCreatedAt(t *time.Time) *EquipmentCreate {
+	if t != nil {
+		ec.SetCreatedAt(*t)
+	}
+	return ec
+}
+
 // SetUpdatedAt sets the "updated_at" field.
 func (ec *EquipmentCreate) SetUpdatedAt(t time.Time) *EquipmentCreate {
 	ec.mutation.SetUpdatedAt(t)
+	return ec
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableUpdatedAt(t *time.Time) *EquipmentCreate {
+	if t != nil {
+		ec.SetUpdatedAt(*t)
+	}
 	return ec
 }
 
@@ -138,6 +154,14 @@ func (ec *EquipmentCreate) defaults() {
 	if _, ok := ec.mutation.Name(); !ok {
 		v := equipment.DefaultName
 		ec.mutation.SetName(v)
+	}
+	if _, ok := ec.mutation.CreatedAt(); !ok {
+		v := equipment.DefaultCreatedAt()
+		ec.mutation.SetCreatedAt(v)
+	}
+	if _, ok := ec.mutation.UpdatedAt(); !ok {
+		v := equipment.DefaultUpdatedAt()
+		ec.mutation.SetUpdatedAt(v)
 	}
 }
 
