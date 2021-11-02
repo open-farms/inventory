@@ -2,6 +2,7 @@ GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
 INTERNAL_PROTO_FILES=$(shell find internal -name *.proto)
 API_PROTO_FILES=$(shell find api -name *.proto)
+INTERNAL_PROTO_FILES=$(shell find internal -name *.proto)
 
 .PHONY: init
 # init env
@@ -13,6 +14,7 @@ init:
 	go install github.com/go-kratos/kratos/cmd/protoc-gen-go-errors/v2@latest
 	go install github.com/google/gnostic/apps/protoc-gen-openapi@latest
 	go install github.com/google/gnostic@latest
+	go install entgo.io/ent/cmd/ent@latest
 
 .PHONY: api
 # generate api proto
@@ -26,21 +28,35 @@ api:
 	       $(API_PROTO_FILES)
 
 .PHONY: build
-# build
+# build binary
 build:
-	mkdir -p bin/ && go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/ ./cmd/inventory
+	mkdir -p bin/
+	go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/ ./cmd/inventory
+	go build -o ./bin/ ./cmd/inventoryctl
 
 .PHONY: generate
-# generate
+# run go generators
 generate:
 	go generate ./...
+
+.PHONY: proto
+proto:
+	protoc --proto_path=. \
+           --proto_path=./third_party \
+           --go_out=paths=source_relative:. \
+           $(INTERNAL_PROTO_FILES)
 
 .PHONY: all
 # generate all
 all:
 	make api;
-	make errors;
+	make proto;
 	make generate;
+
+.PHONY: test
+# run test suite
+test:
+	go test -v ./... -cover
 
 # show help
 help:
@@ -49,7 +65,7 @@ help:
 	@echo ' make [target]'
 	@echo ''
 	@echo 'Targets:'
-	@awk '/^[a-zA-Z\-\_0-9]+:/ { \
+	@awk '/^[a-zA-Z\-0-9]+:/ { \
 	helpMessage = match(lastLine, /^# (.*)/); \
 		if (helpMessage) { \
 			helpCommand = substr($$1, 0, index($$1, ":")-1); \

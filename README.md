@@ -41,7 +41,7 @@ VERSION="<x.x.x>" make build
 docker build -t <your-docker-image-name> .
 
 # Run the docker image, exposing http and gRPC services
-docker run --rm -p 8000:8000 -p 9000:9000 <your-docker-image-name>
+docker run --rm -v ./configs:/data/conf -p 8000:8000 -p 9000:9000 <your-docker-image-name>
 ```
 
 ## Generate code 🏗️
@@ -51,6 +51,7 @@ Generate the protobuf code, openapi spec,
 ```
 # Generate API files (include: pb.go, http, grpc, validate) by proto
 make api
+make proto
 ```
 
 ## Services
