@@ -2,6 +2,8 @@
 
 > An inventory service for managing farming vehicles, equipment, and resources.
 
+![logo](./static/logo.png)
+
 ## What is this?
 
 - A REST API for managing farm inventory via HTTP requests
