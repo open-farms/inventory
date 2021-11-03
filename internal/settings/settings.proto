@@ -30,6 +30,8 @@ message Storage {
     message Database {
         string driver = 1;
         string source = 2;
+        bool migrate = 3;
+        bool debug = 4;
     }
     Database database = 1;
 }

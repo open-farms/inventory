@@ -35,7 +35,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&flagconf, "conf", "./config", "config path, eg: -conf config.yaml")
+	flag.StringVar(&flagconf, "config", "./config", "config path, eg: -config config.yaml")
 }
 
 func main() {
@@ -55,6 +55,13 @@ func main() {
 	err = cfg.Scan(&bootstrap)
 	if err != nil {
 		logger.Log(log.LevelFatal, err)
+	}
+
+	if bootstrap.Storage.Database.Migrate {
+		err = biz.Migrate(flagconf, false)
+		if err != nil {
+			logger.Log(log.LevelFatal, err)
+		}
 	}
 
 	httpSrv := http.NewServer(

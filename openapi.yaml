@@ -167,12 +167,14 @@ components:
                     $ref: '#/components/schemas/Vehicle'
         DeleteEquipmentResponse:
             properties:
-                equipment:
-                    $ref: '#/components/schemas/Equipment'
+                id:
+                    type: integer
+                    format: uint64
         DeleteVehicleResponse:
             properties:
-                vehicle:
-                    $ref: '#/components/schemas/Vehicle'
+                id:
+                    type: integer
+                    format: uint64
         Equipment:
             properties:
                 id:

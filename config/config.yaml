@@ -9,3 +9,5 @@ storage:
   database:
     driver: "${DB_DRIVER:postgres}"
     source: "${DB_URI:postgres://postgres:postgres@localhost/postgres?sslmode=disable}"
+    migrate: true
+    debug: false

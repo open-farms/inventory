@@ -30,6 +30,16 @@ The inventory service enables users to keep track of farm inventory across multi
 
 You can either install inventory directly with go, build the project from source, or [download a binary from the latest release](https://github.com/open-farms/inventory/releases)
 
+### Docker Compose
+
+```shell
+# Start the database and API via docker-compose
+docker-compose up
+
+# List the vehicles
+http :8000/v1/vehicles
+```
+
 Install with `go install`
 
 ```shell

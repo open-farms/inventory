@@ -1,4 +1,4 @@
-version: '3.1'
+version: '3.9'
 
 services:
 
@@ -8,3 +8,15 @@ services:
       POSTGRES_PASSWORD: changemerightaway
     ports:
       - 5432:5432
+
+  inventory:
+    build: .
+    ports:
+      - 8000:8000
+      - 9000:9000
+    environment:
+      INVENTORY_DB_URI: postgres://postgres:postgres@db/postgres?sslmode=disable
+    volumes:
+      - ./config:/data/config
+    depends_on:
+      - "db"

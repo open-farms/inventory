@@ -8,6 +8,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/go-kratos/kratos/v2/config"
+	"github.com/go-kratos/kratos/v2/config/env"
 	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/open-farms/inventory/ent"
 )
@@ -37,6 +38,11 @@ func Migrate(configPath string, dry bool) error {
 		return err
 	}
 
+	dbDebug, err := cfg.Value("storage.database.debug").Bool()
+	if err != nil {
+		return err
+	}
+
 	// Setup client for database
 	client, err := ent.Open(dbDriver, dbURI)
 	if err != nil {
@@ -53,7 +59,15 @@ func Migrate(configPath string, dry bool) error {
 
 	// Run the auto migration tool
 	ctx := context.Background()
-	err = client.Debug().Schema.Create(ctx)
+	if dbDebug {
+		err = client.Debug().Schema.Create(ctx)
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	err = client.Schema.Create(ctx)
 	if err != nil {
 		return err
 	}
@@ -63,7 +77,10 @@ func Migrate(configPath string, dry bool) error {
 
 func Configure(cfgFile string) (config.Config, error) {
 	// Setup config from file
-	source := config.WithSource(file.NewSource(cfgFile))
+	source := config.WithSource(
+		env.NewSource("INVENTORY_"),
+		file.NewSource(cfgFile),
+	)
 	c := config.New(source)
 	err := c.Load()
 	if err != nil {
