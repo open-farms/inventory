@@ -10,6 +10,40 @@ import (
 	"go.uber.org/zap"
 )
 
+// Read fetches the ent.Category identified by a given url-parameter from the
+// database and returns it to the client.
+func (h *CategoryHandler) List(w http.ResponseWriter, r *http.Request) {
+	l := h.log.With(zap.String("method", "List"))
+	q := h.client.Category.Query()
+	var err error
+	page := 1
+	if d := r.URL.Query().Get("page"); d != "" {
+		page, err = strconv.Atoi(d)
+		if err != nil {
+			l.Info("error parsing query parameter 'page'", zap.String("page", d), zap.Error(err))
+			BadRequest(w, "page must be an integer greater zero")
+			return
+		}
+	}
+	itemsPerPage := 30
+	if d := r.URL.Query().Get("itemsPerPage"); d != "" {
+		itemsPerPage, err = strconv.Atoi(d)
+		if err != nil {
+			l.Info("error parsing query parameter 'itemsPerPage'", zap.String("itemsPerPage", d), zap.Error(err))
+			BadRequest(w, "itemsPerPage must be an integer greater zero")
+			return
+		}
+	}
+	es, err := q.Limit(itemsPerPage).Offset((page - 1) * itemsPerPage).All(r.Context())
+	if err != nil {
+		l.Error("error fetching categories from db", zap.Error(err))
+		InternalServerError(w, nil)
+		return
+	}
+	l.Info("categories rendered", zap.Int("amount", len(es)))
+	easyjson.MarshalToHTTPResponseWriter(NewCategory4094953247Views(es), w)
+}
+
 // Read fetches the ent.Equipment identified by a given url-parameter from the
 // database and returns it to the client.
 func (h *EquipmentHandler) List(w http.ResponseWriter, r *http.Request) {
@@ -41,7 +75,7 @@ func (h *EquipmentHandler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	l.Info("equipment rendered", zap.Int("amount", len(es)))
-	easyjson.MarshalToHTTPResponseWriter(NewEquipment2075188150Views(es), w)
+	easyjson.MarshalToHTTPResponseWriter(NewEquipment3958372643Views(es), w)
 }
 
 // Read fetches the ent.Vehicle identified by a given url-parameter from the
@@ -75,5 +109,5 @@ func (h *VehicleHandler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	l.Info("vehicles rendered", zap.Int("amount", len(es)))
-	easyjson.MarshalToHTTPResponseWriter(NewVehicle2848838632Views(es), w)
+	easyjson.MarshalToHTTPResponseWriter(NewVehicle2530256765Views(es), w)
 }

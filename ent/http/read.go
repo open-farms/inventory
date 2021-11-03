@@ -9,23 +9,57 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/mailru/easyjson"
 	"github.com/open-farms/inventory/ent"
-	equipment "github.com/open-farms/inventory/ent/equipment"
+	"github.com/open-farms/inventory/ent/category"
+	"github.com/open-farms/inventory/ent/equipment"
 	"github.com/open-farms/inventory/ent/vehicle"
 	"go.uber.org/zap"
 )
+
+// Read fetches the ent.Category identified by a given url-parameter from the
+// database and renders it to the client.
+func (h *CategoryHandler) Read(w http.ResponseWriter, r *http.Request) {
+	l := h.log.With(zap.String("method", "Read"))
+	// ID is URL parameter.
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
+		BadRequest(w, "id must be an integer")
+		return
+	}
+	// Create the query to fetch the Category
+	q := h.client.Category.Query().Where(category.ID(id))
+	e, err := q.Only(r.Context())
+	if err != nil {
+		switch {
+		case ent.IsNotFound(err):
+			msg := stripEntError(err)
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
+			NotFound(w, msg)
+		case ent.IsNotSingular(err):
+			msg := stripEntError(err)
+			l.Error(msg, zap.Error(err), zap.Int("id", id))
+			BadRequest(w, msg)
+		default:
+			l.Error("could not read category", zap.Error(err), zap.Int("id", id))
+			InternalServerError(w, nil)
+		}
+		return
+	}
+	l.Info("category rendered", zap.Int("id", id))
+	easyjson.MarshalToHTTPResponseWriter(NewCategory4094953247View(e), w)
+}
 
 // Read fetches the ent.Equipment identified by a given url-parameter from the
 // database and renders it to the client.
 func (h *EquipmentHandler) Read(w http.ResponseWriter, r *http.Request) {
 	l := h.log.With(zap.String("method", "Read"))
 	// ID is URL parameter.
-	id64, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 0)
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		BadRequest(w, "id must be an integer greater zero")
+		BadRequest(w, "id must be an integer")
 		return
 	}
-	id := int64(id64)
 	// Create the query to fetch the Equipment
 	q := h.client.Equipment.Query().Where(equipment.ID(id))
 	e, err := q.Only(r.Context())
@@ -33,20 +67,20 @@ func (h *EquipmentHandler) Read(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
-			l.Info(msg, zap.Error(err), zap.Int64("id", id))
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
 			NotFound(w, msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
-			l.Error(msg, zap.Error(err), zap.Int64("id", id))
+			l.Error(msg, zap.Error(err), zap.Int("id", id))
 			BadRequest(w, msg)
 		default:
-			l.Error("could not read equipment", zap.Error(err), zap.Int64("id", id))
+			l.Error("could not read equipment", zap.Error(err), zap.Int("id", id))
 			InternalServerError(w, nil)
 		}
 		return
 	}
-	l.Info("equipment rendered", zap.Int64("id", id))
-	easyjson.MarshalToHTTPResponseWriter(NewEquipment2075188150View(e), w)
+	l.Info("equipment rendered", zap.Int("id", id))
+	easyjson.MarshalToHTTPResponseWriter(NewEquipment3958372643View(e), w)
 }
 
 // Read fetches the ent.Vehicle identified by a given url-parameter from the
@@ -54,13 +88,12 @@ func (h *EquipmentHandler) Read(w http.ResponseWriter, r *http.Request) {
 func (h *VehicleHandler) Read(w http.ResponseWriter, r *http.Request) {
 	l := h.log.With(zap.String("method", "Read"))
 	// ID is URL parameter.
-	id64, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 0)
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		BadRequest(w, "id must be an integer greater zero")
+		BadRequest(w, "id must be an integer")
 		return
 	}
-	id := int64(id64)
 	// Create the query to fetch the Vehicle
 	q := h.client.Vehicle.Query().Where(vehicle.ID(id))
 	e, err := q.Only(r.Context())
@@ -68,18 +101,18 @@ func (h *VehicleHandler) Read(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
-			l.Info(msg, zap.Error(err), zap.Int64("id", id))
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
 			NotFound(w, msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
-			l.Error(msg, zap.Error(err), zap.Int64("id", id))
+			l.Error(msg, zap.Error(err), zap.Int("id", id))
 			BadRequest(w, msg)
 		default:
-			l.Error("could not read vehicle", zap.Error(err), zap.Int64("id", id))
+			l.Error("could not read vehicle", zap.Error(err), zap.Int("id", id))
 			InternalServerError(w, nil)
 		}
 		return
 	}
-	l.Info("vehicle rendered", zap.Int64("id", id))
-	easyjson.MarshalToHTTPResponseWriter(NewVehicle2848838632View(e), w)
+	l.Info("vehicle rendered", zap.Int("id", id))
+	easyjson.MarshalToHTTPResponseWriter(NewVehicle2530256765View(e), w)
 }

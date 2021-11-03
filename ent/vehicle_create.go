@@ -20,31 +20,43 @@ type VehicleCreate struct {
 	hooks    []Hook
 }
 
+// SetCreateTime sets the "create_time" field.
+func (vc *VehicleCreate) SetCreateTime(t time.Time) *VehicleCreate {
+	vc.mutation.SetCreateTime(t)
+	return vc
+}
+
+// SetNillableCreateTime sets the "create_time" field if the given value is not nil.
+func (vc *VehicleCreate) SetNillableCreateTime(t *time.Time) *VehicleCreate {
+	if t != nil {
+		vc.SetCreateTime(*t)
+	}
+	return vc
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (vc *VehicleCreate) SetUpdateTime(t time.Time) *VehicleCreate {
+	vc.mutation.SetUpdateTime(t)
+	return vc
+}
+
+// SetNillableUpdateTime sets the "update_time" field if the given value is not nil.
+func (vc *VehicleCreate) SetNillableUpdateTime(t *time.Time) *VehicleCreate {
+	if t != nil {
+		vc.SetUpdateTime(*t)
+	}
+	return vc
+}
+
 // SetMake sets the "make" field.
 func (vc *VehicleCreate) SetMake(s string) *VehicleCreate {
 	vc.mutation.SetMake(s)
 	return vc
 }
 
-// SetNillableMake sets the "make" field if the given value is not nil.
-func (vc *VehicleCreate) SetNillableMake(s *string) *VehicleCreate {
-	if s != nil {
-		vc.SetMake(*s)
-	}
-	return vc
-}
-
 // SetModel sets the "model" field.
 func (vc *VehicleCreate) SetModel(s string) *VehicleCreate {
 	vc.mutation.SetModel(s)
-	return vc
-}
-
-// SetNillableModel sets the "model" field if the given value is not nil.
-func (vc *VehicleCreate) SetNillableModel(s *string) *VehicleCreate {
-	if s != nil {
-		vc.SetModel(*s)
-	}
 	return vc
 }
 
@@ -118,57 +130,17 @@ func (vc *VehicleCreate) SetNillableActive(b *bool) *VehicleCreate {
 	return vc
 }
 
-// SetTags sets the "tags" field.
-func (vc *VehicleCreate) SetTags(s []string) *VehicleCreate {
-	vc.mutation.SetTags(s)
-	return vc
-}
-
 // SetCondition sets the "condition" field.
-func (vc *VehicleCreate) SetCondition(v vehicle.Condition) *VehicleCreate {
-	vc.mutation.SetCondition(v)
+func (vc *VehicleCreate) SetCondition(s string) *VehicleCreate {
+	vc.mutation.SetCondition(s)
 	return vc
 }
 
 // SetNillableCondition sets the "condition" field if the given value is not nil.
-func (vc *VehicleCreate) SetNillableCondition(v *vehicle.Condition) *VehicleCreate {
-	if v != nil {
-		vc.SetCondition(*v)
+func (vc *VehicleCreate) SetNillableCondition(s *string) *VehicleCreate {
+	if s != nil {
+		vc.SetCondition(*s)
 	}
-	return vc
-}
-
-// SetCreateTime sets the "create_time" field.
-func (vc *VehicleCreate) SetCreateTime(t time.Time) *VehicleCreate {
-	vc.mutation.SetCreateTime(t)
-	return vc
-}
-
-// SetNillableCreateTime sets the "create_time" field if the given value is not nil.
-func (vc *VehicleCreate) SetNillableCreateTime(t *time.Time) *VehicleCreate {
-	if t != nil {
-		vc.SetCreateTime(*t)
-	}
-	return vc
-}
-
-// SetUpdateTime sets the "update_time" field.
-func (vc *VehicleCreate) SetUpdateTime(t time.Time) *VehicleCreate {
-	vc.mutation.SetUpdateTime(t)
-	return vc
-}
-
-// SetNillableUpdateTime sets the "update_time" field if the given value is not nil.
-func (vc *VehicleCreate) SetNillableUpdateTime(t *time.Time) *VehicleCreate {
-	if t != nil {
-		vc.SetUpdateTime(*t)
-	}
-	return vc
-}
-
-// SetID sets the "id" field.
-func (vc *VehicleCreate) SetID(i int64) *VehicleCreate {
-	vc.mutation.SetID(i)
 	return vc
 }
 
@@ -255,16 +227,22 @@ func (vc *VehicleCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (vc *VehicleCreate) check() error {
-	if v, ok := vc.mutation.Condition(); ok {
-		if err := vehicle.ConditionValidator(v); err != nil {
-			return &ValidationError{Name: "condition", err: fmt.Errorf(`ent: validator failed for field "condition": %w`, err)}
-		}
-	}
 	if _, ok := vc.mutation.CreateTime(); !ok {
 		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "create_time"`)}
 	}
 	if _, ok := vc.mutation.UpdateTime(); !ok {
 		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "update_time"`)}
+	}
+	if _, ok := vc.mutation.Make(); !ok {
+		return &ValidationError{Name: "make", err: errors.New(`ent: missing required field "make"`)}
+	}
+	if _, ok := vc.mutation.Model(); !ok {
+		return &ValidationError{Name: "model", err: errors.New(`ent: missing required field "model"`)}
+	}
+	if v, ok := vc.mutation.Condition(); ok {
+		if err := vehicle.ConditionValidator(v); err != nil {
+			return &ValidationError{Name: "condition", err: fmt.Errorf(`ent: validator failed for field "condition": %w`, err)}
+		}
 	}
 	return nil
 }
@@ -277,10 +255,8 @@ func (vc *VehicleCreate) sqlSave(ctx context.Context) (*Vehicle, error) {
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != _node.ID {
-		id := _spec.ID.Value.(int64)
-		_node.ID = int64(id)
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = int(id)
 	return _node, nil
 }
 
@@ -290,14 +266,26 @@ func (vc *VehicleCreate) createSpec() (*Vehicle, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: vehicle.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt64,
+				Type:   field.TypeInt,
 				Column: vehicle.FieldID,
 			},
 		}
 	)
-	if id, ok := vc.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = id
+	if value, ok := vc.mutation.CreateTime(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: vehicle.FieldCreateTime,
+		})
+		_node.CreateTime = value
+	}
+	if value, ok := vc.mutation.UpdateTime(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: vehicle.FieldUpdateTime,
+		})
+		_node.UpdateTime = value
 	}
 	if value, ok := vc.mutation.Make(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -355,37 +343,13 @@ func (vc *VehicleCreate) createSpec() (*Vehicle, *sqlgraph.CreateSpec) {
 		})
 		_node.Active = value
 	}
-	if value, ok := vc.mutation.Tags(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: vehicle.FieldTags,
-		})
-		_node.Tags = value
-	}
 	if value, ok := vc.mutation.Condition(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
+			Type:   field.TypeString,
 			Value:  value,
 			Column: vehicle.FieldCondition,
 		})
 		_node.Condition = value
-	}
-	if value, ok := vc.mutation.CreateTime(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: vehicle.FieldCreateTime,
-		})
-		_node.CreateTime = value
-	}
-	if value, ok := vc.mutation.UpdateTime(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: vehicle.FieldUpdateTime,
-		})
-		_node.UpdateTime = value
 	}
 	return _node, _spec
 }
@@ -432,9 +396,9 @@ func (vcb *VehicleCreateBulk) Save(ctx context.Context) ([]*Vehicle, error) {
 				}
 				mutation.id = &nodes[i].ID
 				mutation.done = true
-				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+				if specs[i].ID.Value != nil {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int64(id)
+					nodes[i].ID = int(id)
 				}
 				return nodes[i], nil
 			})

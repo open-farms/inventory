@@ -7,6 +7,7 @@
 ## What is this?
 
 - A REST API for managing farm inventory via HTTP requests
+- A gRPC Service for managing farm inventory via RPC requests
 - A CLI for managing farm inventory
 
 The inventory service enables users to keep track of farm inventory across multiple IoT devices, servers, applications, or databases. This service provides a foundational interface for inventory management and interaction.
@@ -15,7 +16,7 @@ The inventory service enables users to keep track of farm inventory across multi
 
 ```shell
 /cmd/inventory # http api server
-/cmd/inventoryctl # cli tool for service administration  
+/cmd/inventoryctl # cli tool for service administration
 /config # default application configurations
 /ent # database models, migrations, and drivers
 /ent/schemas # editable database models
@@ -45,7 +46,6 @@ go install github.com/open-farms/inventory/cmd/inventory@latest
 # Install the admin cli
 go install github.com/open-farms/inventory/cmd/inventoryctl@latest
 ```
-
 
 ## Start the service 🏃
 
@@ -89,3 +89,5 @@ make build
 ## Services
 
 [View the openapi specification](./openapi.json)
+
+[View the protobuf schemas and services](./ent/proto/entpb/entpb.proto)

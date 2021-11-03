@@ -9,8 +9,6 @@ import (
 
 	"github.com/mailru/easyjson"
 	"github.com/open-farms/inventory/ent"
-	equipment "github.com/open-farms/inventory/ent/equipment"
-	"github.com/open-farms/inventory/ent/vehicle"
 )
 
 // Basic HTTP Error Response
@@ -80,70 +78,100 @@ func Unauthorized(w http.ResponseWriter, msg interface{}) (int, error) {
 }
 
 type (
-	// Equipment2075188150View represents the data serialized for the following serialization group combinations:
+	// Category4094953247View represents the data serialized for the following serialization group combinations:
 	// []
-	Equipment2075188150View struct {
-		ID         int64               `json:"id,omitempty"`
-		Name       string              `json:"name,omitempty"`
-		Tags       []string            `json:"tags,omitempty"`
-		Condition  equipment.Condition `json:"condition,omitempty"`
-		CreateTime time.Time           `json:"create_time,omitempty"`
-		UpdateTime time.Time           `json:"update_time,omitempty"`
+	Category4094953247View struct {
+		ID   int    `json:"id,omitempty"`
+		Name string `json:"name,omitempty"`
 	}
-	Equipment2075188150Views []*Equipment2075188150View
+	Category4094953247Views []*Category4094953247View
 )
 
-func NewEquipment2075188150View(e *ent.Equipment) *Equipment2075188150View {
+func NewCategory4094953247View(e *ent.Category) *Category4094953247View {
 	if e == nil {
 		return nil
 	}
-	return &Equipment2075188150View{
-		ID:         e.ID,
-		Name:       e.Name,
-		Tags:       e.Tags,
-		Condition:  e.Condition,
-		CreateTime: e.CreateTime,
-		UpdateTime: e.UpdateTime,
+	return &Category4094953247View{
+		ID:   e.ID,
+		Name: e.Name,
 	}
 }
 
-func NewEquipment2075188150Views(es []*ent.Equipment) Equipment2075188150Views {
+func NewCategory4094953247Views(es []*ent.Category) Category4094953247Views {
 	if len(es) == 0 {
 		return nil
 	}
-	r := make(Equipment2075188150Views, len(es))
+	r := make(Category4094953247Views, len(es))
 	for i, e := range es {
-		r[i] = NewEquipment2075188150View(e)
+		r[i] = NewCategory4094953247View(e)
 	}
 	return r
 }
 
 type (
-	// Vehicle2848838632View represents the data serialized for the following serialization group combinations:
+	// Equipment3958372643View represents the data serialized for the following serialization group combinations:
 	// []
-	Vehicle2848838632View struct {
-		ID         int64             `json:"id,omitempty"`
-		Make       string            `json:"make,omitempty"`
-		Model      string            `json:"model,omitempty"`
-		Miles      int64             `json:"miles,omitempty"`
-		Mpg        int64             `json:"mpg,omitempty"`
-		Owner      string            `json:"owner,omitempty"`
-		Year       string            `json:"year,omitempty"`
-		Active     bool              `json:"active,omitempty"`
-		Tags       []string          `json:"tags,omitempty"`
-		Condition  vehicle.Condition `json:"condition,omitempty"`
-		CreateTime time.Time         `json:"create_time,omitempty"`
-		UpdateTime time.Time         `json:"update_time,omitempty"`
+	Equipment3958372643View struct {
+		ID         int       `json:"id,omitempty"`
+		CreateTime time.Time `json:"create_time,omitempty"`
+		UpdateTime time.Time `json:"update_time,omitempty"`
+		Name       string    `json:"name,omitempty"`
+		Condition  string    `json:"condition,omitempty"`
 	}
-	Vehicle2848838632Views []*Vehicle2848838632View
+	Equipment3958372643Views []*Equipment3958372643View
 )
 
-func NewVehicle2848838632View(e *ent.Vehicle) *Vehicle2848838632View {
+func NewEquipment3958372643View(e *ent.Equipment) *Equipment3958372643View {
 	if e == nil {
 		return nil
 	}
-	return &Vehicle2848838632View{
+	return &Equipment3958372643View{
 		ID:         e.ID,
+		CreateTime: e.CreateTime,
+		UpdateTime: e.UpdateTime,
+		Name:       e.Name,
+		Condition:  e.Condition,
+	}
+}
+
+func NewEquipment3958372643Views(es []*ent.Equipment) Equipment3958372643Views {
+	if len(es) == 0 {
+		return nil
+	}
+	r := make(Equipment3958372643Views, len(es))
+	for i, e := range es {
+		r[i] = NewEquipment3958372643View(e)
+	}
+	return r
+}
+
+type (
+	// Vehicle2530256765View represents the data serialized for the following serialization group combinations:
+	// []
+	Vehicle2530256765View struct {
+		ID         int       `json:"id,omitempty"`
+		CreateTime time.Time `json:"create_time,omitempty"`
+		UpdateTime time.Time `json:"update_time,omitempty"`
+		Make       string    `json:"make,omitempty"`
+		Model      string    `json:"model,omitempty"`
+		Miles      int64     `json:"miles,omitempty"`
+		Mpg        int64     `json:"mpg,omitempty"`
+		Owner      string    `json:"owner,omitempty"`
+		Year       string    `json:"year,omitempty"`
+		Active     bool      `json:"active,omitempty"`
+		Condition  string    `json:"condition,omitempty"`
+	}
+	Vehicle2530256765Views []*Vehicle2530256765View
+)
+
+func NewVehicle2530256765View(e *ent.Vehicle) *Vehicle2530256765View {
+	if e == nil {
+		return nil
+	}
+	return &Vehicle2530256765View{
+		ID:         e.ID,
+		CreateTime: e.CreateTime,
+		UpdateTime: e.UpdateTime,
 		Make:       e.Make,
 		Model:      e.Model,
 		Miles:      e.Miles,
@@ -151,20 +179,17 @@ func NewVehicle2848838632View(e *ent.Vehicle) *Vehicle2848838632View {
 		Owner:      e.Owner,
 		Year:       e.Year,
 		Active:     e.Active,
-		Tags:       e.Tags,
 		Condition:  e.Condition,
-		CreateTime: e.CreateTime,
-		UpdateTime: e.UpdateTime,
 	}
 }
 
-func NewVehicle2848838632Views(es []*ent.Vehicle) Vehicle2848838632Views {
+func NewVehicle2530256765Views(es []*ent.Vehicle) Vehicle2530256765Views {
 	if len(es) == 0 {
 		return nil
 	}
-	r := make(Vehicle2848838632Views, len(es))
+	r := make(Vehicle2530256765Views, len(es))
 	for i, e := range es {
-		r[i] = NewVehicle2848838632View(e)
+		r[i] = NewVehicle2530256765View(e)
 	}
 	return r
 }

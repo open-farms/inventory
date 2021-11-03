@@ -3,7 +3,6 @@
 package equipment
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -12,16 +11,14 @@ const (
 	Label = "equipment"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldName holds the string denoting the name field in the database.
-	FieldName = "name"
-	// FieldTags holds the string denoting the tags field in the database.
-	FieldTags = "tags"
-	// FieldCondition holds the string denoting the condition field in the database.
-	FieldCondition = "condition"
 	// FieldCreateTime holds the string denoting the create_time field in the database.
 	FieldCreateTime = "create_time"
 	// FieldUpdateTime holds the string denoting the update_time field in the database.
 	FieldUpdateTime = "update_time"
+	// FieldName holds the string denoting the name field in the database.
+	FieldName = "name"
+	// FieldCondition holds the string denoting the condition field in the database.
+	FieldCondition = "condition"
 	// Table holds the table name of the equipment in the database.
 	Table = "equipment"
 )
@@ -29,11 +26,10 @@ const (
 // Columns holds all SQL columns for equipment fields.
 var Columns = []string{
 	FieldID,
-	FieldName,
-	FieldTags,
-	FieldCondition,
 	FieldCreateTime,
 	FieldUpdateTime,
+	FieldName,
+	FieldCondition,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -47,40 +43,12 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// NameValidator is a validator for the "name" field. It is called by the builders before save.
-	NameValidator func(string) error
 	// DefaultCreateTime holds the default value on creation for the "create_time" field.
 	DefaultCreateTime func() time.Time
-	// UpdateDefaultCreateTime holds the default value on update for the "create_time" field.
-	UpdateDefaultCreateTime func() time.Time
 	// DefaultUpdateTime holds the default value on creation for the "update_time" field.
 	DefaultUpdateTime func() time.Time
 	// UpdateDefaultUpdateTime holds the default value on update for the "update_time" field.
 	UpdateDefaultUpdateTime func() time.Time
+	// ConditionValidator is a validator for the "condition" field. It is called by the builders before save.
+	ConditionValidator func(string) error
 )
-
-// Condition defines the type for the "condition" enum field.
-type Condition string
-
-// Condition values.
-const (
-	ConditionUNSPECIFIED Condition = "UNSPECIFIED"
-	ConditionMINT        Condition = "MINT"
-	ConditionGOOD        Condition = "GOOD"
-	ConditionPOOR        Condition = "POOR"
-	ConditionBROKEN      Condition = "BROKEN"
-)
-
-func (c Condition) String() string {
-	return string(c)
-}
-
-// ConditionValidator is a validator for the "condition" field enum values. It is called by the builders before save.
-func ConditionValidator(c Condition) error {
-	switch c {
-	case ConditionUNSPECIFIED, ConditionMINT, ConditionGOOD, ConditionPOOR, ConditionBROKEN:
-		return nil
-	default:
-		return fmt.Errorf("equipment: invalid enum value for condition field: %q", c)
-	}
-}

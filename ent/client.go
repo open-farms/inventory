@@ -9,6 +9,7 @@ import (
 
 	"github.com/open-farms/inventory/ent/migrate"
 
+	"github.com/open-farms/inventory/ent/category"
 	"github.com/open-farms/inventory/ent/equipment"
 	"github.com/open-farms/inventory/ent/vehicle"
 
@@ -21,6 +22,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// Category is the client for interacting with the Category builders.
+	Category *CategoryClient
 	// Equipment is the client for interacting with the Equipment builders.
 	Equipment *EquipmentClient
 	// Vehicle is the client for interacting with the Vehicle builders.
@@ -38,6 +41,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.Category = NewCategoryClient(c.config)
 	c.Equipment = NewEquipmentClient(c.config)
 	c.Vehicle = NewVehicleClient(c.config)
 }
@@ -73,6 +77,7 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	return &Tx{
 		ctx:       ctx,
 		config:    cfg,
+		Category:  NewCategoryClient(cfg),
 		Equipment: NewEquipmentClient(cfg),
 		Vehicle:   NewVehicleClient(cfg),
 	}, nil
@@ -93,6 +98,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
 		config:    cfg,
+		Category:  NewCategoryClient(cfg),
 		Equipment: NewEquipmentClient(cfg),
 		Vehicle:   NewVehicleClient(cfg),
 	}, nil
@@ -101,7 +107,7 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Equipment.
+//		Category.
 //		Query().
 //		Count(ctx)
 //
@@ -124,8 +130,99 @@ func (c *Client) Close() error {
 // Use adds the mutation hooks to all the entity clients.
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
+	c.Category.Use(hooks...)
 	c.Equipment.Use(hooks...)
 	c.Vehicle.Use(hooks...)
+}
+
+// CategoryClient is a client for the Category schema.
+type CategoryClient struct {
+	config
+}
+
+// NewCategoryClient returns a client for the Category from the given config.
+func NewCategoryClient(c config) *CategoryClient {
+	return &CategoryClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `category.Hooks(f(g(h())))`.
+func (c *CategoryClient) Use(hooks ...Hook) {
+	c.hooks.Category = append(c.hooks.Category, hooks...)
+}
+
+// Create returns a create builder for Category.
+func (c *CategoryClient) Create() *CategoryCreate {
+	mutation := newCategoryMutation(c.config, OpCreate)
+	return &CategoryCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Category entities.
+func (c *CategoryClient) CreateBulk(builders ...*CategoryCreate) *CategoryCreateBulk {
+	return &CategoryCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Category.
+func (c *CategoryClient) Update() *CategoryUpdate {
+	mutation := newCategoryMutation(c.config, OpUpdate)
+	return &CategoryUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *CategoryClient) UpdateOne(ca *Category) *CategoryUpdateOne {
+	mutation := newCategoryMutation(c.config, OpUpdateOne, withCategory(ca))
+	return &CategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *CategoryClient) UpdateOneID(id int) *CategoryUpdateOne {
+	mutation := newCategoryMutation(c.config, OpUpdateOne, withCategoryID(id))
+	return &CategoryUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Category.
+func (c *CategoryClient) Delete() *CategoryDelete {
+	mutation := newCategoryMutation(c.config, OpDelete)
+	return &CategoryDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *CategoryClient) DeleteOne(ca *Category) *CategoryDeleteOne {
+	return c.DeleteOneID(ca.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *CategoryClient) DeleteOneID(id int) *CategoryDeleteOne {
+	builder := c.Delete().Where(category.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &CategoryDeleteOne{builder}
+}
+
+// Query returns a query builder for Category.
+func (c *CategoryClient) Query() *CategoryQuery {
+	return &CategoryQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Category entity by its id.
+func (c *CategoryClient) Get(ctx context.Context, id int) (*Category, error) {
+	return c.Query().Where(category.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *CategoryClient) GetX(ctx context.Context, id int) *Category {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *CategoryClient) Hooks() []Hook {
+	return c.hooks.Category
 }
 
 // EquipmentClient is a client for the Equipment schema.
@@ -168,7 +265,7 @@ func (c *EquipmentClient) UpdateOne(e *Equipment) *EquipmentUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *EquipmentClient) UpdateOneID(id int64) *EquipmentUpdateOne {
+func (c *EquipmentClient) UpdateOneID(id int) *EquipmentUpdateOne {
 	mutation := newEquipmentMutation(c.config, OpUpdateOne, withEquipmentID(id))
 	return &EquipmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -185,7 +282,7 @@ func (c *EquipmentClient) DeleteOne(e *Equipment) *EquipmentDeleteOne {
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *EquipmentClient) DeleteOneID(id int64) *EquipmentDeleteOne {
+func (c *EquipmentClient) DeleteOneID(id int) *EquipmentDeleteOne {
 	builder := c.Delete().Where(equipment.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -200,12 +297,12 @@ func (c *EquipmentClient) Query() *EquipmentQuery {
 }
 
 // Get returns a Equipment entity by its id.
-func (c *EquipmentClient) Get(ctx context.Context, id int64) (*Equipment, error) {
+func (c *EquipmentClient) Get(ctx context.Context, id int) (*Equipment, error) {
 	return c.Query().Where(equipment.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *EquipmentClient) GetX(ctx context.Context, id int64) *Equipment {
+func (c *EquipmentClient) GetX(ctx context.Context, id int) *Equipment {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -258,7 +355,7 @@ func (c *VehicleClient) UpdateOne(v *Vehicle) *VehicleUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *VehicleClient) UpdateOneID(id int64) *VehicleUpdateOne {
+func (c *VehicleClient) UpdateOneID(id int) *VehicleUpdateOne {
 	mutation := newVehicleMutation(c.config, OpUpdateOne, withVehicleID(id))
 	return &VehicleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -275,7 +372,7 @@ func (c *VehicleClient) DeleteOne(v *Vehicle) *VehicleDeleteOne {
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *VehicleClient) DeleteOneID(id int64) *VehicleDeleteOne {
+func (c *VehicleClient) DeleteOneID(id int) *VehicleDeleteOne {
 	builder := c.Delete().Where(vehicle.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -290,12 +387,12 @@ func (c *VehicleClient) Query() *VehicleQuery {
 }
 
 // Get returns a Vehicle entity by its id.
-func (c *VehicleClient) Get(ctx context.Context, id int64) (*Vehicle, error) {
+func (c *VehicleClient) Get(ctx context.Context, id int) (*Vehicle, error) {
 	return c.Query().Where(vehicle.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *VehicleClient) GetX(ctx context.Context, id int64) *Vehicle {
+func (c *VehicleClient) GetX(ctx context.Context, id int) *Vehicle {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)

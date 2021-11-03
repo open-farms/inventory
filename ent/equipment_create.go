@@ -20,24 +20,6 @@ type EquipmentCreate struct {
 	hooks    []Hook
 }
 
-// SetName sets the "name" field.
-func (ec *EquipmentCreate) SetName(s string) *EquipmentCreate {
-	ec.mutation.SetName(s)
-	return ec
-}
-
-// SetTags sets the "tags" field.
-func (ec *EquipmentCreate) SetTags(s []string) *EquipmentCreate {
-	ec.mutation.SetTags(s)
-	return ec
-}
-
-// SetCondition sets the "condition" field.
-func (ec *EquipmentCreate) SetCondition(e equipment.Condition) *EquipmentCreate {
-	ec.mutation.SetCondition(e)
-	return ec
-}
-
 // SetCreateTime sets the "create_time" field.
 func (ec *EquipmentCreate) SetCreateTime(t time.Time) *EquipmentCreate {
 	ec.mutation.SetCreateTime(t)
@@ -66,9 +48,15 @@ func (ec *EquipmentCreate) SetNillableUpdateTime(t *time.Time) *EquipmentCreate 
 	return ec
 }
 
-// SetID sets the "id" field.
-func (ec *EquipmentCreate) SetID(i int64) *EquipmentCreate {
-	ec.mutation.SetID(i)
+// SetName sets the "name" field.
+func (ec *EquipmentCreate) SetName(s string) *EquipmentCreate {
+	ec.mutation.SetName(s)
+	return ec
+}
+
+// SetCondition sets the "condition" field.
+func (ec *EquipmentCreate) SetCondition(s string) *EquipmentCreate {
+	ec.mutation.SetCondition(s)
 	return ec
 }
 
@@ -155,16 +143,14 @@ func (ec *EquipmentCreate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (ec *EquipmentCreate) check() error {
+	if _, ok := ec.mutation.CreateTime(); !ok {
+		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "create_time"`)}
+	}
+	if _, ok := ec.mutation.UpdateTime(); !ok {
+		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "update_time"`)}
+	}
 	if _, ok := ec.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "name"`)}
-	}
-	if v, ok := ec.mutation.Name(); ok {
-		if err := equipment.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "name": %w`, err)}
-		}
-	}
-	if _, ok := ec.mutation.Tags(); !ok {
-		return &ValidationError{Name: "tags", err: errors.New(`ent: missing required field "tags"`)}
 	}
 	if _, ok := ec.mutation.Condition(); !ok {
 		return &ValidationError{Name: "condition", err: errors.New(`ent: missing required field "condition"`)}
@@ -173,12 +159,6 @@ func (ec *EquipmentCreate) check() error {
 		if err := equipment.ConditionValidator(v); err != nil {
 			return &ValidationError{Name: "condition", err: fmt.Errorf(`ent: validator failed for field "condition": %w`, err)}
 		}
-	}
-	if _, ok := ec.mutation.CreateTime(); !ok {
-		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "create_time"`)}
-	}
-	if _, ok := ec.mutation.UpdateTime(); !ok {
-		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "update_time"`)}
 	}
 	return nil
 }
@@ -191,10 +171,8 @@ func (ec *EquipmentCreate) sqlSave(ctx context.Context) (*Equipment, error) {
 		}
 		return nil, err
 	}
-	if _spec.ID.Value != _node.ID {
-		id := _spec.ID.Value.(int64)
-		_node.ID = int64(id)
-	}
+	id := _spec.ID.Value.(int64)
+	_node.ID = int(id)
 	return _node, nil
 }
 
@@ -204,39 +182,11 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: equipment.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt64,
+				Type:   field.TypeInt,
 				Column: equipment.FieldID,
 			},
 		}
 	)
-	if id, ok := ec.mutation.ID(); ok {
-		_node.ID = id
-		_spec.ID.Value = id
-	}
-	if value, ok := ec.mutation.Name(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: equipment.FieldName,
-		})
-		_node.Name = value
-	}
-	if value, ok := ec.mutation.Tags(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: equipment.FieldTags,
-		})
-		_node.Tags = value
-	}
-	if value, ok := ec.mutation.Condition(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
-			Value:  value,
-			Column: equipment.FieldCondition,
-		})
-		_node.Condition = value
-	}
 	if value, ok := ec.mutation.CreateTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
@@ -252,6 +202,22 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 			Column: equipment.FieldUpdateTime,
 		})
 		_node.UpdateTime = value
+	}
+	if value, ok := ec.mutation.Name(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: equipment.FieldName,
+		})
+		_node.Name = value
+	}
+	if value, ok := ec.mutation.Condition(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: equipment.FieldCondition,
+		})
+		_node.Condition = value
 	}
 	return _node, _spec
 }
@@ -298,9 +264,9 @@ func (ecb *EquipmentCreateBulk) Save(ctx context.Context) ([]*Equipment, error) 
 				}
 				mutation.id = &nodes[i].ID
 				mutation.done = true
-				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
+				if specs[i].ID.Value != nil {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = int64(id)
+					nodes[i].ID = int(id)
 				}
 				return nodes[i], nil
 			})

@@ -1,23 +1,29 @@
 package schema
 
 import (
-	"context"
-	"os"
+	"regexp"
+	"time"
 
+	"entgo.io/contrib/entproto"
 	"entgo.io/ent"
-	"github.com/go-kratos/kratos/v2/log"
+	"entgo.io/ent/schema/field"
+	"entgo.io/ent/schema/mixin"
 )
 
-var LogHook = func(next ent.Mutator) ent.Mutator {
-	return ent.MutateFunc(func(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-		logger := log.With(log.NewStdLogger(os.Stdout),
-			"ts", log.DefaultTimestamp,
-			"service.name", "database",
-		)
+var conditionPattern = regexp.MustCompile("(MINT|GOOD|POOR|BROKEN)")
 
-		defer func() {
-			logger.Log(log.LevelInfo, m.Op().String())
-		}()
-		return next.Mutate(ctx, m)
-	})
+type TimeMixin struct {
+	mixin.Schema
+}
+
+func (TimeMixin) Fields() []ent.Field {
+	return []ent.Field{
+		field.Time("create_time").
+			Default(time.Now).
+			Annotations(entproto.Field(2)),
+		field.Time("update_time").
+			Default(time.Now).
+			UpdateDefault(time.Now).
+			Annotations(entproto.Field(3)),
+	}
 }

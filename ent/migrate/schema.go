@@ -8,14 +8,24 @@ import (
 )
 
 var (
+	// CategoriesColumns holds the columns for the "categories" table.
+	CategoriesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString, Unique: true},
+	}
+	// CategoriesTable holds the schema information for the "categories" table.
+	CategoriesTable = &schema.Table{
+		Name:       "categories",
+		Columns:    CategoriesColumns,
+		PrimaryKey: []*schema.Column{CategoriesColumns[0]},
+	}
 	// EquipmentColumns holds the columns for the "equipment" table.
 	EquipmentColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "tags", Type: field.TypeJSON},
-		{Name: "condition", Type: field.TypeEnum, Enums: []string{"UNSPECIFIED", "MINT", "GOOD", "POOR", "BROKEN"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
+		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "condition", Type: field.TypeString},
 	}
 	// EquipmentTable holds the schema information for the "equipment" table.
 	EquipmentTable = &schema.Table{
@@ -25,18 +35,17 @@ var (
 	}
 	// VehiclesColumns holds the columns for the "vehicles" table.
 	VehiclesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "make", Type: field.TypeString, Nullable: true},
-		{Name: "model", Type: field.TypeString, Nullable: true},
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
+		{Name: "make", Type: field.TypeString},
+		{Name: "model", Type: field.TypeString},
 		{Name: "miles", Type: field.TypeInt64, Nullable: true},
 		{Name: "mpg", Type: field.TypeInt64, Nullable: true},
 		{Name: "owner", Type: field.TypeString, Nullable: true},
 		{Name: "year", Type: field.TypeString, Nullable: true},
 		{Name: "active", Type: field.TypeBool, Nullable: true},
-		{Name: "tags", Type: field.TypeJSON, Nullable: true},
-		{Name: "condition", Type: field.TypeEnum, Nullable: true, Enums: []string{"UNSPECIFIED", "MINT", "GOOD", "POOR", "BROKEN"}},
-		{Name: "create_time", Type: field.TypeTime},
-		{Name: "update_time", Type: field.TypeTime},
+		{Name: "condition", Type: field.TypeString, Nullable: true},
 	}
 	// VehiclesTable holds the schema information for the "vehicles" table.
 	VehiclesTable = &schema.Table{
@@ -46,6 +55,7 @@ var (
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
+		CategoriesTable,
 		EquipmentTable,
 		VehiclesTable,
 	}

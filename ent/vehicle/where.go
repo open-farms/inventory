@@ -10,28 +10,28 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int64) predicate.Vehicle {
+func ID(id int) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
 	})
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int64) predicate.Vehicle {
+func IDEQ(id int) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
 	})
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int64) predicate.Vehicle {
+func IDNEQ(id int) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldID), id))
 	})
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int64) predicate.Vehicle {
+func IDIn(ids ...int) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
@@ -48,7 +48,7 @@ func IDIn(ids ...int64) predicate.Vehicle {
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int64) predicate.Vehicle {
+func IDNotIn(ids ...int) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
@@ -65,30 +65,44 @@ func IDNotIn(ids ...int64) predicate.Vehicle {
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int64) predicate.Vehicle {
+func IDGT(id int) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldID), id))
 	})
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int64) predicate.Vehicle {
+func IDGTE(id int) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldID), id))
 	})
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int64) predicate.Vehicle {
+func IDLT(id int) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldID), id))
 	})
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int64) predicate.Vehicle {
+func IDLTE(id int) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldID), id))
+	})
+}
+
+// CreateTime applies equality check predicate on the "create_time" field. It's identical to CreateTimeEQ.
+func CreateTime(v time.Time) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCreateTime), v))
+	})
+}
+
+// UpdateTime applies equality check predicate on the "update_time" field. It's identical to UpdateTimeEQ.
+func UpdateTime(v time.Time) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldUpdateTime), v))
 	})
 }
 
@@ -141,17 +155,162 @@ func Active(v bool) predicate.Vehicle {
 	})
 }
 
-// CreateTime applies equality check predicate on the "create_time" field. It's identical to CreateTimeEQ.
-func CreateTime(v time.Time) predicate.Vehicle {
+// Condition applies equality check predicate on the "condition" field. It's identical to ConditionEQ.
+func Condition(v string) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCondition), v))
+	})
+}
+
+// CreateTimeEQ applies the EQ predicate on the "create_time" field.
+func CreateTimeEQ(v time.Time) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldCreateTime), v))
 	})
 }
 
-// UpdateTime applies equality check predicate on the "update_time" field. It's identical to UpdateTimeEQ.
-func UpdateTime(v time.Time) predicate.Vehicle {
+// CreateTimeNEQ applies the NEQ predicate on the "create_time" field.
+func CreateTimeNEQ(v time.Time) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldCreateTime), v))
+	})
+}
+
+// CreateTimeIn applies the In predicate on the "create_time" field.
+func CreateTimeIn(vs ...time.Time) predicate.Vehicle {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Vehicle(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldCreateTime), v...))
+	})
+}
+
+// CreateTimeNotIn applies the NotIn predicate on the "create_time" field.
+func CreateTimeNotIn(vs ...time.Time) predicate.Vehicle {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Vehicle(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldCreateTime), v...))
+	})
+}
+
+// CreateTimeGT applies the GT predicate on the "create_time" field.
+func CreateTimeGT(v time.Time) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCreateTime), v))
+	})
+}
+
+// CreateTimeGTE applies the GTE predicate on the "create_time" field.
+func CreateTimeGTE(v time.Time) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCreateTime), v))
+	})
+}
+
+// CreateTimeLT applies the LT predicate on the "create_time" field.
+func CreateTimeLT(v time.Time) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCreateTime), v))
+	})
+}
+
+// CreateTimeLTE applies the LTE predicate on the "create_time" field.
+func CreateTimeLTE(v time.Time) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCreateTime), v))
+	})
+}
+
+// UpdateTimeEQ applies the EQ predicate on the "update_time" field.
+func UpdateTimeEQ(v time.Time) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldUpdateTime), v))
+	})
+}
+
+// UpdateTimeNEQ applies the NEQ predicate on the "update_time" field.
+func UpdateTimeNEQ(v time.Time) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.NEQ(s.C(FieldUpdateTime), v))
+	})
+}
+
+// UpdateTimeIn applies the In predicate on the "update_time" field.
+func UpdateTimeIn(vs ...time.Time) predicate.Vehicle {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Vehicle(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.In(s.C(FieldUpdateTime), v...))
+	})
+}
+
+// UpdateTimeNotIn applies the NotIn predicate on the "update_time" field.
+func UpdateTimeNotIn(vs ...time.Time) predicate.Vehicle {
+	v := make([]interface{}, len(vs))
+	for i := range v {
+		v[i] = vs[i]
+	}
+	return predicate.Vehicle(func(s *sql.Selector) {
+		// if not arguments were provided, append the FALSE constants,
+		// since we can't apply "IN ()". This will make this predicate falsy.
+		if len(v) == 0 {
+			s.Where(sql.False())
+			return
+		}
+		s.Where(sql.NotIn(s.C(FieldUpdateTime), v...))
+	})
+}
+
+// UpdateTimeGT applies the GT predicate on the "update_time" field.
+func UpdateTimeGT(v time.Time) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldUpdateTime), v))
+	})
+}
+
+// UpdateTimeGTE applies the GTE predicate on the "update_time" field.
+func UpdateTimeGTE(v time.Time) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldUpdateTime), v))
+	})
+}
+
+// UpdateTimeLT applies the LT predicate on the "update_time" field.
+func UpdateTimeLT(v time.Time) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldUpdateTime), v))
+	})
+}
+
+// UpdateTimeLTE applies the LTE predicate on the "update_time" field.
+func UpdateTimeLTE(v time.Time) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldUpdateTime), v))
 	})
 }
 
@@ -249,20 +408,6 @@ func MakeHasPrefix(v string) predicate.Vehicle {
 func MakeHasSuffix(v string) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldMake), v))
-	})
-}
-
-// MakeIsNil applies the IsNil predicate on the "make" field.
-func MakeIsNil() predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldMake)))
-	})
-}
-
-// MakeNotNil applies the NotNil predicate on the "make" field.
-func MakeNotNil() predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldMake)))
 	})
 }
 
@@ -374,20 +519,6 @@ func ModelHasPrefix(v string) predicate.Vehicle {
 func ModelHasSuffix(v string) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.HasSuffix(s.C(FieldModel), v))
-	})
-}
-
-// ModelIsNil applies the IsNil predicate on the "model" field.
-func ModelIsNil() predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldModel)))
-	})
-}
-
-// ModelNotNil applies the NotNil predicate on the "model" field.
-func ModelNotNil() predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldModel)))
 	})
 }
 
@@ -863,36 +994,22 @@ func ActiveNotNil() predicate.Vehicle {
 	})
 }
 
-// TagsIsNil applies the IsNil predicate on the "tags" field.
-func TagsIsNil() predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.IsNull(s.C(FieldTags)))
-	})
-}
-
-// TagsNotNil applies the NotNil predicate on the "tags" field.
-func TagsNotNil() predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.NotNull(s.C(FieldTags)))
-	})
-}
-
 // ConditionEQ applies the EQ predicate on the "condition" field.
-func ConditionEQ(v Condition) predicate.Vehicle {
+func ConditionEQ(v string) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldCondition), v))
 	})
 }
 
 // ConditionNEQ applies the NEQ predicate on the "condition" field.
-func ConditionNEQ(v Condition) predicate.Vehicle {
+func ConditionNEQ(v string) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldCondition), v))
 	})
 }
 
 // ConditionIn applies the In predicate on the "condition" field.
-func ConditionIn(vs ...Condition) predicate.Vehicle {
+func ConditionIn(vs ...string) predicate.Vehicle {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -909,7 +1026,7 @@ func ConditionIn(vs ...Condition) predicate.Vehicle {
 }
 
 // ConditionNotIn applies the NotIn predicate on the "condition" field.
-func ConditionNotIn(vs ...Condition) predicate.Vehicle {
+func ConditionNotIn(vs ...string) predicate.Vehicle {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -922,6 +1039,55 @@ func ConditionNotIn(vs ...Condition) predicate.Vehicle {
 			return
 		}
 		s.Where(sql.NotIn(s.C(FieldCondition), v...))
+	})
+}
+
+// ConditionGT applies the GT predicate on the "condition" field.
+func ConditionGT(v string) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionGTE applies the GTE predicate on the "condition" field.
+func ConditionGTE(v string) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionLT applies the LT predicate on the "condition" field.
+func ConditionLT(v string) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionLTE applies the LTE predicate on the "condition" field.
+func ConditionLTE(v string) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionContains applies the Contains predicate on the "condition" field.
+func ConditionContains(v string) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionHasPrefix applies the HasPrefix predicate on the "condition" field.
+func ConditionHasPrefix(v string) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionHasSuffix applies the HasSuffix predicate on the "condition" field.
+func ConditionHasSuffix(v string) predicate.Vehicle {
+	return predicate.Vehicle(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldCondition), v))
 	})
 }
 
@@ -939,155 +1105,17 @@ func ConditionNotNil() predicate.Vehicle {
 	})
 }
 
-// CreateTimeEQ applies the EQ predicate on the "create_time" field.
-func CreateTimeEQ(v time.Time) predicate.Vehicle {
+// ConditionEqualFold applies the EqualFold predicate on the "condition" field.
+func ConditionEqualFold(v string) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldCreateTime), v))
+		s.Where(sql.EqualFold(s.C(FieldCondition), v))
 	})
 }
 
-// CreateTimeNEQ applies the NEQ predicate on the "create_time" field.
-func CreateTimeNEQ(v time.Time) predicate.Vehicle {
+// ConditionContainsFold applies the ContainsFold predicate on the "condition" field.
+func ConditionContainsFold(v string) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldCreateTime), v))
-	})
-}
-
-// CreateTimeIn applies the In predicate on the "create_time" field.
-func CreateTimeIn(vs ...time.Time) predicate.Vehicle {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Vehicle(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
-		s.Where(sql.In(s.C(FieldCreateTime), v...))
-	})
-}
-
-// CreateTimeNotIn applies the NotIn predicate on the "create_time" field.
-func CreateTimeNotIn(vs ...time.Time) predicate.Vehicle {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Vehicle(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
-		s.Where(sql.NotIn(s.C(FieldCreateTime), v...))
-	})
-}
-
-// CreateTimeGT applies the GT predicate on the "create_time" field.
-func CreateTimeGT(v time.Time) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldCreateTime), v))
-	})
-}
-
-// CreateTimeGTE applies the GTE predicate on the "create_time" field.
-func CreateTimeGTE(v time.Time) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldCreateTime), v))
-	})
-}
-
-// CreateTimeLT applies the LT predicate on the "create_time" field.
-func CreateTimeLT(v time.Time) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldCreateTime), v))
-	})
-}
-
-// CreateTimeLTE applies the LTE predicate on the "create_time" field.
-func CreateTimeLTE(v time.Time) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldCreateTime), v))
-	})
-}
-
-// UpdateTimeEQ applies the EQ predicate on the "update_time" field.
-func UpdateTimeEQ(v time.Time) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.EQ(s.C(FieldUpdateTime), v))
-	})
-}
-
-// UpdateTimeNEQ applies the NEQ predicate on the "update_time" field.
-func UpdateTimeNEQ(v time.Time) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.NEQ(s.C(FieldUpdateTime), v))
-	})
-}
-
-// UpdateTimeIn applies the In predicate on the "update_time" field.
-func UpdateTimeIn(vs ...time.Time) predicate.Vehicle {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Vehicle(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
-		s.Where(sql.In(s.C(FieldUpdateTime), v...))
-	})
-}
-
-// UpdateTimeNotIn applies the NotIn predicate on the "update_time" field.
-func UpdateTimeNotIn(vs ...time.Time) predicate.Vehicle {
-	v := make([]interface{}, len(vs))
-	for i := range v {
-		v[i] = vs[i]
-	}
-	return predicate.Vehicle(func(s *sql.Selector) {
-		// if not arguments were provided, append the FALSE constants,
-		// since we can't apply "IN ()". This will make this predicate falsy.
-		if len(v) == 0 {
-			s.Where(sql.False())
-			return
-		}
-		s.Where(sql.NotIn(s.C(FieldUpdateTime), v...))
-	})
-}
-
-// UpdateTimeGT applies the GT predicate on the "update_time" field.
-func UpdateTimeGT(v time.Time) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.GT(s.C(FieldUpdateTime), v))
-	})
-}
-
-// UpdateTimeGTE applies the GTE predicate on the "update_time" field.
-func UpdateTimeGTE(v time.Time) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.GTE(s.C(FieldUpdateTime), v))
-	})
-}
-
-// UpdateTimeLT applies the LT predicate on the "update_time" field.
-func UpdateTimeLT(v time.Time) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.LT(s.C(FieldUpdateTime), v))
-	})
-}
-
-// UpdateTimeLTE applies the LTE predicate on the "update_time" field.
-func UpdateTimeLTE(v time.Time) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.LTE(s.C(FieldUpdateTime), v))
+		s.Where(sql.ContainsFold(s.C(FieldCondition), v))
 	})
 }
 

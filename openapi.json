@@ -10,6 +10,240 @@
     "version": "0.0.0"
   },
   "paths": {
+    "/categories": {
+      "get": {
+        "summary": "List Categories",
+        "description": "List Categories.",
+        "tags": [
+          "Category"
+        ],
+        "operationId": "listCategory",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "what page to render",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "itemsPerPage",
+            "in": "query",
+            "description": "item count to render per page",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "result Category list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Category4094953247View"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new Category",
+        "description": "Creates a new Category and persists it to storage.",
+        "tags": [
+          "Category"
+        ],
+        "operationId": "createCategory",
+        "requestBody": {
+          "description": "Category to create",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category4094953247View"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/categories/{id}": {
+      "get": {
+        "summary": "Find a Category by ID",
+        "description": "Finds the Category with the requested ID and returns it.",
+        "tags": [
+          "Category"
+        ],
+        "operationId": "readCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Category",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Category with requested ID was found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category4094953247View"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a Category by ID",
+        "description": "Deletes the Category with the requested ID.",
+        "tags": [
+          "Category"
+        ],
+        "operationId": "deleteCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Category to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Category with requested ID was deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Updates a Category",
+        "description": "Updates a Category and persists changes to storage.",
+        "tags": [
+          "Category"
+        ],
+        "operationId": "updateCategory",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Category to update",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Category properties to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Category updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Category4094953247View"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
     "/equipment": {
       "get": {
         "summary": "List Equipment",
@@ -46,7 +280,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Equipment2075188150View"
+                    "$ref": "#/components/schemas/Equipment3958372643View"
                   }
                 }
               }
@@ -80,13 +314,11 @@
                   "condition",
                   "create_time",
                   "name",
-                  "tags",
                   "update_time"
                 ],
                 "properties": {
                   "condition": {
-                    "type": "string",
-                    "example": "UNSPECIFIED"
+                    "type": "string"
                   },
                   "create_time": {
                     "type": "string",
@@ -94,12 +326,6 @@
                   },
                   "name": {
                     "type": "string"
-                  },
-                  "tags": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
                   },
                   "update_time": {
                     "type": "string",
@@ -116,7 +342,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Equipment2075188150View"
+                  "$ref": "#/components/schemas/Equipment3958372643View"
                 }
               }
             }
@@ -146,7 +372,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -156,7 +382,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Equipment2075188150View"
+                  "$ref": "#/components/schemas/Equipment3958372643View"
                 }
               }
             }
@@ -187,7 +413,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -221,7 +447,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -233,23 +459,20 @@
                 "type": "object",
                 "required": [
                   "condition",
+                  "create_time",
                   "name",
-                  "tags",
                   "update_time"
                 ],
                 "properties": {
                   "condition": {
+                    "type": "string"
+                  },
+                  "create_time": {
                     "type": "string",
-                    "example": "UNSPECIFIED"
+                    "format": "date-time"
                   },
                   "name": {
                     "type": "string"
-                  },
-                  "tags": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
                   },
                   "update_time": {
                     "type": "string",
@@ -266,7 +489,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Equipment2075188150View"
+                  "$ref": "#/components/schemas/Equipment3958372643View"
                 }
               }
             }
@@ -319,7 +542,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Vehicle2848838632View"
+                    "$ref": "#/components/schemas/Vehicle2530256765View"
                   }
                 }
               }
@@ -351,6 +574,8 @@
                 "type": "object",
                 "required": [
                   "create_time",
+                  "make",
+                  "model",
                   "update_time"
                 ],
                 "properties": {
@@ -358,8 +583,7 @@
                     "type": "boolean"
                   },
                   "condition": {
-                    "type": "string",
-                    "example": "UNSPECIFIED"
+                    "type": "string"
                   },
                   "create_time": {
                     "type": "string",
@@ -382,12 +606,6 @@
                   "owner": {
                     "type": "string"
                   },
-                  "tags": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
-                  },
                   "update_time": {
                     "type": "string",
                     "format": "date-time"
@@ -406,7 +624,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Vehicle2848838632View"
+                  "$ref": "#/components/schemas/Vehicle2530256765View"
                 }
               }
             }
@@ -436,7 +654,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -446,7 +664,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Vehicle2848838632View"
+                  "$ref": "#/components/schemas/Vehicle2530256765View"
                 }
               }
             }
@@ -477,7 +695,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -511,7 +729,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -522,6 +740,9 @@
               "schema": {
                 "type": "object",
                 "required": [
+                  "create_time",
+                  "make",
+                  "model",
                   "update_time"
                 ],
                 "properties": {
@@ -529,8 +750,11 @@
                     "type": "boolean"
                   },
                   "condition": {
+                    "type": "string"
+                  },
+                  "create_time": {
                     "type": "string",
-                    "example": "UNSPECIFIED"
+                    "format": "date-time"
                   },
                   "make": {
                     "type": "string"
@@ -548,12 +772,6 @@
                   },
                   "owner": {
                     "type": "string"
-                  },
-                  "tags": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
                   },
                   "update_time": {
                     "type": "string",
@@ -573,7 +791,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Vehicle2848838632View"
+                  "$ref": "#/components/schemas/Vehicle2530256765View"
                 }
               }
             }
@@ -593,20 +811,34 @@
   },
   "components": {
     "schemas": {
-      "Equipment2075188150View": {
+      "Category4094953247View": {
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "Equipment3958372643View": {
         "type": "object",
         "required": [
           "condition",
           "create_time",
           "id",
           "name",
-          "tags",
           "update_time"
         ],
         "properties": {
           "condition": {
-            "type": "string",
-            "example": "UNSPECIFIED"
+            "type": "string"
           },
           "create_time": {
             "type": "string",
@@ -614,16 +846,10 @@
           },
           "id": {
             "type": "integer",
-            "format": "int64"
+            "format": "int32"
           },
           "name": {
             "type": "string"
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           },
           "update_time": {
             "type": "string",
@@ -631,11 +857,13 @@
           }
         }
       },
-      "Vehicle2848838632View": {
+      "Vehicle2530256765View": {
         "type": "object",
         "required": [
           "create_time",
           "id",
+          "make",
+          "model",
           "update_time"
         ],
         "properties": {
@@ -643,8 +871,7 @@
             "type": "boolean"
           },
           "condition": {
-            "type": "string",
-            "example": "UNSPECIFIED"
+            "type": "string"
           },
           "create_time": {
             "type": "string",
@@ -652,7 +879,7 @@
           },
           "id": {
             "type": "integer",
-            "format": "int64"
+            "format": "int32"
           },
           "make": {
             "type": "string"
@@ -670,12 +897,6 @@
           },
           "owner": {
             "type": "string"
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           },
           "update_time": {
             "type": "string",
