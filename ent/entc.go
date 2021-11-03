@@ -12,14 +12,15 @@ import (
 )
 
 func main() {
-	ex, err := elk.NewExtension(
+	exREST, err := elk.NewExtension(
 		elk.GenerateSpec("../openapi.json", elk.SpecTitle("Inventory API"), elk.SpecDescription("An API for agriculture inventory management.")),
 		elk.GenerateHandlers(),
 	)
 	if err != nil {
 		log.Fatalf("creating elk extension: %v", err)
 	}
-	err = entc.Generate("./schema", &gen.Config{}, entc.Extensions(ex))
+
+	err = entc.Generate("./schema", &gen.Config{}, entc.Extensions(exREST))
 	if err != nil {
 		log.Fatalf("running ent codegen: %v", err)
 	}
