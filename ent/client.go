@@ -168,7 +168,7 @@ func (c *EquipmentClient) UpdateOne(e *Equipment) *EquipmentUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *EquipmentClient) UpdateOneID(id uint64) *EquipmentUpdateOne {
+func (c *EquipmentClient) UpdateOneID(id int64) *EquipmentUpdateOne {
 	mutation := newEquipmentMutation(c.config, OpUpdateOne, withEquipmentID(id))
 	return &EquipmentUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -185,7 +185,7 @@ func (c *EquipmentClient) DeleteOne(e *Equipment) *EquipmentDeleteOne {
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *EquipmentClient) DeleteOneID(id uint64) *EquipmentDeleteOne {
+func (c *EquipmentClient) DeleteOneID(id int64) *EquipmentDeleteOne {
 	builder := c.Delete().Where(equipment.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -200,12 +200,12 @@ func (c *EquipmentClient) Query() *EquipmentQuery {
 }
 
 // Get returns a Equipment entity by its id.
-func (c *EquipmentClient) Get(ctx context.Context, id uint64) (*Equipment, error) {
+func (c *EquipmentClient) Get(ctx context.Context, id int64) (*Equipment, error) {
 	return c.Query().Where(equipment.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *EquipmentClient) GetX(ctx context.Context, id uint64) *Equipment {
+func (c *EquipmentClient) GetX(ctx context.Context, id int64) *Equipment {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)
@@ -258,7 +258,7 @@ func (c *VehicleClient) UpdateOne(v *Vehicle) *VehicleUpdateOne {
 }
 
 // UpdateOneID returns an update builder for the given id.
-func (c *VehicleClient) UpdateOneID(id uint64) *VehicleUpdateOne {
+func (c *VehicleClient) UpdateOneID(id int64) *VehicleUpdateOne {
 	mutation := newVehicleMutation(c.config, OpUpdateOne, withVehicleID(id))
 	return &VehicleUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
 }
@@ -275,7 +275,7 @@ func (c *VehicleClient) DeleteOne(v *Vehicle) *VehicleDeleteOne {
 }
 
 // DeleteOneID returns a delete builder for the given id.
-func (c *VehicleClient) DeleteOneID(id uint64) *VehicleDeleteOne {
+func (c *VehicleClient) DeleteOneID(id int64) *VehicleDeleteOne {
 	builder := c.Delete().Where(vehicle.ID(id))
 	builder.mutation.id = &id
 	builder.mutation.op = OpDeleteOne
@@ -290,12 +290,12 @@ func (c *VehicleClient) Query() *VehicleQuery {
 }
 
 // Get returns a Vehicle entity by its id.
-func (c *VehicleClient) Get(ctx context.Context, id uint64) (*Vehicle, error) {
+func (c *VehicleClient) Get(ctx context.Context, id int64) (*Vehicle, error) {
 	return c.Query().Where(vehicle.ID(id)).Only(ctx)
 }
 
 // GetX is like Get, but panics if an error occurs.
-func (c *VehicleClient) GetX(ctx context.Context, id uint64) *Vehicle {
+func (c *VehicleClient) GetX(ctx context.Context, id int64) *Vehicle {
 	obj, err := c.Get(ctx, id)
 	if err != nil {
 		panic(err)

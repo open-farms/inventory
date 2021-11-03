@@ -84,8 +84,8 @@ func (eq *EquipmentQuery) FirstX(ctx context.Context) *Equipment {
 
 // FirstID returns the first Equipment ID from the query.
 // Returns a *NotFoundError when no Equipment ID was found.
-func (eq *EquipmentQuery) FirstID(ctx context.Context) (id uint64, err error) {
-	var ids []uint64
+func (eq *EquipmentQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = eq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -97,7 +97,7 @@ func (eq *EquipmentQuery) FirstID(ctx context.Context) (id uint64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (eq *EquipmentQuery) FirstIDX(ctx context.Context) uint64 {
+func (eq *EquipmentQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := eq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -135,8 +135,8 @@ func (eq *EquipmentQuery) OnlyX(ctx context.Context) *Equipment {
 // OnlyID is like Only, but returns the only Equipment ID in the query.
 // Returns a *NotSingularError when exactly one Equipment ID is not found.
 // Returns a *NotFoundError when no entities are found.
-func (eq *EquipmentQuery) OnlyID(ctx context.Context) (id uint64, err error) {
-	var ids []uint64
+func (eq *EquipmentQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = eq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -152,7 +152,7 @@ func (eq *EquipmentQuery) OnlyID(ctx context.Context) (id uint64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (eq *EquipmentQuery) OnlyIDX(ctx context.Context) uint64 {
+func (eq *EquipmentQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := eq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -178,8 +178,8 @@ func (eq *EquipmentQuery) AllX(ctx context.Context) []*Equipment {
 }
 
 // IDs executes the query and returns a list of Equipment IDs.
-func (eq *EquipmentQuery) IDs(ctx context.Context) ([]uint64, error) {
-	var ids []uint64
+func (eq *EquipmentQuery) IDs(ctx context.Context) ([]int64, error) {
+	var ids []int64
 	if err := eq.Select(equipment.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -187,7 +187,7 @@ func (eq *EquipmentQuery) IDs(ctx context.Context) ([]uint64, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (eq *EquipmentQuery) IDsX(ctx context.Context) []uint64 {
+func (eq *EquipmentQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := eq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -353,7 +353,7 @@ func (eq *EquipmentQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   equipment.Table,
 			Columns: equipment.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt64,
 				Column: equipment.FieldID,
 			},
 		},

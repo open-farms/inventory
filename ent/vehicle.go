@@ -16,11 +16,17 @@ import (
 type Vehicle struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID uint64 `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Make holds the value of the "make" field.
 	Make string `json:"make,omitempty"`
 	// Model holds the value of the "model" field.
 	Model string `json:"model,omitempty"`
+	// Miles holds the value of the "miles" field.
+	Miles int64 `json:"miles,omitempty"`
+	// Mpg holds the value of the "mpg" field.
+	Mpg int64 `json:"mpg,omitempty"`
+	// Owner holds the value of the "owner" field.
+	Owner string `json:"owner,omitempty"`
 	// Year holds the value of the "year" field.
 	Year string `json:"year,omitempty"`
 	// Active holds the value of the "active" field.
@@ -29,10 +35,10 @@ type Vehicle struct {
 	Tags []string `json:"tags,omitempty"`
 	// Condition holds the value of the "condition" field.
 	Condition vehicle.Condition `json:"condition,omitempty"`
-	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// CreateTime holds the value of the "create_time" field.
+	CreateTime time.Time `json:"create_time,omitempty"`
+	// UpdateTime holds the value of the "update_time" field.
+	UpdateTime time.Time `json:"update_time,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -44,11 +50,11 @@ func (*Vehicle) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new([]byte)
 		case vehicle.FieldActive:
 			values[i] = new(sql.NullBool)
-		case vehicle.FieldID:
+		case vehicle.FieldID, vehicle.FieldMiles, vehicle.FieldMpg:
 			values[i] = new(sql.NullInt64)
-		case vehicle.FieldMake, vehicle.FieldModel, vehicle.FieldYear, vehicle.FieldCondition:
+		case vehicle.FieldMake, vehicle.FieldModel, vehicle.FieldOwner, vehicle.FieldYear, vehicle.FieldCondition:
 			values[i] = new(sql.NullString)
-		case vehicle.FieldCreatedAt, vehicle.FieldUpdatedAt:
+		case vehicle.FieldCreateTime, vehicle.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Vehicle", columns[i])
@@ -70,7 +76,7 @@ func (v *Vehicle) assignValues(columns []string, values []interface{}) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			v.ID = uint64(value.Int64)
+			v.ID = int64(value.Int64)
 		case vehicle.FieldMake:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field make", values[i])
@@ -82,6 +88,24 @@ func (v *Vehicle) assignValues(columns []string, values []interface{}) error {
 				return fmt.Errorf("unexpected type %T for field model", values[i])
 			} else if value.Valid {
 				v.Model = value.String
+			}
+		case vehicle.FieldMiles:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field miles", values[i])
+			} else if value.Valid {
+				v.Miles = value.Int64
+			}
+		case vehicle.FieldMpg:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field mpg", values[i])
+			} else if value.Valid {
+				v.Mpg = value.Int64
+			}
+		case vehicle.FieldOwner:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field owner", values[i])
+			} else if value.Valid {
+				v.Owner = value.String
 			}
 		case vehicle.FieldYear:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -109,17 +133,17 @@ func (v *Vehicle) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				v.Condition = vehicle.Condition(value.String)
 			}
-		case vehicle.FieldCreatedAt:
+		case vehicle.FieldCreateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+				return fmt.Errorf("unexpected type %T for field create_time", values[i])
 			} else if value.Valid {
-				v.CreatedAt = value.Time
+				v.CreateTime = value.Time
 			}
-		case vehicle.FieldUpdatedAt:
+		case vehicle.FieldUpdateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+				return fmt.Errorf("unexpected type %T for field update_time", values[i])
 			} else if value.Valid {
-				v.UpdatedAt = value.Time
+				v.UpdateTime = value.Time
 			}
 		}
 	}
@@ -153,6 +177,12 @@ func (v *Vehicle) String() string {
 	builder.WriteString(v.Make)
 	builder.WriteString(", model=")
 	builder.WriteString(v.Model)
+	builder.WriteString(", miles=")
+	builder.WriteString(fmt.Sprintf("%v", v.Miles))
+	builder.WriteString(", mpg=")
+	builder.WriteString(fmt.Sprintf("%v", v.Mpg))
+	builder.WriteString(", owner=")
+	builder.WriteString(v.Owner)
 	builder.WriteString(", year=")
 	builder.WriteString(v.Year)
 	builder.WriteString(", active=")
@@ -161,10 +191,10 @@ func (v *Vehicle) String() string {
 	builder.WriteString(fmt.Sprintf("%v", v.Tags))
 	builder.WriteString(", condition=")
 	builder.WriteString(fmt.Sprintf("%v", v.Condition))
-	builder.WriteString(", created_at=")
-	builder.WriteString(v.CreatedAt.Format(time.ANSIC))
-	builder.WriteString(", updated_at=")
-	builder.WriteString(v.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", create_time=")
+	builder.WriteString(v.CreateTime.Format(time.ANSIC))
+	builder.WriteString(", update_time=")
+	builder.WriteString(v.UpdateTime.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

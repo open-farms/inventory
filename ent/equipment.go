@@ -16,17 +16,17 @@ import (
 type Equipment struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID uint64 `json:"id,omitempty"`
+	ID int64 `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
 	// Tags holds the value of the "tags" field.
 	Tags []string `json:"tags,omitempty"`
 	// Condition holds the value of the "condition" field.
 	Condition equipment.Condition `json:"condition,omitempty"`
-	// CreatedAt holds the value of the "created_at" field.
-	CreatedAt time.Time `json:"created_at,omitempty"`
-	// UpdatedAt holds the value of the "updated_at" field.
-	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// CreateTime holds the value of the "create_time" field.
+	CreateTime time.Time `json:"create_time,omitempty"`
+	// UpdateTime holds the value of the "update_time" field.
+	UpdateTime time.Time `json:"update_time,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -40,7 +40,7 @@ func (*Equipment) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullInt64)
 		case equipment.FieldName, equipment.FieldCondition:
 			values[i] = new(sql.NullString)
-		case equipment.FieldCreatedAt, equipment.FieldUpdatedAt:
+		case equipment.FieldCreateTime, equipment.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Equipment", columns[i])
@@ -62,7 +62,7 @@ func (e *Equipment) assignValues(columns []string, values []interface{}) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			e.ID = uint64(value.Int64)
+			e.ID = int64(value.Int64)
 		case equipment.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
@@ -83,17 +83,17 @@ func (e *Equipment) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				e.Condition = equipment.Condition(value.String)
 			}
-		case equipment.FieldCreatedAt:
+		case equipment.FieldCreateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+				return fmt.Errorf("unexpected type %T for field create_time", values[i])
 			} else if value.Valid {
-				e.CreatedAt = value.Time
+				e.CreateTime = value.Time
 			}
-		case equipment.FieldUpdatedAt:
+		case equipment.FieldUpdateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+				return fmt.Errorf("unexpected type %T for field update_time", values[i])
 			} else if value.Valid {
-				e.UpdatedAt = value.Time
+				e.UpdateTime = value.Time
 			}
 		}
 	}
@@ -129,10 +129,10 @@ func (e *Equipment) String() string {
 	builder.WriteString(fmt.Sprintf("%v", e.Tags))
 	builder.WriteString(", condition=")
 	builder.WriteString(fmt.Sprintf("%v", e.Condition))
-	builder.WriteString(", created_at=")
-	builder.WriteString(e.CreatedAt.Format(time.ANSIC))
-	builder.WriteString(", updated_at=")
-	builder.WriteString(e.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", create_time=")
+	builder.WriteString(e.CreateTime.Format(time.ANSIC))
+	builder.WriteString(", update_time=")
+	builder.WriteString(e.UpdateTime.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

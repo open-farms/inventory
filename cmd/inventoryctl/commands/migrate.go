@@ -3,7 +3,7 @@ package commands
 import (
 	"fmt"
 
-	"github.com/open-farms/inventory/internal/biz"
+	"github.com/open-farms/inventory/internal/settings"
 )
 
 type MigrateCmd struct {
@@ -15,7 +15,7 @@ func (m *MigrateCmd) Run(globals *Globals) error {
 		fmt.Printf("\n%s\n\n", "Dry run enabled - no changes will be committed.")
 	}
 
-	err := biz.Migrate(globals.Config, m.Dry)
+	err := settings.Migrate(globals.Config, m.Dry)
 	if err != nil {
 		return err
 	}

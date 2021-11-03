@@ -1,10 +1,11 @@
 package schema
 
 import (
+	"errors"
+	"strings"
 	"time"
 
 	"entgo.io/ent"
-	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/field"
 )
 
@@ -13,13 +14,22 @@ type Equipment struct {
 	ent.Schema
 }
 
+func validateName() func(s string) error {
+	return func(s string) error {
+		if strings.ToLower(s) == s {
+			return errors.New("name must begin with uppercase")
+		}
+		return nil
+	}
+}
+
 // Fields of the Equipment.
 func (Equipment) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint64("id").
-			Positive(),
-		field.String("name").
-			Default("unknown"),
+		field.Int64("id").Unique(),
+		field.String("name").Validate(
+			validateName(),
+		),
 		field.Strings("tags"),
 		field.Enum("condition").
 			Values(
@@ -29,18 +39,13 @@ func (Equipment) Fields() []ent.Field {
 				"POOR",
 				"BROKEN",
 			),
-		field.Time("created_at").
+		field.Time("create_time").
 			Default(time.Now).
-			SchemaType(map[string]string{
-				dialect.MySQL:    "datetime",
-				dialect.Postgres: "timestamp",
-			}),
-		field.Time("updated_at").
+			UpdateDefault(time.Now).
+			Immutable(),
+		field.Time("update_time").
 			Default(time.Now).
-			SchemaType(map[string]string{
-				dialect.MySQL:    "datetime",
-				dialect.Postgres: "timestamp",
-			}),
+			UpdateDefault(time.Now),
 	}
 }
 

@@ -18,34 +18,32 @@ func init() {
 	_ = equipmentFields
 	// equipmentDescName is the schema descriptor for name field.
 	equipmentDescName := equipmentFields[1].Descriptor()
-	// equipment.DefaultName holds the default value on creation for the name field.
-	equipment.DefaultName = equipmentDescName.Default.(string)
-	// equipmentDescCreatedAt is the schema descriptor for created_at field.
-	equipmentDescCreatedAt := equipmentFields[4].Descriptor()
-	// equipment.DefaultCreatedAt holds the default value on creation for the created_at field.
-	equipment.DefaultCreatedAt = equipmentDescCreatedAt.Default.(func() time.Time)
-	// equipmentDescUpdatedAt is the schema descriptor for updated_at field.
-	equipmentDescUpdatedAt := equipmentFields[5].Descriptor()
-	// equipment.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	equipment.DefaultUpdatedAt = equipmentDescUpdatedAt.Default.(func() time.Time)
-	// equipmentDescID is the schema descriptor for id field.
-	equipmentDescID := equipmentFields[0].Descriptor()
-	// equipment.IDValidator is a validator for the "id" field. It is called by the builders before save.
-	equipment.IDValidator = equipmentDescID.Validators[0].(func(uint64) error)
+	// equipment.NameValidator is a validator for the "name" field. It is called by the builders before save.
+	equipment.NameValidator = equipmentDescName.Validators[0].(func(string) error)
+	// equipmentDescCreateTime is the schema descriptor for create_time field.
+	equipmentDescCreateTime := equipmentFields[4].Descriptor()
+	// equipment.DefaultCreateTime holds the default value on creation for the create_time field.
+	equipment.DefaultCreateTime = equipmentDescCreateTime.Default.(func() time.Time)
+	// equipment.UpdateDefaultCreateTime holds the default value on update for the create_time field.
+	equipment.UpdateDefaultCreateTime = equipmentDescCreateTime.UpdateDefault.(func() time.Time)
+	// equipmentDescUpdateTime is the schema descriptor for update_time field.
+	equipmentDescUpdateTime := equipmentFields[5].Descriptor()
+	// equipment.DefaultUpdateTime holds the default value on creation for the update_time field.
+	equipment.DefaultUpdateTime = equipmentDescUpdateTime.Default.(func() time.Time)
+	// equipment.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	equipment.UpdateDefaultUpdateTime = equipmentDescUpdateTime.UpdateDefault.(func() time.Time)
 	vehicleFields := schema.Vehicle{}.Fields()
 	_ = vehicleFields
-	// vehicleDescCreatedAt is the schema descriptor for created_at field.
-	vehicleDescCreatedAt := vehicleFields[7].Descriptor()
-	// vehicle.DefaultCreatedAt holds the default value on creation for the created_at field.
-	vehicle.DefaultCreatedAt = vehicleDescCreatedAt.Default.(func() time.Time)
-	// vehicleDescUpdatedAt is the schema descriptor for updated_at field.
-	vehicleDescUpdatedAt := vehicleFields[8].Descriptor()
-	// vehicle.DefaultUpdatedAt holds the default value on creation for the updated_at field.
-	vehicle.DefaultUpdatedAt = vehicleDescUpdatedAt.Default.(func() time.Time)
-	// vehicle.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
-	vehicle.UpdateDefaultUpdatedAt = vehicleDescUpdatedAt.UpdateDefault.(func() time.Time)
-	// vehicleDescID is the schema descriptor for id field.
-	vehicleDescID := vehicleFields[0].Descriptor()
-	// vehicle.IDValidator is a validator for the "id" field. It is called by the builders before save.
-	vehicle.IDValidator = vehicleDescID.Validators[0].(func(uint64) error)
+	// vehicleDescCreateTime is the schema descriptor for create_time field.
+	vehicleDescCreateTime := vehicleFields[10].Descriptor()
+	// vehicle.DefaultCreateTime holds the default value on creation for the create_time field.
+	vehicle.DefaultCreateTime = vehicleDescCreateTime.Default.(func() time.Time)
+	// vehicle.UpdateDefaultCreateTime holds the default value on update for the create_time field.
+	vehicle.UpdateDefaultCreateTime = vehicleDescCreateTime.UpdateDefault.(func() time.Time)
+	// vehicleDescUpdateTime is the schema descriptor for update_time field.
+	vehicleDescUpdateTime := vehicleFields[11].Descriptor()
+	// vehicle.DefaultUpdateTime holds the default value on creation for the update_time field.
+	vehicle.DefaultUpdateTime = vehicleDescUpdateTime.Default.(func() time.Time)
+	// vehicle.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
+	vehicle.UpdateDefaultUpdateTime = vehicleDescUpdateTime.UpdateDefault.(func() time.Time)
 }

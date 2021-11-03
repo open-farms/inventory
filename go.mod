@@ -3,16 +3,15 @@ module github.com/open-farms/inventory
 go 1.16
 
 require (
-	entgo.io/ent v0.9.1
+	entgo.io/ent v0.9.2-0.20210822190728-d84ac191b1c7
+	github.com/99designs/gqlgen v0.14.0
 	github.com/alecthomas/kong v0.2.17
+	github.com/go-chi/chi/v5 v5.0.4
 	github.com/go-kratos/kratos/v2 v2.1.1
-	github.com/kr/pretty v0.2.0 // indirect
-	github.com/lib/pq v1.10.2
-	github.com/mattn/go-sqlite3 v1.14.8
-	golang.org/x/sys v0.0.0-20211031064116-611d5d643895 // indirect
-	golang.org/x/text v0.3.7 // indirect
-	google.golang.org/genproto v0.0.0-20211029142109-e255c875f7c7
-	google.golang.org/grpc v1.40.0
+	github.com/lib/pq v1.10.3
+	github.com/mailru/easyjson v0.7.7
+	github.com/mattn/go-sqlite3 v1.14.9
+	go.uber.org/zap v1.19.1
+	golang.org/x/sys v0.0.0-20211102192858-4dd72447c267 // indirect
 	google.golang.org/protobuf v1.27.1
-	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 )

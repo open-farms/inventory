@@ -16,6 +16,12 @@ const (
 	FieldMake = "make"
 	// FieldModel holds the string denoting the model field in the database.
 	FieldModel = "model"
+	// FieldMiles holds the string denoting the miles field in the database.
+	FieldMiles = "miles"
+	// FieldMpg holds the string denoting the mpg field in the database.
+	FieldMpg = "mpg"
+	// FieldOwner holds the string denoting the owner field in the database.
+	FieldOwner = "owner"
 	// FieldYear holds the string denoting the year field in the database.
 	FieldYear = "year"
 	// FieldActive holds the string denoting the active field in the database.
@@ -24,10 +30,10 @@ const (
 	FieldTags = "tags"
 	// FieldCondition holds the string denoting the condition field in the database.
 	FieldCondition = "condition"
-	// FieldCreatedAt holds the string denoting the created_at field in the database.
-	FieldCreatedAt = "created_at"
-	// FieldUpdatedAt holds the string denoting the updated_at field in the database.
-	FieldUpdatedAt = "updated_at"
+	// FieldCreateTime holds the string denoting the create_time field in the database.
+	FieldCreateTime = "create_time"
+	// FieldUpdateTime holds the string denoting the update_time field in the database.
+	FieldUpdateTime = "update_time"
 	// Table holds the table name of the vehicle in the database.
 	Table = "vehicles"
 )
@@ -37,12 +43,15 @@ var Columns = []string{
 	FieldID,
 	FieldMake,
 	FieldModel,
+	FieldMiles,
+	FieldMpg,
+	FieldOwner,
 	FieldYear,
 	FieldActive,
 	FieldTags,
 	FieldCondition,
-	FieldCreatedAt,
-	FieldUpdatedAt,
+	FieldCreateTime,
+	FieldUpdateTime,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -56,14 +65,14 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
-	DefaultCreatedAt func() time.Time
-	// DefaultUpdatedAt holds the default value on creation for the "updated_at" field.
-	DefaultUpdatedAt func() time.Time
-	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
-	UpdateDefaultUpdatedAt func() time.Time
-	// IDValidator is a validator for the "id" field. It is called by the builders before save.
-	IDValidator func(uint64) error
+	// DefaultCreateTime holds the default value on creation for the "create_time" field.
+	DefaultCreateTime func() time.Time
+	// UpdateDefaultCreateTime holds the default value on update for the "create_time" field.
+	UpdateDefaultCreateTime func() time.Time
+	// DefaultUpdateTime holds the default value on creation for the "update_time" field.
+	DefaultUpdateTime func() time.Time
+	// UpdateDefaultUpdateTime holds the default value on update for the "update_time" field.
+	UpdateDefaultUpdateTime func() time.Time
 )
 
 // Condition defines the type for the "condition" enum field.

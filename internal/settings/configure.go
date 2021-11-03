@@ -1,9 +1,10 @@
-package biz
+package settings
 
 import (
 	"context"
 	"os"
 
+	"entgo.io/ent/dialect/sql/schema"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 
@@ -67,7 +68,10 @@ func Migrate(configPath string, dry bool) error {
 		return nil
 	}
 
-	err = client.Schema.Create(ctx)
+	err = client.Schema.Create(ctx,
+		schema.WithDropColumn(true),
+		schema.WithDropIndex(true),
+	)
 	if err != nil {
 		return err
 	}

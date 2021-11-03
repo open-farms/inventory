@@ -33,12 +33,12 @@ type EquipmentMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *uint64
+	id            *int64
 	name          *string
 	tags          *[]string
 	condition     *equipment.Condition
-	created_at    *time.Time
-	updated_at    *time.Time
+	create_time   *time.Time
+	update_time   *time.Time
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Equipment, error)
@@ -65,7 +65,7 @@ func newEquipmentMutation(c config, op Op, opts ...equipmentOption) *EquipmentMu
 }
 
 // withEquipmentID sets the ID field of the mutation.
-func withEquipmentID(id uint64) equipmentOption {
+func withEquipmentID(id int64) equipmentOption {
 	return func(m *EquipmentMutation) {
 		var (
 			err   error
@@ -117,13 +117,13 @@ func (m EquipmentMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of Equipment entities.
-func (m *EquipmentMutation) SetID(id uint64) {
+func (m *EquipmentMutation) SetID(id int64) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *EquipmentMutation) ID() (id uint64, exists bool) {
+func (m *EquipmentMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -238,76 +238,76 @@ func (m *EquipmentMutation) ResetCondition() {
 	m.condition = nil
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *EquipmentMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
+// SetCreateTime sets the "create_time" field.
+func (m *EquipmentMutation) SetCreateTime(t time.Time) {
+	m.create_time = &t
 }
 
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *EquipmentMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
+// CreateTime returns the value of the "create_time" field in the mutation.
+func (m *EquipmentMutation) CreateTime() (r time.Time, exists bool) {
+	v := m.create_time
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the Equipment entity.
+// OldCreateTime returns the old "create_time" field's value of the Equipment entity.
 // If the Equipment object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EquipmentMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *EquipmentMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldCreatedAt is only allowed on UpdateOne operations")
+		return v, fmt.Errorf("OldCreateTime is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldCreatedAt requires an ID field in the mutation")
+		return v, fmt.Errorf("OldCreateTime requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+		return v, fmt.Errorf("querying old value for OldCreateTime: %w", err)
 	}
-	return oldValue.CreatedAt, nil
+	return oldValue.CreateTime, nil
 }
 
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *EquipmentMutation) ResetCreatedAt() {
-	m.created_at = nil
+// ResetCreateTime resets all changes to the "create_time" field.
+func (m *EquipmentMutation) ResetCreateTime() {
+	m.create_time = nil
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (m *EquipmentMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
+// SetUpdateTime sets the "update_time" field.
+func (m *EquipmentMutation) SetUpdateTime(t time.Time) {
+	m.update_time = &t
 }
 
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *EquipmentMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
+// UpdateTime returns the value of the "update_time" field in the mutation.
+func (m *EquipmentMutation) UpdateTime() (r time.Time, exists bool) {
+	v := m.update_time
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the Equipment entity.
+// OldUpdateTime returns the old "update_time" field's value of the Equipment entity.
 // If the Equipment object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EquipmentMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *EquipmentMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldUpdatedAt is only allowed on UpdateOne operations")
+		return v, fmt.Errorf("OldUpdateTime is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldUpdatedAt requires an ID field in the mutation")
+		return v, fmt.Errorf("OldUpdateTime requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+		return v, fmt.Errorf("querying old value for OldUpdateTime: %w", err)
 	}
-	return oldValue.UpdatedAt, nil
+	return oldValue.UpdateTime, nil
 }
 
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *EquipmentMutation) ResetUpdatedAt() {
-	m.updated_at = nil
+// ResetUpdateTime resets all changes to the "update_time" field.
+func (m *EquipmentMutation) ResetUpdateTime() {
+	m.update_time = nil
 }
 
 // Where appends a list predicates to the EquipmentMutation builder.
@@ -339,11 +339,11 @@ func (m *EquipmentMutation) Fields() []string {
 	if m.condition != nil {
 		fields = append(fields, equipment.FieldCondition)
 	}
-	if m.created_at != nil {
-		fields = append(fields, equipment.FieldCreatedAt)
+	if m.create_time != nil {
+		fields = append(fields, equipment.FieldCreateTime)
 	}
-	if m.updated_at != nil {
-		fields = append(fields, equipment.FieldUpdatedAt)
+	if m.update_time != nil {
+		fields = append(fields, equipment.FieldUpdateTime)
 	}
 	return fields
 }
@@ -359,10 +359,10 @@ func (m *EquipmentMutation) Field(name string) (ent.Value, bool) {
 		return m.Tags()
 	case equipment.FieldCondition:
 		return m.Condition()
-	case equipment.FieldCreatedAt:
-		return m.CreatedAt()
-	case equipment.FieldUpdatedAt:
-		return m.UpdatedAt()
+	case equipment.FieldCreateTime:
+		return m.CreateTime()
+	case equipment.FieldUpdateTime:
+		return m.UpdateTime()
 	}
 	return nil, false
 }
@@ -378,10 +378,10 @@ func (m *EquipmentMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldTags(ctx)
 	case equipment.FieldCondition:
 		return m.OldCondition(ctx)
-	case equipment.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case equipment.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
+	case equipment.FieldCreateTime:
+		return m.OldCreateTime(ctx)
+	case equipment.FieldUpdateTime:
+		return m.OldUpdateTime(ctx)
 	}
 	return nil, fmt.Errorf("unknown Equipment field %s", name)
 }
@@ -412,19 +412,19 @@ func (m *EquipmentMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCondition(v)
 		return nil
-	case equipment.FieldCreatedAt:
+	case equipment.FieldCreateTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetCreatedAt(v)
+		m.SetCreateTime(v)
 		return nil
-	case equipment.FieldUpdatedAt:
+	case equipment.FieldUpdateTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUpdatedAt(v)
+		m.SetUpdateTime(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Equipment field %s", name)
@@ -484,11 +484,11 @@ func (m *EquipmentMutation) ResetField(name string) error {
 	case equipment.FieldCondition:
 		m.ResetCondition()
 		return nil
-	case equipment.FieldCreatedAt:
-		m.ResetCreatedAt()
+	case equipment.FieldCreateTime:
+		m.ResetCreateTime()
 		return nil
-	case equipment.FieldUpdatedAt:
-		m.ResetUpdatedAt()
+	case equipment.FieldUpdateTime:
+		m.ResetUpdateTime()
 		return nil
 	}
 	return fmt.Errorf("unknown Equipment field %s", name)
@@ -547,15 +547,20 @@ type VehicleMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *uint64
+	id            *int64
 	make          *string
 	model         *string
+	miles         *int64
+	addmiles      *int64
+	mpg           *int64
+	addmpg        *int64
+	owner         *string
 	year          *string
 	active        *bool
 	tags          *[]string
 	condition     *vehicle.Condition
-	created_at    *time.Time
-	updated_at    *time.Time
+	create_time   *time.Time
+	update_time   *time.Time
 	clearedFields map[string]struct{}
 	done          bool
 	oldValue      func(context.Context) (*Vehicle, error)
@@ -582,7 +587,7 @@ func newVehicleMutation(c config, op Op, opts ...vehicleOption) *VehicleMutation
 }
 
 // withVehicleID sets the ID field of the mutation.
-func withVehicleID(id uint64) vehicleOption {
+func withVehicleID(id int64) vehicleOption {
 	return func(m *VehicleMutation) {
 		var (
 			err   error
@@ -634,13 +639,13 @@ func (m VehicleMutation) Tx() (*Tx, error) {
 
 // SetID sets the value of the id field. Note that this
 // operation is only accepted on creation of Vehicle entities.
-func (m *VehicleMutation) SetID(id uint64) {
+func (m *VehicleMutation) SetID(id int64) {
 	m.id = &id
 }
 
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *VehicleMutation) ID() (id uint64, exists bool) {
+func (m *VehicleMutation) ID() (id int64, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -678,9 +683,22 @@ func (m *VehicleMutation) OldMake(ctx context.Context) (v string, err error) {
 	return oldValue.Make, nil
 }
 
+// ClearMake clears the value of the "make" field.
+func (m *VehicleMutation) ClearMake() {
+	m.make = nil
+	m.clearedFields[vehicle.FieldMake] = struct{}{}
+}
+
+// MakeCleared returns if the "make" field was cleared in this mutation.
+func (m *VehicleMutation) MakeCleared() bool {
+	_, ok := m.clearedFields[vehicle.FieldMake]
+	return ok
+}
+
 // ResetMake resets all changes to the "make" field.
 func (m *VehicleMutation) ResetMake() {
 	m.make = nil
+	delete(m.clearedFields, vehicle.FieldMake)
 }
 
 // SetModel sets the "model" field.
@@ -714,9 +732,211 @@ func (m *VehicleMutation) OldModel(ctx context.Context) (v string, err error) {
 	return oldValue.Model, nil
 }
 
+// ClearModel clears the value of the "model" field.
+func (m *VehicleMutation) ClearModel() {
+	m.model = nil
+	m.clearedFields[vehicle.FieldModel] = struct{}{}
+}
+
+// ModelCleared returns if the "model" field was cleared in this mutation.
+func (m *VehicleMutation) ModelCleared() bool {
+	_, ok := m.clearedFields[vehicle.FieldModel]
+	return ok
+}
+
 // ResetModel resets all changes to the "model" field.
 func (m *VehicleMutation) ResetModel() {
 	m.model = nil
+	delete(m.clearedFields, vehicle.FieldModel)
+}
+
+// SetMiles sets the "miles" field.
+func (m *VehicleMutation) SetMiles(i int64) {
+	m.miles = &i
+	m.addmiles = nil
+}
+
+// Miles returns the value of the "miles" field in the mutation.
+func (m *VehicleMutation) Miles() (r int64, exists bool) {
+	v := m.miles
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMiles returns the old "miles" field's value of the Vehicle entity.
+// If the Vehicle object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *VehicleMutation) OldMiles(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldMiles is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldMiles requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMiles: %w", err)
+	}
+	return oldValue.Miles, nil
+}
+
+// AddMiles adds i to the "miles" field.
+func (m *VehicleMutation) AddMiles(i int64) {
+	if m.addmiles != nil {
+		*m.addmiles += i
+	} else {
+		m.addmiles = &i
+	}
+}
+
+// AddedMiles returns the value that was added to the "miles" field in this mutation.
+func (m *VehicleMutation) AddedMiles() (r int64, exists bool) {
+	v := m.addmiles
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearMiles clears the value of the "miles" field.
+func (m *VehicleMutation) ClearMiles() {
+	m.miles = nil
+	m.addmiles = nil
+	m.clearedFields[vehicle.FieldMiles] = struct{}{}
+}
+
+// MilesCleared returns if the "miles" field was cleared in this mutation.
+func (m *VehicleMutation) MilesCleared() bool {
+	_, ok := m.clearedFields[vehicle.FieldMiles]
+	return ok
+}
+
+// ResetMiles resets all changes to the "miles" field.
+func (m *VehicleMutation) ResetMiles() {
+	m.miles = nil
+	m.addmiles = nil
+	delete(m.clearedFields, vehicle.FieldMiles)
+}
+
+// SetMpg sets the "mpg" field.
+func (m *VehicleMutation) SetMpg(i int64) {
+	m.mpg = &i
+	m.addmpg = nil
+}
+
+// Mpg returns the value of the "mpg" field in the mutation.
+func (m *VehicleMutation) Mpg() (r int64, exists bool) {
+	v := m.mpg
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMpg returns the old "mpg" field's value of the Vehicle entity.
+// If the Vehicle object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *VehicleMutation) OldMpg(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldMpg is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldMpg requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMpg: %w", err)
+	}
+	return oldValue.Mpg, nil
+}
+
+// AddMpg adds i to the "mpg" field.
+func (m *VehicleMutation) AddMpg(i int64) {
+	if m.addmpg != nil {
+		*m.addmpg += i
+	} else {
+		m.addmpg = &i
+	}
+}
+
+// AddedMpg returns the value that was added to the "mpg" field in this mutation.
+func (m *VehicleMutation) AddedMpg() (r int64, exists bool) {
+	v := m.addmpg
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearMpg clears the value of the "mpg" field.
+func (m *VehicleMutation) ClearMpg() {
+	m.mpg = nil
+	m.addmpg = nil
+	m.clearedFields[vehicle.FieldMpg] = struct{}{}
+}
+
+// MpgCleared returns if the "mpg" field was cleared in this mutation.
+func (m *VehicleMutation) MpgCleared() bool {
+	_, ok := m.clearedFields[vehicle.FieldMpg]
+	return ok
+}
+
+// ResetMpg resets all changes to the "mpg" field.
+func (m *VehicleMutation) ResetMpg() {
+	m.mpg = nil
+	m.addmpg = nil
+	delete(m.clearedFields, vehicle.FieldMpg)
+}
+
+// SetOwner sets the "owner" field.
+func (m *VehicleMutation) SetOwner(s string) {
+	m.owner = &s
+}
+
+// Owner returns the value of the "owner" field in the mutation.
+func (m *VehicleMutation) Owner() (r string, exists bool) {
+	v := m.owner
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldOwner returns the old "owner" field's value of the Vehicle entity.
+// If the Vehicle object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *VehicleMutation) OldOwner(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, fmt.Errorf("OldOwner is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, fmt.Errorf("OldOwner requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldOwner: %w", err)
+	}
+	return oldValue.Owner, nil
+}
+
+// ClearOwner clears the value of the "owner" field.
+func (m *VehicleMutation) ClearOwner() {
+	m.owner = nil
+	m.clearedFields[vehicle.FieldOwner] = struct{}{}
+}
+
+// OwnerCleared returns if the "owner" field was cleared in this mutation.
+func (m *VehicleMutation) OwnerCleared() bool {
+	_, ok := m.clearedFields[vehicle.FieldOwner]
+	return ok
+}
+
+// ResetOwner resets all changes to the "owner" field.
+func (m *VehicleMutation) ResetOwner() {
+	m.owner = nil
+	delete(m.clearedFields, vehicle.FieldOwner)
 }
 
 // SetYear sets the "year" field.
@@ -750,9 +970,22 @@ func (m *VehicleMutation) OldYear(ctx context.Context) (v string, err error) {
 	return oldValue.Year, nil
 }
 
+// ClearYear clears the value of the "year" field.
+func (m *VehicleMutation) ClearYear() {
+	m.year = nil
+	m.clearedFields[vehicle.FieldYear] = struct{}{}
+}
+
+// YearCleared returns if the "year" field was cleared in this mutation.
+func (m *VehicleMutation) YearCleared() bool {
+	_, ok := m.clearedFields[vehicle.FieldYear]
+	return ok
+}
+
 // ResetYear resets all changes to the "year" field.
 func (m *VehicleMutation) ResetYear() {
 	m.year = nil
+	delete(m.clearedFields, vehicle.FieldYear)
 }
 
 // SetActive sets the "active" field.
@@ -786,9 +1019,22 @@ func (m *VehicleMutation) OldActive(ctx context.Context) (v bool, err error) {
 	return oldValue.Active, nil
 }
 
+// ClearActive clears the value of the "active" field.
+func (m *VehicleMutation) ClearActive() {
+	m.active = nil
+	m.clearedFields[vehicle.FieldActive] = struct{}{}
+}
+
+// ActiveCleared returns if the "active" field was cleared in this mutation.
+func (m *VehicleMutation) ActiveCleared() bool {
+	_, ok := m.clearedFields[vehicle.FieldActive]
+	return ok
+}
+
 // ResetActive resets all changes to the "active" field.
 func (m *VehicleMutation) ResetActive() {
 	m.active = nil
+	delete(m.clearedFields, vehicle.FieldActive)
 }
 
 // SetTags sets the "tags" field.
@@ -822,9 +1068,22 @@ func (m *VehicleMutation) OldTags(ctx context.Context) (v []string, err error) {
 	return oldValue.Tags, nil
 }
 
+// ClearTags clears the value of the "tags" field.
+func (m *VehicleMutation) ClearTags() {
+	m.tags = nil
+	m.clearedFields[vehicle.FieldTags] = struct{}{}
+}
+
+// TagsCleared returns if the "tags" field was cleared in this mutation.
+func (m *VehicleMutation) TagsCleared() bool {
+	_, ok := m.clearedFields[vehicle.FieldTags]
+	return ok
+}
+
 // ResetTags resets all changes to the "tags" field.
 func (m *VehicleMutation) ResetTags() {
 	m.tags = nil
+	delete(m.clearedFields, vehicle.FieldTags)
 }
 
 // SetCondition sets the "condition" field.
@@ -858,81 +1117,94 @@ func (m *VehicleMutation) OldCondition(ctx context.Context) (v vehicle.Condition
 	return oldValue.Condition, nil
 }
 
+// ClearCondition clears the value of the "condition" field.
+func (m *VehicleMutation) ClearCondition() {
+	m.condition = nil
+	m.clearedFields[vehicle.FieldCondition] = struct{}{}
+}
+
+// ConditionCleared returns if the "condition" field was cleared in this mutation.
+func (m *VehicleMutation) ConditionCleared() bool {
+	_, ok := m.clearedFields[vehicle.FieldCondition]
+	return ok
+}
+
 // ResetCondition resets all changes to the "condition" field.
 func (m *VehicleMutation) ResetCondition() {
 	m.condition = nil
+	delete(m.clearedFields, vehicle.FieldCondition)
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (m *VehicleMutation) SetCreatedAt(t time.Time) {
-	m.created_at = &t
+// SetCreateTime sets the "create_time" field.
+func (m *VehicleMutation) SetCreateTime(t time.Time) {
+	m.create_time = &t
 }
 
-// CreatedAt returns the value of the "created_at" field in the mutation.
-func (m *VehicleMutation) CreatedAt() (r time.Time, exists bool) {
-	v := m.created_at
+// CreateTime returns the value of the "create_time" field in the mutation.
+func (m *VehicleMutation) CreateTime() (r time.Time, exists bool) {
+	v := m.create_time
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldCreatedAt returns the old "created_at" field's value of the Vehicle entity.
+// OldCreateTime returns the old "create_time" field's value of the Vehicle entity.
 // If the Vehicle object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *VehicleMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *VehicleMutation) OldCreateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldCreatedAt is only allowed on UpdateOne operations")
+		return v, fmt.Errorf("OldCreateTime is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldCreatedAt requires an ID field in the mutation")
+		return v, fmt.Errorf("OldCreateTime requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+		return v, fmt.Errorf("querying old value for OldCreateTime: %w", err)
 	}
-	return oldValue.CreatedAt, nil
+	return oldValue.CreateTime, nil
 }
 
-// ResetCreatedAt resets all changes to the "created_at" field.
-func (m *VehicleMutation) ResetCreatedAt() {
-	m.created_at = nil
+// ResetCreateTime resets all changes to the "create_time" field.
+func (m *VehicleMutation) ResetCreateTime() {
+	m.create_time = nil
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (m *VehicleMutation) SetUpdatedAt(t time.Time) {
-	m.updated_at = &t
+// SetUpdateTime sets the "update_time" field.
+func (m *VehicleMutation) SetUpdateTime(t time.Time) {
+	m.update_time = &t
 }
 
-// UpdatedAt returns the value of the "updated_at" field in the mutation.
-func (m *VehicleMutation) UpdatedAt() (r time.Time, exists bool) {
-	v := m.updated_at
+// UpdateTime returns the value of the "update_time" field in the mutation.
+func (m *VehicleMutation) UpdateTime() (r time.Time, exists bool) {
+	v := m.update_time
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldUpdatedAt returns the old "updated_at" field's value of the Vehicle entity.
+// OldUpdateTime returns the old "update_time" field's value of the Vehicle entity.
 // If the Vehicle object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *VehicleMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+func (m *VehicleMutation) OldUpdateTime(ctx context.Context) (v time.Time, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldUpdatedAt is only allowed on UpdateOne operations")
+		return v, fmt.Errorf("OldUpdateTime is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldUpdatedAt requires an ID field in the mutation")
+		return v, fmt.Errorf("OldUpdateTime requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+		return v, fmt.Errorf("querying old value for OldUpdateTime: %w", err)
 	}
-	return oldValue.UpdatedAt, nil
+	return oldValue.UpdateTime, nil
 }
 
-// ResetUpdatedAt resets all changes to the "updated_at" field.
-func (m *VehicleMutation) ResetUpdatedAt() {
-	m.updated_at = nil
+// ResetUpdateTime resets all changes to the "update_time" field.
+func (m *VehicleMutation) ResetUpdateTime() {
+	m.update_time = nil
 }
 
 // Where appends a list predicates to the VehicleMutation builder.
@@ -954,12 +1226,21 @@ func (m *VehicleMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *VehicleMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 11)
 	if m.make != nil {
 		fields = append(fields, vehicle.FieldMake)
 	}
 	if m.model != nil {
 		fields = append(fields, vehicle.FieldModel)
+	}
+	if m.miles != nil {
+		fields = append(fields, vehicle.FieldMiles)
+	}
+	if m.mpg != nil {
+		fields = append(fields, vehicle.FieldMpg)
+	}
+	if m.owner != nil {
+		fields = append(fields, vehicle.FieldOwner)
 	}
 	if m.year != nil {
 		fields = append(fields, vehicle.FieldYear)
@@ -973,11 +1254,11 @@ func (m *VehicleMutation) Fields() []string {
 	if m.condition != nil {
 		fields = append(fields, vehicle.FieldCondition)
 	}
-	if m.created_at != nil {
-		fields = append(fields, vehicle.FieldCreatedAt)
+	if m.create_time != nil {
+		fields = append(fields, vehicle.FieldCreateTime)
 	}
-	if m.updated_at != nil {
-		fields = append(fields, vehicle.FieldUpdatedAt)
+	if m.update_time != nil {
+		fields = append(fields, vehicle.FieldUpdateTime)
 	}
 	return fields
 }
@@ -991,6 +1272,12 @@ func (m *VehicleMutation) Field(name string) (ent.Value, bool) {
 		return m.Make()
 	case vehicle.FieldModel:
 		return m.Model()
+	case vehicle.FieldMiles:
+		return m.Miles()
+	case vehicle.FieldMpg:
+		return m.Mpg()
+	case vehicle.FieldOwner:
+		return m.Owner()
 	case vehicle.FieldYear:
 		return m.Year()
 	case vehicle.FieldActive:
@@ -999,10 +1286,10 @@ func (m *VehicleMutation) Field(name string) (ent.Value, bool) {
 		return m.Tags()
 	case vehicle.FieldCondition:
 		return m.Condition()
-	case vehicle.FieldCreatedAt:
-		return m.CreatedAt()
-	case vehicle.FieldUpdatedAt:
-		return m.UpdatedAt()
+	case vehicle.FieldCreateTime:
+		return m.CreateTime()
+	case vehicle.FieldUpdateTime:
+		return m.UpdateTime()
 	}
 	return nil, false
 }
@@ -1016,6 +1303,12 @@ func (m *VehicleMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldMake(ctx)
 	case vehicle.FieldModel:
 		return m.OldModel(ctx)
+	case vehicle.FieldMiles:
+		return m.OldMiles(ctx)
+	case vehicle.FieldMpg:
+		return m.OldMpg(ctx)
+	case vehicle.FieldOwner:
+		return m.OldOwner(ctx)
 	case vehicle.FieldYear:
 		return m.OldYear(ctx)
 	case vehicle.FieldActive:
@@ -1024,10 +1317,10 @@ func (m *VehicleMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldTags(ctx)
 	case vehicle.FieldCondition:
 		return m.OldCondition(ctx)
-	case vehicle.FieldCreatedAt:
-		return m.OldCreatedAt(ctx)
-	case vehicle.FieldUpdatedAt:
-		return m.OldUpdatedAt(ctx)
+	case vehicle.FieldCreateTime:
+		return m.OldCreateTime(ctx)
+	case vehicle.FieldUpdateTime:
+		return m.OldUpdateTime(ctx)
 	}
 	return nil, fmt.Errorf("unknown Vehicle field %s", name)
 }
@@ -1050,6 +1343,27 @@ func (m *VehicleMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetModel(v)
+		return nil
+	case vehicle.FieldMiles:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMiles(v)
+		return nil
+	case vehicle.FieldMpg:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMpg(v)
+		return nil
+	case vehicle.FieldOwner:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetOwner(v)
 		return nil
 	case vehicle.FieldYear:
 		v, ok := value.(string)
@@ -1079,19 +1393,19 @@ func (m *VehicleMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetCondition(v)
 		return nil
-	case vehicle.FieldCreatedAt:
+	case vehicle.FieldCreateTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetCreatedAt(v)
+		m.SetCreateTime(v)
 		return nil
-	case vehicle.FieldUpdatedAt:
+	case vehicle.FieldUpdateTime:
 		v, ok := value.(time.Time)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetUpdatedAt(v)
+		m.SetUpdateTime(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Vehicle field %s", name)
@@ -1100,13 +1414,26 @@ func (m *VehicleMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *VehicleMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addmiles != nil {
+		fields = append(fields, vehicle.FieldMiles)
+	}
+	if m.addmpg != nil {
+		fields = append(fields, vehicle.FieldMpg)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *VehicleMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case vehicle.FieldMiles:
+		return m.AddedMiles()
+	case vehicle.FieldMpg:
+		return m.AddedMpg()
+	}
 	return nil, false
 }
 
@@ -1115,6 +1442,20 @@ func (m *VehicleMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *VehicleMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case vehicle.FieldMiles:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddMiles(v)
+		return nil
+	case vehicle.FieldMpg:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddMpg(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Vehicle numeric field %s", name)
 }
@@ -1122,7 +1463,35 @@ func (m *VehicleMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *VehicleMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(vehicle.FieldMake) {
+		fields = append(fields, vehicle.FieldMake)
+	}
+	if m.FieldCleared(vehicle.FieldModel) {
+		fields = append(fields, vehicle.FieldModel)
+	}
+	if m.FieldCleared(vehicle.FieldMiles) {
+		fields = append(fields, vehicle.FieldMiles)
+	}
+	if m.FieldCleared(vehicle.FieldMpg) {
+		fields = append(fields, vehicle.FieldMpg)
+	}
+	if m.FieldCleared(vehicle.FieldOwner) {
+		fields = append(fields, vehicle.FieldOwner)
+	}
+	if m.FieldCleared(vehicle.FieldYear) {
+		fields = append(fields, vehicle.FieldYear)
+	}
+	if m.FieldCleared(vehicle.FieldActive) {
+		fields = append(fields, vehicle.FieldActive)
+	}
+	if m.FieldCleared(vehicle.FieldTags) {
+		fields = append(fields, vehicle.FieldTags)
+	}
+	if m.FieldCleared(vehicle.FieldCondition) {
+		fields = append(fields, vehicle.FieldCondition)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1135,6 +1504,35 @@ func (m *VehicleMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *VehicleMutation) ClearField(name string) error {
+	switch name {
+	case vehicle.FieldMake:
+		m.ClearMake()
+		return nil
+	case vehicle.FieldModel:
+		m.ClearModel()
+		return nil
+	case vehicle.FieldMiles:
+		m.ClearMiles()
+		return nil
+	case vehicle.FieldMpg:
+		m.ClearMpg()
+		return nil
+	case vehicle.FieldOwner:
+		m.ClearOwner()
+		return nil
+	case vehicle.FieldYear:
+		m.ClearYear()
+		return nil
+	case vehicle.FieldActive:
+		m.ClearActive()
+		return nil
+	case vehicle.FieldTags:
+		m.ClearTags()
+		return nil
+	case vehicle.FieldCondition:
+		m.ClearCondition()
+		return nil
+	}
 	return fmt.Errorf("unknown Vehicle nullable field %s", name)
 }
 
@@ -1148,6 +1546,15 @@ func (m *VehicleMutation) ResetField(name string) error {
 	case vehicle.FieldModel:
 		m.ResetModel()
 		return nil
+	case vehicle.FieldMiles:
+		m.ResetMiles()
+		return nil
+	case vehicle.FieldMpg:
+		m.ResetMpg()
+		return nil
+	case vehicle.FieldOwner:
+		m.ResetOwner()
+		return nil
 	case vehicle.FieldYear:
 		m.ResetYear()
 		return nil
@@ -1160,11 +1567,11 @@ func (m *VehicleMutation) ResetField(name string) error {
 	case vehicle.FieldCondition:
 		m.ResetCondition()
 		return nil
-	case vehicle.FieldCreatedAt:
-		m.ResetCreatedAt()
+	case vehicle.FieldCreateTime:
+		m.ResetCreateTime()
 		return nil
-	case vehicle.FieldUpdatedAt:
-		m.ResetUpdatedAt()
+	case vehicle.FieldUpdateTime:
+		m.ResetUpdateTime()
 		return nil
 	}
 	return fmt.Errorf("unknown Vehicle field %s", name)

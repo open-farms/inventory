@@ -26,14 +26,6 @@ func (ec *EquipmentCreate) SetName(s string) *EquipmentCreate {
 	return ec
 }
 
-// SetNillableName sets the "name" field if the given value is not nil.
-func (ec *EquipmentCreate) SetNillableName(s *string) *EquipmentCreate {
-	if s != nil {
-		ec.SetName(*s)
-	}
-	return ec
-}
-
 // SetTags sets the "tags" field.
 func (ec *EquipmentCreate) SetTags(s []string) *EquipmentCreate {
 	ec.mutation.SetTags(s)
@@ -46,37 +38,37 @@ func (ec *EquipmentCreate) SetCondition(e equipment.Condition) *EquipmentCreate 
 	return ec
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (ec *EquipmentCreate) SetCreatedAt(t time.Time) *EquipmentCreate {
-	ec.mutation.SetCreatedAt(t)
+// SetCreateTime sets the "create_time" field.
+func (ec *EquipmentCreate) SetCreateTime(t time.Time) *EquipmentCreate {
+	ec.mutation.SetCreateTime(t)
 	return ec
 }
 
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (ec *EquipmentCreate) SetNillableCreatedAt(t *time.Time) *EquipmentCreate {
+// SetNillableCreateTime sets the "create_time" field if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableCreateTime(t *time.Time) *EquipmentCreate {
 	if t != nil {
-		ec.SetCreatedAt(*t)
+		ec.SetCreateTime(*t)
 	}
 	return ec
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (ec *EquipmentCreate) SetUpdatedAt(t time.Time) *EquipmentCreate {
-	ec.mutation.SetUpdatedAt(t)
+// SetUpdateTime sets the "update_time" field.
+func (ec *EquipmentCreate) SetUpdateTime(t time.Time) *EquipmentCreate {
+	ec.mutation.SetUpdateTime(t)
 	return ec
 }
 
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (ec *EquipmentCreate) SetNillableUpdatedAt(t *time.Time) *EquipmentCreate {
+// SetNillableUpdateTime sets the "update_time" field if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableUpdateTime(t *time.Time) *EquipmentCreate {
 	if t != nil {
-		ec.SetUpdatedAt(*t)
+		ec.SetUpdateTime(*t)
 	}
 	return ec
 }
 
 // SetID sets the "id" field.
-func (ec *EquipmentCreate) SetID(u uint64) *EquipmentCreate {
-	ec.mutation.SetID(u)
+func (ec *EquipmentCreate) SetID(i int64) *EquipmentCreate {
+	ec.mutation.SetID(i)
 	return ec
 }
 
@@ -151,17 +143,13 @@ func (ec *EquipmentCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (ec *EquipmentCreate) defaults() {
-	if _, ok := ec.mutation.Name(); !ok {
-		v := equipment.DefaultName
-		ec.mutation.SetName(v)
+	if _, ok := ec.mutation.CreateTime(); !ok {
+		v := equipment.DefaultCreateTime()
+		ec.mutation.SetCreateTime(v)
 	}
-	if _, ok := ec.mutation.CreatedAt(); !ok {
-		v := equipment.DefaultCreatedAt()
-		ec.mutation.SetCreatedAt(v)
-	}
-	if _, ok := ec.mutation.UpdatedAt(); !ok {
-		v := equipment.DefaultUpdatedAt()
-		ec.mutation.SetUpdatedAt(v)
+	if _, ok := ec.mutation.UpdateTime(); !ok {
+		v := equipment.DefaultUpdateTime()
+		ec.mutation.SetUpdateTime(v)
 	}
 }
 
@@ -169,6 +157,11 @@ func (ec *EquipmentCreate) defaults() {
 func (ec *EquipmentCreate) check() error {
 	if _, ok := ec.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "name"`)}
+	}
+	if v, ok := ec.mutation.Name(); ok {
+		if err := equipment.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "name": %w`, err)}
+		}
 	}
 	if _, ok := ec.mutation.Tags(); !ok {
 		return &ValidationError{Name: "tags", err: errors.New(`ent: missing required field "tags"`)}
@@ -181,16 +174,11 @@ func (ec *EquipmentCreate) check() error {
 			return &ValidationError{Name: "condition", err: fmt.Errorf(`ent: validator failed for field "condition": %w`, err)}
 		}
 	}
-	if _, ok := ec.mutation.CreatedAt(); !ok {
-		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "created_at"`)}
+	if _, ok := ec.mutation.CreateTime(); !ok {
+		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "create_time"`)}
 	}
-	if _, ok := ec.mutation.UpdatedAt(); !ok {
-		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "updated_at"`)}
-	}
-	if v, ok := ec.mutation.ID(); ok {
-		if err := equipment.IDValidator(v); err != nil {
-			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "id": %w`, err)}
-		}
+	if _, ok := ec.mutation.UpdateTime(); !ok {
+		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "update_time"`)}
 	}
 	return nil
 }
@@ -205,7 +193,7 @@ func (ec *EquipmentCreate) sqlSave(ctx context.Context) (*Equipment, error) {
 	}
 	if _spec.ID.Value != _node.ID {
 		id := _spec.ID.Value.(int64)
-		_node.ID = uint64(id)
+		_node.ID = int64(id)
 	}
 	return _node, nil
 }
@@ -216,7 +204,7 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 		_spec = &sqlgraph.CreateSpec{
 			Table: equipment.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt64,
 				Column: equipment.FieldID,
 			},
 		}
@@ -249,21 +237,21 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 		})
 		_node.Condition = value
 	}
-	if value, ok := ec.mutation.CreatedAt(); ok {
+	if value, ok := ec.mutation.CreateTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: equipment.FieldCreatedAt,
+			Column: equipment.FieldCreateTime,
 		})
-		_node.CreatedAt = value
+		_node.CreateTime = value
 	}
-	if value, ok := ec.mutation.UpdatedAt(); ok {
+	if value, ok := ec.mutation.UpdateTime(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: equipment.FieldUpdatedAt,
+			Column: equipment.FieldUpdateTime,
 		})
-		_node.UpdatedAt = value
+		_node.UpdateTime = value
 	}
 	return _node, _spec
 }
@@ -312,7 +300,7 @@ func (ecb *EquipmentCreateBulk) Save(ctx context.Context) ([]*Equipment, error) 
 				mutation.done = true
 				if specs[i].ID.Value != nil && nodes[i].ID == 0 {
 					id := specs[i].ID.Value.(int64)
-					nodes[i].ID = uint64(id)
+					nodes[i].ID = int64(id)
 				}
 				return nodes[i], nil
 			})

@@ -33,9 +33,111 @@ func (vu *VehicleUpdate) SetMake(s string) *VehicleUpdate {
 	return vu
 }
 
+// SetNillableMake sets the "make" field if the given value is not nil.
+func (vu *VehicleUpdate) SetNillableMake(s *string) *VehicleUpdate {
+	if s != nil {
+		vu.SetMake(*s)
+	}
+	return vu
+}
+
+// ClearMake clears the value of the "make" field.
+func (vu *VehicleUpdate) ClearMake() *VehicleUpdate {
+	vu.mutation.ClearMake()
+	return vu
+}
+
 // SetModel sets the "model" field.
 func (vu *VehicleUpdate) SetModel(s string) *VehicleUpdate {
 	vu.mutation.SetModel(s)
+	return vu
+}
+
+// SetNillableModel sets the "model" field if the given value is not nil.
+func (vu *VehicleUpdate) SetNillableModel(s *string) *VehicleUpdate {
+	if s != nil {
+		vu.SetModel(*s)
+	}
+	return vu
+}
+
+// ClearModel clears the value of the "model" field.
+func (vu *VehicleUpdate) ClearModel() *VehicleUpdate {
+	vu.mutation.ClearModel()
+	return vu
+}
+
+// SetMiles sets the "miles" field.
+func (vu *VehicleUpdate) SetMiles(i int64) *VehicleUpdate {
+	vu.mutation.ResetMiles()
+	vu.mutation.SetMiles(i)
+	return vu
+}
+
+// SetNillableMiles sets the "miles" field if the given value is not nil.
+func (vu *VehicleUpdate) SetNillableMiles(i *int64) *VehicleUpdate {
+	if i != nil {
+		vu.SetMiles(*i)
+	}
+	return vu
+}
+
+// AddMiles adds i to the "miles" field.
+func (vu *VehicleUpdate) AddMiles(i int64) *VehicleUpdate {
+	vu.mutation.AddMiles(i)
+	return vu
+}
+
+// ClearMiles clears the value of the "miles" field.
+func (vu *VehicleUpdate) ClearMiles() *VehicleUpdate {
+	vu.mutation.ClearMiles()
+	return vu
+}
+
+// SetMpg sets the "mpg" field.
+func (vu *VehicleUpdate) SetMpg(i int64) *VehicleUpdate {
+	vu.mutation.ResetMpg()
+	vu.mutation.SetMpg(i)
+	return vu
+}
+
+// SetNillableMpg sets the "mpg" field if the given value is not nil.
+func (vu *VehicleUpdate) SetNillableMpg(i *int64) *VehicleUpdate {
+	if i != nil {
+		vu.SetMpg(*i)
+	}
+	return vu
+}
+
+// AddMpg adds i to the "mpg" field.
+func (vu *VehicleUpdate) AddMpg(i int64) *VehicleUpdate {
+	vu.mutation.AddMpg(i)
+	return vu
+}
+
+// ClearMpg clears the value of the "mpg" field.
+func (vu *VehicleUpdate) ClearMpg() *VehicleUpdate {
+	vu.mutation.ClearMpg()
+	return vu
+}
+
+// SetOwner sets the "owner" field.
+func (vu *VehicleUpdate) SetOwner(s string) *VehicleUpdate {
+	vu.mutation.SetOwner(s)
+	return vu
+}
+
+// SetNillableOwner sets the "owner" field if the given value is not nil.
+func (vu *VehicleUpdate) SetNillableOwner(s *string) *VehicleUpdate {
+	if s != nil {
+		vu.SetOwner(*s)
+	}
+	return vu
+}
+
+// ClearOwner clears the value of the "owner" field.
+func (vu *VehicleUpdate) ClearOwner() *VehicleUpdate {
+	vu.mutation.ClearOwner()
 	return vu
 }
 
@@ -45,9 +147,37 @@ func (vu *VehicleUpdate) SetYear(s string) *VehicleUpdate {
 	return vu
 }
 
+// SetNillableYear sets the "year" field if the given value is not nil.
+func (vu *VehicleUpdate) SetNillableYear(s *string) *VehicleUpdate {
+	if s != nil {
+		vu.SetYear(*s)
+	}
+	return vu
+}
+
+// ClearYear clears the value of the "year" field.
+func (vu *VehicleUpdate) ClearYear() *VehicleUpdate {
+	vu.mutation.ClearYear()
+	return vu
+}
+
 // SetActive sets the "active" field.
 func (vu *VehicleUpdate) SetActive(b bool) *VehicleUpdate {
 	vu.mutation.SetActive(b)
+	return vu
+}
+
+// SetNillableActive sets the "active" field if the given value is not nil.
+func (vu *VehicleUpdate) SetNillableActive(b *bool) *VehicleUpdate {
+	if b != nil {
+		vu.SetActive(*b)
+	}
+	return vu
+}
+
+// ClearActive clears the value of the "active" field.
+func (vu *VehicleUpdate) ClearActive() *VehicleUpdate {
+	vu.mutation.ClearActive()
 	return vu
 }
 
@@ -57,29 +187,35 @@ func (vu *VehicleUpdate) SetTags(s []string) *VehicleUpdate {
 	return vu
 }
 
+// ClearTags clears the value of the "tags" field.
+func (vu *VehicleUpdate) ClearTags() *VehicleUpdate {
+	vu.mutation.ClearTags()
+	return vu
+}
+
 // SetCondition sets the "condition" field.
 func (vu *VehicleUpdate) SetCondition(v vehicle.Condition) *VehicleUpdate {
 	vu.mutation.SetCondition(v)
 	return vu
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (vu *VehicleUpdate) SetCreatedAt(t time.Time) *VehicleUpdate {
-	vu.mutation.SetCreatedAt(t)
-	return vu
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (vu *VehicleUpdate) SetNillableCreatedAt(t *time.Time) *VehicleUpdate {
-	if t != nil {
-		vu.SetCreatedAt(*t)
+// SetNillableCondition sets the "condition" field if the given value is not nil.
+func (vu *VehicleUpdate) SetNillableCondition(v *vehicle.Condition) *VehicleUpdate {
+	if v != nil {
+		vu.SetCondition(*v)
 	}
 	return vu
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (vu *VehicleUpdate) SetUpdatedAt(t time.Time) *VehicleUpdate {
-	vu.mutation.SetUpdatedAt(t)
+// ClearCondition clears the value of the "condition" field.
+func (vu *VehicleUpdate) ClearCondition() *VehicleUpdate {
+	vu.mutation.ClearCondition()
+	return vu
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (vu *VehicleUpdate) SetUpdateTime(t time.Time) *VehicleUpdate {
+	vu.mutation.SetUpdateTime(t)
 	return vu
 }
 
@@ -151,9 +287,13 @@ func (vu *VehicleUpdate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (vu *VehicleUpdate) defaults() {
-	if _, ok := vu.mutation.UpdatedAt(); !ok {
-		v := vehicle.UpdateDefaultUpdatedAt()
-		vu.mutation.SetUpdatedAt(v)
+	if _, ok := vu.mutation.CreateTime(); !ok {
+		v := vehicle.UpdateDefaultCreateTime()
+		vu.mutation.SetCreateTime(v)
+	}
+	if _, ok := vu.mutation.UpdateTime(); !ok {
+		v := vehicle.UpdateDefaultUpdateTime()
+		vu.mutation.SetUpdateTime(v)
 	}
 }
 
@@ -173,7 +313,7 @@ func (vu *VehicleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   vehicle.Table,
 			Columns: vehicle.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt64,
 				Column: vehicle.FieldID,
 			},
 		},
@@ -192,6 +332,12 @@ func (vu *VehicleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: vehicle.FieldMake,
 		})
 	}
+	if vu.mutation.MakeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: vehicle.FieldMake,
+		})
+	}
 	if value, ok := vu.mutation.Model(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -199,10 +345,75 @@ func (vu *VehicleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: vehicle.FieldModel,
 		})
 	}
+	if vu.mutation.ModelCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: vehicle.FieldModel,
+		})
+	}
+	if value, ok := vu.mutation.Miles(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: vehicle.FieldMiles,
+		})
+	}
+	if value, ok := vu.mutation.AddedMiles(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: vehicle.FieldMiles,
+		})
+	}
+	if vu.mutation.MilesCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Column: vehicle.FieldMiles,
+		})
+	}
+	if value, ok := vu.mutation.Mpg(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: vehicle.FieldMpg,
+		})
+	}
+	if value, ok := vu.mutation.AddedMpg(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: vehicle.FieldMpg,
+		})
+	}
+	if vu.mutation.MpgCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Column: vehicle.FieldMpg,
+		})
+	}
+	if value, ok := vu.mutation.Owner(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: vehicle.FieldOwner,
+		})
+	}
+	if vu.mutation.OwnerCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: vehicle.FieldOwner,
+		})
+	}
 	if value, ok := vu.mutation.Year(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: vehicle.FieldYear,
+		})
+	}
+	if vu.mutation.YearCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: vehicle.FieldYear,
 		})
 	}
@@ -213,10 +424,22 @@ func (vu *VehicleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: vehicle.FieldActive,
 		})
 	}
+	if vu.mutation.ActiveCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: vehicle.FieldActive,
+		})
+	}
 	if value, ok := vu.mutation.Tags(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeJSON,
 			Value:  value,
+			Column: vehicle.FieldTags,
+		})
+	}
+	if vu.mutation.TagsCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
 			Column: vehicle.FieldTags,
 		})
 	}
@@ -227,18 +450,24 @@ func (vu *VehicleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: vehicle.FieldCondition,
 		})
 	}
-	if value, ok := vu.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: vehicle.FieldCreatedAt,
+	if vu.mutation.ConditionCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Column: vehicle.FieldCondition,
 		})
 	}
-	if value, ok := vu.mutation.UpdatedAt(); ok {
+	if value, ok := vu.mutation.CreateTime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: vehicle.FieldUpdatedAt,
+			Column: vehicle.FieldCreateTime,
+		})
+	}
+	if value, ok := vu.mutation.UpdateTime(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: vehicle.FieldUpdateTime,
 		})
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, vu.driver, _spec); err != nil {
@@ -266,9 +495,111 @@ func (vuo *VehicleUpdateOne) SetMake(s string) *VehicleUpdateOne {
 	return vuo
 }
 
+// SetNillableMake sets the "make" field if the given value is not nil.
+func (vuo *VehicleUpdateOne) SetNillableMake(s *string) *VehicleUpdateOne {
+	if s != nil {
+		vuo.SetMake(*s)
+	}
+	return vuo
+}
+
+// ClearMake clears the value of the "make" field.
+func (vuo *VehicleUpdateOne) ClearMake() *VehicleUpdateOne {
+	vuo.mutation.ClearMake()
+	return vuo
+}
+
 // SetModel sets the "model" field.
 func (vuo *VehicleUpdateOne) SetModel(s string) *VehicleUpdateOne {
 	vuo.mutation.SetModel(s)
+	return vuo
+}
+
+// SetNillableModel sets the "model" field if the given value is not nil.
+func (vuo *VehicleUpdateOne) SetNillableModel(s *string) *VehicleUpdateOne {
+	if s != nil {
+		vuo.SetModel(*s)
+	}
+	return vuo
+}
+
+// ClearModel clears the value of the "model" field.
+func (vuo *VehicleUpdateOne) ClearModel() *VehicleUpdateOne {
+	vuo.mutation.ClearModel()
+	return vuo
+}
+
+// SetMiles sets the "miles" field.
+func (vuo *VehicleUpdateOne) SetMiles(i int64) *VehicleUpdateOne {
+	vuo.mutation.ResetMiles()
+	vuo.mutation.SetMiles(i)
+	return vuo
+}
+
+// SetNillableMiles sets the "miles" field if the given value is not nil.
+func (vuo *VehicleUpdateOne) SetNillableMiles(i *int64) *VehicleUpdateOne {
+	if i != nil {
+		vuo.SetMiles(*i)
+	}
+	return vuo
+}
+
+// AddMiles adds i to the "miles" field.
+func (vuo *VehicleUpdateOne) AddMiles(i int64) *VehicleUpdateOne {
+	vuo.mutation.AddMiles(i)
+	return vuo
+}
+
+// ClearMiles clears the value of the "miles" field.
+func (vuo *VehicleUpdateOne) ClearMiles() *VehicleUpdateOne {
+	vuo.mutation.ClearMiles()
+	return vuo
+}
+
+// SetMpg sets the "mpg" field.
+func (vuo *VehicleUpdateOne) SetMpg(i int64) *VehicleUpdateOne {
+	vuo.mutation.ResetMpg()
+	vuo.mutation.SetMpg(i)
+	return vuo
+}
+
+// SetNillableMpg sets the "mpg" field if the given value is not nil.
+func (vuo *VehicleUpdateOne) SetNillableMpg(i *int64) *VehicleUpdateOne {
+	if i != nil {
+		vuo.SetMpg(*i)
+	}
+	return vuo
+}
+
+// AddMpg adds i to the "mpg" field.
+func (vuo *VehicleUpdateOne) AddMpg(i int64) *VehicleUpdateOne {
+	vuo.mutation.AddMpg(i)
+	return vuo
+}
+
+// ClearMpg clears the value of the "mpg" field.
+func (vuo *VehicleUpdateOne) ClearMpg() *VehicleUpdateOne {
+	vuo.mutation.ClearMpg()
+	return vuo
+}
+
+// SetOwner sets the "owner" field.
+func (vuo *VehicleUpdateOne) SetOwner(s string) *VehicleUpdateOne {
+	vuo.mutation.SetOwner(s)
+	return vuo
+}
+
+// SetNillableOwner sets the "owner" field if the given value is not nil.
+func (vuo *VehicleUpdateOne) SetNillableOwner(s *string) *VehicleUpdateOne {
+	if s != nil {
+		vuo.SetOwner(*s)
+	}
+	return vuo
+}
+
+// ClearOwner clears the value of the "owner" field.
+func (vuo *VehicleUpdateOne) ClearOwner() *VehicleUpdateOne {
+	vuo.mutation.ClearOwner()
 	return vuo
 }
 
@@ -278,9 +609,37 @@ func (vuo *VehicleUpdateOne) SetYear(s string) *VehicleUpdateOne {
 	return vuo
 }
 
+// SetNillableYear sets the "year" field if the given value is not nil.
+func (vuo *VehicleUpdateOne) SetNillableYear(s *string) *VehicleUpdateOne {
+	if s != nil {
+		vuo.SetYear(*s)
+	}
+	return vuo
+}
+
+// ClearYear clears the value of the "year" field.
+func (vuo *VehicleUpdateOne) ClearYear() *VehicleUpdateOne {
+	vuo.mutation.ClearYear()
+	return vuo
+}
+
 // SetActive sets the "active" field.
 func (vuo *VehicleUpdateOne) SetActive(b bool) *VehicleUpdateOne {
 	vuo.mutation.SetActive(b)
+	return vuo
+}
+
+// SetNillableActive sets the "active" field if the given value is not nil.
+func (vuo *VehicleUpdateOne) SetNillableActive(b *bool) *VehicleUpdateOne {
+	if b != nil {
+		vuo.SetActive(*b)
+	}
+	return vuo
+}
+
+// ClearActive clears the value of the "active" field.
+func (vuo *VehicleUpdateOne) ClearActive() *VehicleUpdateOne {
+	vuo.mutation.ClearActive()
 	return vuo
 }
 
@@ -290,29 +649,35 @@ func (vuo *VehicleUpdateOne) SetTags(s []string) *VehicleUpdateOne {
 	return vuo
 }
 
+// ClearTags clears the value of the "tags" field.
+func (vuo *VehicleUpdateOne) ClearTags() *VehicleUpdateOne {
+	vuo.mutation.ClearTags()
+	return vuo
+}
+
 // SetCondition sets the "condition" field.
 func (vuo *VehicleUpdateOne) SetCondition(v vehicle.Condition) *VehicleUpdateOne {
 	vuo.mutation.SetCondition(v)
 	return vuo
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (vuo *VehicleUpdateOne) SetCreatedAt(t time.Time) *VehicleUpdateOne {
-	vuo.mutation.SetCreatedAt(t)
-	return vuo
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (vuo *VehicleUpdateOne) SetNillableCreatedAt(t *time.Time) *VehicleUpdateOne {
-	if t != nil {
-		vuo.SetCreatedAt(*t)
+// SetNillableCondition sets the "condition" field if the given value is not nil.
+func (vuo *VehicleUpdateOne) SetNillableCondition(v *vehicle.Condition) *VehicleUpdateOne {
+	if v != nil {
+		vuo.SetCondition(*v)
 	}
 	return vuo
 }
 
-// SetUpdatedAt sets the "updated_at" field.
-func (vuo *VehicleUpdateOne) SetUpdatedAt(t time.Time) *VehicleUpdateOne {
-	vuo.mutation.SetUpdatedAt(t)
+// ClearCondition clears the value of the "condition" field.
+func (vuo *VehicleUpdateOne) ClearCondition() *VehicleUpdateOne {
+	vuo.mutation.ClearCondition()
+	return vuo
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (vuo *VehicleUpdateOne) SetUpdateTime(t time.Time) *VehicleUpdateOne {
+	vuo.mutation.SetUpdateTime(t)
 	return vuo
 }
 
@@ -391,9 +756,13 @@ func (vuo *VehicleUpdateOne) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (vuo *VehicleUpdateOne) defaults() {
-	if _, ok := vuo.mutation.UpdatedAt(); !ok {
-		v := vehicle.UpdateDefaultUpdatedAt()
-		vuo.mutation.SetUpdatedAt(v)
+	if _, ok := vuo.mutation.CreateTime(); !ok {
+		v := vehicle.UpdateDefaultCreateTime()
+		vuo.mutation.SetCreateTime(v)
+	}
+	if _, ok := vuo.mutation.UpdateTime(); !ok {
+		v := vehicle.UpdateDefaultUpdateTime()
+		vuo.mutation.SetUpdateTime(v)
 	}
 }
 
@@ -413,7 +782,7 @@ func (vuo *VehicleUpdateOne) sqlSave(ctx context.Context) (_node *Vehicle, err e
 			Table:   vehicle.Table,
 			Columns: vehicle.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt64,
 				Column: vehicle.FieldID,
 			},
 		},
@@ -449,6 +818,12 @@ func (vuo *VehicleUpdateOne) sqlSave(ctx context.Context) (_node *Vehicle, err e
 			Column: vehicle.FieldMake,
 		})
 	}
+	if vuo.mutation.MakeCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: vehicle.FieldMake,
+		})
+	}
 	if value, ok := vuo.mutation.Model(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -456,10 +831,75 @@ func (vuo *VehicleUpdateOne) sqlSave(ctx context.Context) (_node *Vehicle, err e
 			Column: vehicle.FieldModel,
 		})
 	}
+	if vuo.mutation.ModelCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: vehicle.FieldModel,
+		})
+	}
+	if value, ok := vuo.mutation.Miles(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: vehicle.FieldMiles,
+		})
+	}
+	if value, ok := vuo.mutation.AddedMiles(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: vehicle.FieldMiles,
+		})
+	}
+	if vuo.mutation.MilesCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Column: vehicle.FieldMiles,
+		})
+	}
+	if value, ok := vuo.mutation.Mpg(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: vehicle.FieldMpg,
+		})
+	}
+	if value, ok := vuo.mutation.AddedMpg(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: vehicle.FieldMpg,
+		})
+	}
+	if vuo.mutation.MpgCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
+			Column: vehicle.FieldMpg,
+		})
+	}
+	if value, ok := vuo.mutation.Owner(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Value:  value,
+			Column: vehicle.FieldOwner,
+		})
+	}
+	if vuo.mutation.OwnerCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
+			Column: vehicle.FieldOwner,
+		})
+	}
 	if value, ok := vuo.mutation.Year(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
+			Column: vehicle.FieldYear,
+		})
+	}
+	if vuo.mutation.YearCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeString,
 			Column: vehicle.FieldYear,
 		})
 	}
@@ -470,10 +910,22 @@ func (vuo *VehicleUpdateOne) sqlSave(ctx context.Context) (_node *Vehicle, err e
 			Column: vehicle.FieldActive,
 		})
 	}
+	if vuo.mutation.ActiveCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeBool,
+			Column: vehicle.FieldActive,
+		})
+	}
 	if value, ok := vuo.mutation.Tags(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeJSON,
 			Value:  value,
+			Column: vehicle.FieldTags,
+		})
+	}
+	if vuo.mutation.TagsCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeJSON,
 			Column: vehicle.FieldTags,
 		})
 	}
@@ -484,18 +936,24 @@ func (vuo *VehicleUpdateOne) sqlSave(ctx context.Context) (_node *Vehicle, err e
 			Column: vehicle.FieldCondition,
 		})
 	}
-	if value, ok := vuo.mutation.CreatedAt(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeTime,
-			Value:  value,
-			Column: vehicle.FieldCreatedAt,
+	if vuo.mutation.ConditionCleared() {
+		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
+			Type:   field.TypeEnum,
+			Column: vehicle.FieldCondition,
 		})
 	}
-	if value, ok := vuo.mutation.UpdatedAt(); ok {
+	if value, ok := vuo.mutation.CreateTime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: vehicle.FieldUpdatedAt,
+			Column: vehicle.FieldCreateTime,
+		})
+	}
+	if value, ok := vuo.mutation.UpdateTime(); ok {
+		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: vehicle.FieldUpdateTime,
 		})
 	}
 	_node = &Vehicle{config: vuo.config}

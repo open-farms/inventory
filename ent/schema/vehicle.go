@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"entgo.io/ent"
-	"entgo.io/ent/dialect"
 	"entgo.io/ent/schema/field"
 )
 
@@ -16,14 +15,16 @@ type Vehicle struct {
 // Fields of the Vehicle.
 func (Vehicle) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint64("id").
-			Positive(),
-		field.String("make"),
-		field.String("model"),
-		field.String("year"),
-		field.Bool("active"),
-		field.Strings("tags"),
-		field.Enum("condition").
+		field.Int64("id").Unique(),
+		field.String("make").Optional(),
+		field.String("model").Optional(),
+		field.Int64("miles").Optional(),
+		field.Int64("mpg").Optional(),
+		field.String("owner").Optional(),
+		field.String("year").Optional(),
+		field.Bool("active").Optional(),
+		field.Strings("tags").Optional(),
+		field.Enum("condition").Optional().
 			Values(
 				"UNSPECIFIED",
 				"MINT",
@@ -31,19 +32,13 @@ func (Vehicle) Fields() []ent.Field {
 				"POOR",
 				"BROKEN",
 			),
-		field.Time("created_at").
-			Default(time.Now).
-			SchemaType(map[string]string{
-				dialect.MySQL:    "datetime",
-				dialect.Postgres: "timestamp",
-			}),
-		field.Time("updated_at").
+		field.Time("create_time").
 			Default(time.Now).
 			UpdateDefault(time.Now).
-			SchemaType(map[string]string{
-				dialect.MySQL:    "datetime",
-				dialect.Postgres: "timestamp",
-			}),
+			Immutable(),
+		field.Time("update_time").
+			Default(time.Now).
+			UpdateDefault(time.Now),
 	}
 }
 

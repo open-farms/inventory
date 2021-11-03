@@ -84,8 +84,8 @@ func (vq *VehicleQuery) FirstX(ctx context.Context) *Vehicle {
 
 // FirstID returns the first Vehicle ID from the query.
 // Returns a *NotFoundError when no Vehicle ID was found.
-func (vq *VehicleQuery) FirstID(ctx context.Context) (id uint64, err error) {
-	var ids []uint64
+func (vq *VehicleQuery) FirstID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = vq.Limit(1).IDs(ctx); err != nil {
 		return
 	}
@@ -97,7 +97,7 @@ func (vq *VehicleQuery) FirstID(ctx context.Context) (id uint64, err error) {
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (vq *VehicleQuery) FirstIDX(ctx context.Context) uint64 {
+func (vq *VehicleQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := vq.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -135,8 +135,8 @@ func (vq *VehicleQuery) OnlyX(ctx context.Context) *Vehicle {
 // OnlyID is like Only, but returns the only Vehicle ID in the query.
 // Returns a *NotSingularError when exactly one Vehicle ID is not found.
 // Returns a *NotFoundError when no entities are found.
-func (vq *VehicleQuery) OnlyID(ctx context.Context) (id uint64, err error) {
-	var ids []uint64
+func (vq *VehicleQuery) OnlyID(ctx context.Context) (id int64, err error) {
+	var ids []int64
 	if ids, err = vq.Limit(2).IDs(ctx); err != nil {
 		return
 	}
@@ -152,7 +152,7 @@ func (vq *VehicleQuery) OnlyID(ctx context.Context) (id uint64, err error) {
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (vq *VehicleQuery) OnlyIDX(ctx context.Context) uint64 {
+func (vq *VehicleQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := vq.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -178,8 +178,8 @@ func (vq *VehicleQuery) AllX(ctx context.Context) []*Vehicle {
 }
 
 // IDs executes the query and returns a list of Vehicle IDs.
-func (vq *VehicleQuery) IDs(ctx context.Context) ([]uint64, error) {
-	var ids []uint64
+func (vq *VehicleQuery) IDs(ctx context.Context) ([]int64, error) {
+	var ids []int64
 	if err := vq.Select(vehicle.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
@@ -187,7 +187,7 @@ func (vq *VehicleQuery) IDs(ctx context.Context) ([]uint64, error) {
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (vq *VehicleQuery) IDsX(ctx context.Context) []uint64 {
+func (vq *VehicleQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := vq.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -353,7 +353,7 @@ func (vq *VehicleQuery) querySpec() *sqlgraph.QuerySpec {
 			Table:   vehicle.Table,
 			Columns: vehicle.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt64,
 				Column: vehicle.FieldID,
 			},
 		},

@@ -1,21 +1,23 @@
 package main
 
 import (
+	"context"
 	"flag"
+	"log"
+	"net/http"
 	"os"
+	"os/signal"
+	"syscall"
 
-	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/logging"
-	"github.com/go-kratos/kratos/v2/middleware/recovery"
-	"github.com/go-kratos/kratos/v2/transport/grpc"
-	"github.com/go-kratos/kratos/v2/transport/http"
+	_ "github.com/lib/pq"
+	"github.com/open-farms/inventory/ent"
+	elk "github.com/open-farms/inventory/ent/http"
 
-	equipment "github.com/open-farms/inventory/api/equipment/service/v1"
-	vehicles "github.com/open-farms/inventory/api/vehicles/service/v1"
-	"github.com/open-farms/inventory/internal/biz"
-	"github.com/open-farms/inventory/internal/service"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-kratos/kratos/v2/config"
 	"github.com/open-farms/inventory/internal/settings"
+	"go.uber.org/zap"
 )
 
 // go build -ldflags "-X main.Version=x.y.z"
@@ -25,87 +27,105 @@ var (
 	// Version is the version of the compiled software.
 	Version string = "x.y.z"
 
-	// ID is the hostname identifier
-	id, _ = os.Hostname()
-
 	// flagconf is the config flag.
 	flagconf string
 
-	bootstrap settings.Bootstrap
+	logger *zap.Logger
 )
 
 func init() {
 	flag.StringVar(&flagconf, "config", "./config", "config path, eg: -config config.yaml")
 }
 
-func main() {
+func setup() (config.Config, error) {
 	flag.Parse()
-
-	logger := log.With(log.NewStdLogger(os.Stdout),
-		"ts", log.DefaultTimestamp,
-		"service.name", Name,
-		"service.version", Version,
+	logger = zap.NewExample(
+		zap.Fields(zap.String("service", Name)),
 	)
-
-	cfg, err := biz.Configure(flagconf)
+	cfg, err := settings.Configure(flagconf)
 	if err != nil {
-		logger.Log(log.LevelFatal, err)
+		return nil, err
 	}
 
-	err = cfg.Scan(&bootstrap)
+	migrate, err := cfg.Value("storage.database.migrate").Bool()
 	if err != nil {
-		logger.Log(log.LevelFatal, err)
+		logger.Error(err.Error())
+		return nil, err
 	}
 
-	if bootstrap.Storage.Database.Migrate {
-		err = biz.Migrate(flagconf, false)
+	if migrate {
+		err = settings.Migrate(flagconf, false)
 		if err != nil {
-			logger.Log(log.LevelFatal, err)
+			return nil, err
 		}
 	}
 
-	httpSrv := http.NewServer(
-		http.Address(bootstrap.Server.Http.Addr),
-		http.Timeout(bootstrap.Server.Http.Timeout.AsDuration()),
-		http.Middleware(
-			logging.Server(logger),
-			recovery.Recovery(),
-		),
-	)
+	return cfg, nil
+}
 
-	grpcSrv := grpc.NewServer(
-		grpc.Address(bootstrap.Server.Grpc.Addr),
-		grpc.Timeout(bootstrap.Server.Grpc.Timeout.AsDuration()),
-		grpc.Middleware(
-			logging.Server(logger),
-			recovery.Recovery(),
-		),
-	)
+func service(c *ent.Client) http.Handler {
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Use(middleware.StripSlashes)
+	r.Route("/v1", func(r chi.Router) {
+		elk.NewEquipmentHandler(c, logger).MountRoutes(r)
+		elk.NewVehicleHandler(c, logger).MountRoutes(r)
+	})
 
-	equipmentSvc := service.NewEquipmentService(logger, flagconf)
-	equipment.RegisterEquipmentServiceServer(grpcSrv, equipmentSvc)
-	equipment.RegisterEquipmentServiceHTTPServer(httpSrv, equipmentSvc)
+	return r
+}
 
-	vehicleSvc := service.NewVehicleService(logger, flagconf)
-	vehicles.RegisterVehicleServiceServer(grpcSrv, vehicleSvc)
-	vehicles.RegisterVehicleServiceHTTPServer(httpSrv, vehicleSvc)
+func main() {
 
-	app := kratos.New(
-		kratos.ID(id),
-		kratos.Name(Name),
-		kratos.Version(Version),
-		kratos.Metadata(map[string]string{
-			"organization": "github.com/open-farms",
-			"service":      "inventory",
-		}),
-		kratos.Logger(logger),
-		kratos.Server(
-			httpSrv,
-			grpcSrv,
-		),
-	)
-
-	if err := app.Run(); err != nil {
-		logger.Log(log.LevelFatal, err)
+	// Initialize configs
+	// and parse flags
+	cfg, err := setup()
+	if err != nil {
+		logger.Fatal(err.Error())
 	}
+
+	driver, _ := cfg.Value("storage.database.driver").String()
+	source, _ := cfg.Value("storage.database.source").String()
+	address, _ := cfg.Value("server.http.addr").String()
+	timeout, _ := cfg.Value("server.http.timeout").Duration()
+
+	// Connect to database
+	c, err := ent.Open(driver, source)
+	if err != nil {
+		logger.Fatal(err.Error())
+	}
+	defer c.Close()
+
+	// Create server with context and graceful shutdown timer
+	server := &http.Server{Addr: address, Handler: service(c)}
+	serverCtx, serverStopCtx := context.WithCancel(context.Background())
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	go func() {
+		<-sig
+		shutdownCtx, _ := context.WithTimeout(serverCtx, timeout)
+		go func() {
+			<-shutdownCtx.Done()
+			if shutdownCtx.Err() == context.DeadlineExceeded {
+				logger.Fatal("graceful shutdown timed out.. forcing exit.")
+			}
+		}()
+
+		// Trigger graceful shutdown
+		err := server.Shutdown(shutdownCtx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		serverStopCtx()
+	}()
+
+	logger.Info("Server running")
+	err = server.ListenAndServe()
+	if err != nil && err != http.ErrServerClosed {
+		logger.Fatal(err.Error())
+	}
+
+	// Wait for server context to be stopped
+	<-serverCtx.Done()
+	logger.Info("Server stopped")
 }

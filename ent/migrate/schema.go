@@ -10,12 +10,12 @@ import (
 var (
 	// EquipmentColumns holds the columns for the "equipment" table.
 	EquipmentColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUint64, Increment: true},
-		{Name: "name", Type: field.TypeString, Default: "unknown"},
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "name", Type: field.TypeString},
 		{Name: "tags", Type: field.TypeJSON},
 		{Name: "condition", Type: field.TypeEnum, Enums: []string{"UNSPECIFIED", "MINT", "GOOD", "POOR", "BROKEN"}},
-		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "timestamp"}},
-		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "timestamp"}},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
 	}
 	// EquipmentTable holds the schema information for the "equipment" table.
 	EquipmentTable = &schema.Table{
@@ -25,15 +25,18 @@ var (
 	}
 	// VehiclesColumns holds the columns for the "vehicles" table.
 	VehiclesColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeUint64, Increment: true},
-		{Name: "make", Type: field.TypeString},
-		{Name: "model", Type: field.TypeString},
-		{Name: "year", Type: field.TypeString},
-		{Name: "active", Type: field.TypeBool},
-		{Name: "tags", Type: field.TypeJSON},
-		{Name: "condition", Type: field.TypeEnum, Enums: []string{"UNSPECIFIED", "MINT", "GOOD", "POOR", "BROKEN"}},
-		{Name: "created_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "timestamp"}},
-		{Name: "updated_at", Type: field.TypeTime, SchemaType: map[string]string{"mysql": "datetime", "postgres": "timestamp"}},
+		{Name: "id", Type: field.TypeInt64, Increment: true},
+		{Name: "make", Type: field.TypeString, Nullable: true},
+		{Name: "model", Type: field.TypeString, Nullable: true},
+		{Name: "miles", Type: field.TypeInt64, Nullable: true},
+		{Name: "mpg", Type: field.TypeInt64, Nullable: true},
+		{Name: "owner", Type: field.TypeString, Nullable: true},
+		{Name: "year", Type: field.TypeString, Nullable: true},
+		{Name: "active", Type: field.TypeBool, Nullable: true},
+		{Name: "tags", Type: field.TypeJSON, Nullable: true},
+		{Name: "condition", Type: field.TypeEnum, Nullable: true, Enums: []string{"UNSPECIFIED", "MINT", "GOOD", "POOR", "BROKEN"}},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
 	}
 	// VehiclesTable holds the schema information for the "vehicles" table.
 	VehiclesTable = &schema.Table{

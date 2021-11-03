@@ -1,0 +1,820 @@
+{
+  "info": {
+    "title": "Inventory API",
+    "description": "An API for agriculture inventory management.",
+    "termsOfService": "",
+    "contact": {},
+    "license": {
+      "name": ""
+    },
+    "version": "0.0.0"
+  },
+  "paths": {
+    "/equipment": {
+      "get": {
+        "summary": "List Equipment",
+        "description": "List Equipment.",
+        "tags": [
+          "Equipment"
+        ],
+        "operationId": "listEquipment",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "what page to render",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "itemsPerPage",
+            "in": "query",
+            "description": "item count to render per page",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "result Equipment list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Equipment2075188150View"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new Equipment",
+        "description": "Creates a new Equipment and persists it to storage.",
+        "tags": [
+          "Equipment"
+        ],
+        "operationId": "createEquipment",
+        "requestBody": {
+          "description": "Equipment to create",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "condition",
+                  "create_time",
+                  "name",
+                  "tags",
+                  "update_time"
+                ],
+                "properties": {
+                  "condition": {
+                    "type": "string",
+                    "example": "UNSPECIFIED"
+                  },
+                  "create_time": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "update_time": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Equipment created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Equipment2075188150View"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/equipment/{id}": {
+      "get": {
+        "summary": "Find a Equipment by ID",
+        "description": "Finds the Equipment with the requested ID and returns it.",
+        "tags": [
+          "Equipment"
+        ],
+        "operationId": "readEquipment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Equipment",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Equipment with requested ID was found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Equipment2075188150View"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a Equipment by ID",
+        "description": "Deletes the Equipment with the requested ID.",
+        "tags": [
+          "Equipment"
+        ],
+        "operationId": "deleteEquipment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Equipment to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Equipment with requested ID was deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Updates a Equipment",
+        "description": "Updates a Equipment and persists changes to storage.",
+        "tags": [
+          "Equipment"
+        ],
+        "operationId": "updateEquipment",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Equipment to update",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Equipment properties to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "condition",
+                  "name",
+                  "tags",
+                  "update_time"
+                ],
+                "properties": {
+                  "condition": {
+                    "type": "string",
+                    "example": "UNSPECIFIED"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "update_time": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Equipment updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Equipment2075188150View"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/vehicles": {
+      "get": {
+        "summary": "List Vehicles",
+        "description": "List Vehicles.",
+        "tags": [
+          "Vehicle"
+        ],
+        "operationId": "listVehicle",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "what page to render",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "itemsPerPage",
+            "in": "query",
+            "description": "item count to render per page",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "result Vehicle list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Vehicle2848838632View"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new Vehicle",
+        "description": "Creates a new Vehicle and persists it to storage.",
+        "tags": [
+          "Vehicle"
+        ],
+        "operationId": "createVehicle",
+        "requestBody": {
+          "description": "Vehicle to create",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "create_time",
+                  "update_time"
+                ],
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "condition": {
+                    "type": "string",
+                    "example": "UNSPECIFIED"
+                  },
+                  "create_time": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "make": {
+                    "type": "string"
+                  },
+                  "miles": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "model": {
+                    "type": "string"
+                  },
+                  "mpg": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "owner": {
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "update_time": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "year": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Vehicle created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Vehicle2848838632View"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    },
+    "/vehicles/{id}": {
+      "get": {
+        "summary": "Find a Vehicle by ID",
+        "description": "Finds the Vehicle with the requested ID and returns it.",
+        "tags": [
+          "Vehicle"
+        ],
+        "operationId": "readVehicle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Vehicle",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Vehicle with requested ID was found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Vehicle2848838632View"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a Vehicle by ID",
+        "description": "Deletes the Vehicle with the requested ID.",
+        "tags": [
+          "Vehicle"
+        ],
+        "operationId": "deleteVehicle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Vehicle to delete",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Vehicle with requested ID was deleted"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Updates a Vehicle",
+        "description": "Updates a Vehicle and persists changes to storage.",
+        "tags": [
+          "Vehicle"
+        ],
+        "operationId": "updateVehicle",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the Vehicle to update",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Vehicle properties to update",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "update_time"
+                ],
+                "properties": {
+                  "active": {
+                    "type": "boolean"
+                  },
+                  "condition": {
+                    "type": "string",
+                    "example": "UNSPECIFIED"
+                  },
+                  "make": {
+                    "type": "string"
+                  },
+                  "miles": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "model": {
+                    "type": "string"
+                  },
+                  "mpg": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "owner": {
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "update_time": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "year": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Vehicle updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Vehicle2848838632View"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Equipment2075188150View": {
+        "type": "object",
+        "required": [
+          "condition",
+          "create_time",
+          "id",
+          "name",
+          "tags",
+          "update_time"
+        ],
+        "properties": {
+          "condition": {
+            "type": "string",
+            "example": "UNSPECIFIED"
+          },
+          "create_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "name": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "update_time": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Vehicle2848838632View": {
+        "type": "object",
+        "required": [
+          "create_time",
+          "id",
+          "update_time"
+        ],
+        "properties": {
+          "active": {
+            "type": "boolean"
+          },
+          "condition": {
+            "type": "string",
+            "example": "UNSPECIFIED"
+          },
+          "create_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "make": {
+            "type": "string"
+          },
+          "miles": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "model": {
+            "type": "string"
+          },
+          "mpg": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "owner": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "update_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "year": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "responses": {
+      "400": {
+        "description": "invalid input, data invalid",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32",
+                  "example": 400
+                },
+                "errors": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "status": {
+                  "type": "string",
+                  "example": "Bad Request"
+                }
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "description": "user misses permission",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32",
+                  "example": 403
+                },
+                "errors": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "status": {
+                  "type": "string",
+                  "example": "Forbidden"
+                }
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "description": "resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32",
+                  "example": 404
+                },
+                "errors": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "status": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          }
+        }
+      },
+      "409": {
+        "description": "conflicting resources",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32",
+                  "example": 409
+                },
+                "errors": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "status": {
+                  "type": "string",
+                  "example": "Conflict"
+                }
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "unexpected error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "properties": {
+                "code": {
+                  "type": "integer",
+                  "format": "int32",
+                  "example": 500
+                },
+                "errors": {
+                  "type": "object",
+                  "properties": {}
+                },
+                "status": {
+                  "type": "string",
+                  "example": "Internal Server Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {}
+  },
+  "openapi": "3.0.3"
+}

@@ -1,13 +1,13 @@
 server:
   http:
     addr: 0.0.0.0:8000
-    timeout: 1s
+    timeout: 5s
   grpc:
     addr: 0.0.0.0:9000
-    timeout: 1s
+    timeout: 5s
 storage:
   database:
     driver: "${DB_DRIVER:postgres}"
-    source: "${DB_URI:postgres://postgres:postgres@localhost/postgres?sslmode=disable}"
+    source: "${DB_URI:postgres://postgres:changemerightaway@localhost/postgres?sslmode=disable}"
     migrate: true
     debug: false

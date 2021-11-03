@@ -33,14 +33,6 @@ func (eu *EquipmentUpdate) SetName(s string) *EquipmentUpdate {
 	return eu
 }
 
-// SetNillableName sets the "name" field if the given value is not nil.
-func (eu *EquipmentUpdate) SetNillableName(s *string) *EquipmentUpdate {
-	if s != nil {
-		eu.SetName(*s)
-	}
-	return eu
-}
-
 // SetTags sets the "tags" field.
 func (eu *EquipmentUpdate) SetTags(s []string) *EquipmentUpdate {
 	eu.mutation.SetTags(s)
@@ -53,31 +45,9 @@ func (eu *EquipmentUpdate) SetCondition(e equipment.Condition) *EquipmentUpdate 
 	return eu
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (eu *EquipmentUpdate) SetCreatedAt(t time.Time) *EquipmentUpdate {
-	eu.mutation.SetCreatedAt(t)
-	return eu
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (eu *EquipmentUpdate) SetNillableCreatedAt(t *time.Time) *EquipmentUpdate {
-	if t != nil {
-		eu.SetCreatedAt(*t)
-	}
-	return eu
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (eu *EquipmentUpdate) SetUpdatedAt(t time.Time) *EquipmentUpdate {
-	eu.mutation.SetUpdatedAt(t)
-	return eu
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (eu *EquipmentUpdate) SetNillableUpdatedAt(t *time.Time) *EquipmentUpdate {
-	if t != nil {
-		eu.SetUpdatedAt(*t)
-	}
+// SetUpdateTime sets the "update_time" field.
+func (eu *EquipmentUpdate) SetUpdateTime(t time.Time) *EquipmentUpdate {
+	eu.mutation.SetUpdateTime(t)
 	return eu
 }
 
@@ -92,6 +62,7 @@ func (eu *EquipmentUpdate) Save(ctx context.Context) (int, error) {
 		err      error
 		affected int
 	)
+	eu.defaults()
 	if len(eu.hooks) == 0 {
 		if err = eu.check(); err != nil {
 			return 0, err
@@ -146,8 +117,25 @@ func (eu *EquipmentUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (eu *EquipmentUpdate) defaults() {
+	if _, ok := eu.mutation.CreateTime(); !ok {
+		v := equipment.UpdateDefaultCreateTime()
+		eu.mutation.SetCreateTime(v)
+	}
+	if _, ok := eu.mutation.UpdateTime(); !ok {
+		v := equipment.UpdateDefaultUpdateTime()
+		eu.mutation.SetUpdateTime(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (eu *EquipmentUpdate) check() error {
+	if v, ok := eu.mutation.Name(); ok {
+		if err := equipment.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf("ent: validator failed for field \"name\": %w", err)}
+		}
+	}
 	if v, ok := eu.mutation.Condition(); ok {
 		if err := equipment.ConditionValidator(v); err != nil {
 			return &ValidationError{Name: "condition", err: fmt.Errorf("ent: validator failed for field \"condition\": %w", err)}
@@ -162,7 +150,7 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Table:   equipment.Table,
 			Columns: equipment.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt64,
 				Column: equipment.FieldID,
 			},
 		},
@@ -195,18 +183,18 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: equipment.FieldCondition,
 		})
 	}
-	if value, ok := eu.mutation.CreatedAt(); ok {
+	if value, ok := eu.mutation.CreateTime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: equipment.FieldCreatedAt,
+			Column: equipment.FieldCreateTime,
 		})
 	}
-	if value, ok := eu.mutation.UpdatedAt(); ok {
+	if value, ok := eu.mutation.UpdateTime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: equipment.FieldUpdatedAt,
+			Column: equipment.FieldUpdateTime,
 		})
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, eu.driver, _spec); err != nil {
@@ -234,14 +222,6 @@ func (euo *EquipmentUpdateOne) SetName(s string) *EquipmentUpdateOne {
 	return euo
 }
 
-// SetNillableName sets the "name" field if the given value is not nil.
-func (euo *EquipmentUpdateOne) SetNillableName(s *string) *EquipmentUpdateOne {
-	if s != nil {
-		euo.SetName(*s)
-	}
-	return euo
-}
-
 // SetTags sets the "tags" field.
 func (euo *EquipmentUpdateOne) SetTags(s []string) *EquipmentUpdateOne {
 	euo.mutation.SetTags(s)
@@ -254,31 +234,9 @@ func (euo *EquipmentUpdateOne) SetCondition(e equipment.Condition) *EquipmentUpd
 	return euo
 }
 
-// SetCreatedAt sets the "created_at" field.
-func (euo *EquipmentUpdateOne) SetCreatedAt(t time.Time) *EquipmentUpdateOne {
-	euo.mutation.SetCreatedAt(t)
-	return euo
-}
-
-// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (euo *EquipmentUpdateOne) SetNillableCreatedAt(t *time.Time) *EquipmentUpdateOne {
-	if t != nil {
-		euo.SetCreatedAt(*t)
-	}
-	return euo
-}
-
-// SetUpdatedAt sets the "updated_at" field.
-func (euo *EquipmentUpdateOne) SetUpdatedAt(t time.Time) *EquipmentUpdateOne {
-	euo.mutation.SetUpdatedAt(t)
-	return euo
-}
-
-// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
-func (euo *EquipmentUpdateOne) SetNillableUpdatedAt(t *time.Time) *EquipmentUpdateOne {
-	if t != nil {
-		euo.SetUpdatedAt(*t)
-	}
+// SetUpdateTime sets the "update_time" field.
+func (euo *EquipmentUpdateOne) SetUpdateTime(t time.Time) *EquipmentUpdateOne {
+	euo.mutation.SetUpdateTime(t)
 	return euo
 }
 
@@ -300,6 +258,7 @@ func (euo *EquipmentUpdateOne) Save(ctx context.Context) (*Equipment, error) {
 		err  error
 		node *Equipment
 	)
+	euo.defaults()
 	if len(euo.hooks) == 0 {
 		if err = euo.check(); err != nil {
 			return nil, err
@@ -354,8 +313,25 @@ func (euo *EquipmentUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (euo *EquipmentUpdateOne) defaults() {
+	if _, ok := euo.mutation.CreateTime(); !ok {
+		v := equipment.UpdateDefaultCreateTime()
+		euo.mutation.SetCreateTime(v)
+	}
+	if _, ok := euo.mutation.UpdateTime(); !ok {
+		v := equipment.UpdateDefaultUpdateTime()
+		euo.mutation.SetUpdateTime(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (euo *EquipmentUpdateOne) check() error {
+	if v, ok := euo.mutation.Name(); ok {
+		if err := equipment.NameValidator(v); err != nil {
+			return &ValidationError{Name: "name", err: fmt.Errorf("ent: validator failed for field \"name\": %w", err)}
+		}
+	}
 	if v, ok := euo.mutation.Condition(); ok {
 		if err := equipment.ConditionValidator(v); err != nil {
 			return &ValidationError{Name: "condition", err: fmt.Errorf("ent: validator failed for field \"condition\": %w", err)}
@@ -370,7 +346,7 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Table:   equipment.Table,
 			Columns: equipment.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt64,
 				Column: equipment.FieldID,
 			},
 		},
@@ -420,18 +396,18 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Column: equipment.FieldCondition,
 		})
 	}
-	if value, ok := euo.mutation.CreatedAt(); ok {
+	if value, ok := euo.mutation.CreateTime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: equipment.FieldCreatedAt,
+			Column: equipment.FieldCreateTime,
 		})
 	}
-	if value, ok := euo.mutation.UpdatedAt(); ok {
+	if value, ok := euo.mutation.UpdateTime(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeTime,
 			Value:  value,
-			Column: equipment.FieldUpdatedAt,
+			Column: equipment.FieldUpdateTime,
 		})
 	}
 	_node = &Equipment{config: euo.config}

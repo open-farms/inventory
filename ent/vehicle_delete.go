@@ -72,7 +72,7 @@ func (vd *VehicleDelete) sqlExec(ctx context.Context) (int, error) {
 		Node: &sqlgraph.NodeSpec{
 			Table: vehicle.Table,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeUint64,
+				Type:   field.TypeInt64,
 				Column: vehicle.FieldID,
 			},
 		},
