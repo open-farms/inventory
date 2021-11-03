@@ -4,13 +4,64 @@ package http
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/mailru/easyjson"
 	"github.com/open-farms/inventory/ent"
+	"github.com/open-farms/inventory/ent/category"
 	"github.com/open-farms/inventory/ent/equipment"
 	"github.com/open-farms/inventory/ent/vehicle"
 	"go.uber.org/zap"
 )
+
+// Create creates a new ent.Category and stores it in the database.
+func (h CategoryHandler) Create(w http.ResponseWriter, r *http.Request) {
+	l := h.log.With(zap.String("method", "Create"))
+	// Get the post data.
+	var d CategoryCreateRequest
+	if err := easyjson.UnmarshalFromReader(r.Body, &d); err != nil {
+		l.Error("error decoding json", zap.Error(err))
+		BadRequest(w, "invalid json string")
+		return
+	}
+	// Save the data.
+	b := h.client.Category.Create()
+	if d.Name != nil {
+		b.SetName(*d.Name)
+	}
+	e, err := b.Save(r.Context())
+	if err != nil {
+		switch {
+		default:
+			l.Error("could not create category", zap.Error(err))
+			InternalServerError(w, nil)
+		}
+		return
+	}
+	// Store id of fresh entity to log errors for the reload.
+	id := e.ID
+	// Reload entry.
+	q := h.client.Category.Query().Where(category.ID(e.ID))
+	ret, err := q.Only(r.Context())
+	if err != nil {
+		switch {
+		case ent.IsNotFound(err):
+			msg := stripEntError(err)
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
+			NotFound(w, msg)
+		case ent.IsNotSingular(err):
+			msg := stripEntError(err)
+			l.Error(msg, zap.Error(err), zap.Int("id", id))
+			BadRequest(w, msg)
+		default:
+			l.Error("could not read category", zap.Error(err), zap.Int("id", id))
+			InternalServerError(w, nil)
+		}
+		return
+	}
+	l.Info("category rendered", zap.Int("id", id))
+	easyjson.MarshalToHTTPResponseWriter(NewCategory4094953247View(ret), w)
+}
 
 // Create creates a new ent.Equipment and stores it in the database.
 func (h EquipmentHandler) Create(w http.ResponseWriter, r *http.Request) {
@@ -22,19 +73,34 @@ func (h EquipmentHandler) Create(w http.ResponseWriter, r *http.Request) {
 		BadRequest(w, "invalid json string")
 		return
 	}
+	// Validate the data.
+	errs := make(map[string]string)
+	if d.Name == nil {
+		errs["name"] = `missing required field: "name"`
+	}
+	if d.Condition == nil {
+		errs["condition"] = `missing required field: "condition"`
+	} else if err := equipment.ConditionValidator(*d.Condition); err != nil {
+		errs["condition"] = strings.TrimPrefix(err.Error(), "equipment: ")
+	}
+	if len(errs) > 0 {
+		l.Info("validation failed", zapFields(errs)...)
+		BadRequest(w, errs)
+		return
+	}
 	// Save the data.
 	b := h.client.Equipment.Create()
-	if d.Name != nil {
-		b.SetName(*d.Name)
-	}
-	if d.Condition != nil {
-		b.SetCondition(*d.Condition)
-	}
 	if d.CreateTime != nil {
 		b.SetCreateTime(*d.CreateTime)
 	}
 	if d.UpdateTime != nil {
 		b.SetUpdateTime(*d.UpdateTime)
+	}
+	if d.Name != nil {
+		b.SetName(*d.Name)
+	}
+	if d.Condition != nil {
+		b.SetCondition(*d.Condition)
 	}
 	e, err := b.Save(r.Context())
 	if err != nil {
@@ -67,7 +133,7 @@ func (h EquipmentHandler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	l.Info("equipment rendered", zap.Int("id", id))
-	easyjson.MarshalToHTTPResponseWriter(NewEquipment822375389View(ret), w)
+	easyjson.MarshalToHTTPResponseWriter(NewEquipment3958372643View(ret), w)
 }
 
 // Create creates a new ent.Vehicle and stores it in the database.
@@ -80,8 +146,32 @@ func (h VehicleHandler) Create(w http.ResponseWriter, r *http.Request) {
 		BadRequest(w, "invalid json string")
 		return
 	}
+	// Validate the data.
+	errs := make(map[string]string)
+	if d.Make == nil {
+		errs["make"] = `missing required field: "make"`
+	}
+	if d.Model == nil {
+		errs["model"] = `missing required field: "model"`
+	}
+	if d.Condition != nil {
+		if err := vehicle.ConditionValidator(*d.Condition); err != nil {
+			errs["condition"] = strings.TrimPrefix(err.Error(), "vehicle: ")
+		}
+	}
+	if len(errs) > 0 {
+		l.Info("validation failed", zapFields(errs)...)
+		BadRequest(w, errs)
+		return
+	}
 	// Save the data.
 	b := h.client.Vehicle.Create()
+	if d.CreateTime != nil {
+		b.SetCreateTime(*d.CreateTime)
+	}
+	if d.UpdateTime != nil {
+		b.SetUpdateTime(*d.UpdateTime)
+	}
 	if d.Make != nil {
 		b.SetMake(*d.Make)
 	}
@@ -103,17 +193,8 @@ func (h VehicleHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if d.Active != nil {
 		b.SetActive(*d.Active)
 	}
-	if d.Tags != nil {
-		b.SetTags(*d.Tags)
-	}
 	if d.Condition != nil {
 		b.SetCondition(*d.Condition)
-	}
-	if d.CreateTime != nil {
-		b.SetCreateTime(*d.CreateTime)
-	}
-	if d.UpdateTime != nil {
-		b.SetUpdateTime(*d.UpdateTime)
 	}
 	e, err := b.Save(r.Context())
 	if err != nil {
@@ -133,18 +214,18 @@ func (h VehicleHandler) Create(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
-			l.Info(msg, zap.Error(err), zap.Int64("id", id))
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
 			NotFound(w, msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
-			l.Error(msg, zap.Error(err), zap.Int64("id", id))
+			l.Error(msg, zap.Error(err), zap.Int("id", id))
 			BadRequest(w, msg)
 		default:
-			l.Error("could not read vehicle", zap.Error(err), zap.Int64("id", id))
+			l.Error("could not read vehicle", zap.Error(err), zap.Int("id", id))
 			InternalServerError(w, nil)
 		}
 		return
 	}
-	l.Info("vehicle rendered", zap.Int64("id", id))
-	easyjson.MarshalToHTTPResponseWriter(NewVehicle2848838632View(ret), w)
+	l.Info("vehicle rendered", zap.Int("id", id))
+	easyjson.MarshalToHTTPResponseWriter(NewVehicle2530256765View(ret), w)
 }

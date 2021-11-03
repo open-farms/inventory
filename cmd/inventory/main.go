@@ -1,13 +1,9 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"log"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
+	"time"
 
 	_ "github.com/lib/pq"
 	"github.com/open-farms/inventory/ent"
@@ -15,7 +11,12 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
+
+	transgrpc "github.com/go-kratos/kratos/v2/transport/grpc"
+	transhttp "github.com/go-kratos/kratos/v2/transport/http"
+	"github.com/open-farms/inventory/ent/proto/entpb"
 	"github.com/open-farms/inventory/internal/settings"
 	"go.uber.org/zap"
 )
@@ -42,6 +43,7 @@ func setup() (config.Config, error) {
 	logger = zap.NewExample(
 		zap.Fields(zap.String("service", Name)),
 	)
+
 	cfg, err := settings.Configure(flagconf)
 	if err != nil {
 		return nil, err
@@ -63,7 +65,18 @@ func setup() (config.Config, error) {
 	return cfg, nil
 }
 
-func service(c *ent.Client) http.Handler {
+func grpcService(client *ent.Client, address string, timeout time.Duration) *transgrpc.Server {
+	equipmentSvc := entpb.NewEquipmentService(client)
+	vehicleSvc := entpb.NewVehicleService(client)
+
+	grpcServer := transgrpc.NewServer(transgrpc.Address(address), transgrpc.Timeout(timeout))
+	entpb.RegisterEquipmentServiceServer(grpcServer, equipmentSvc)
+	entpb.RegisterVehicleServiceServer(grpcServer, vehicleSvc)
+
+	return grpcServer
+}
+
+func httpService(c *ent.Client, address string, timeout time.Duration) *transhttp.Server {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(middleware.StripSlashes)
@@ -72,7 +85,9 @@ func service(c *ent.Client) http.Handler {
 		elk.NewVehicleHandler(c, logger).MountRoutes(r)
 	})
 
-	return r
+	httpServer := transhttp.NewServer(transhttp.Address(address))
+	httpServer.HandlePrefix("/", r)
+	return httpServer
 }
 
 func main() {
@@ -86,8 +101,10 @@ func main() {
 
 	driver, _ := cfg.Value("storage.database.driver").String()
 	source, _ := cfg.Value("storage.database.source").String()
-	address, _ := cfg.Value("server.http.addr").String()
-	timeout, _ := cfg.Value("server.http.timeout").Duration()
+	httpAddress, _ := cfg.Value("server.http.addr").String()
+	httpTimeout, _ := cfg.Value("server.http.timeout").Duration()
+	grpcAddress, _ := cfg.Value("server.grpc.addr").String()
+	grpcTimeout, _ := cfg.Value("server.grpc.timeout").Duration()
 
 	// Connect to database
 	c, err := ent.Open(driver, source)
@@ -96,36 +113,16 @@ func main() {
 	}
 	defer c.Close()
 
-	// Create server with context and graceful shutdown timer
-	server := &http.Server{Addr: address, Handler: service(c)}
-	serverCtx, serverStopCtx := context.WithCancel(context.Background())
-	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
-	go func() {
-		<-sig
-		shutdownCtx, _ := context.WithTimeout(serverCtx, timeout)
-		go func() {
-			<-shutdownCtx.Done()
-			if shutdownCtx.Err() == context.DeadlineExceeded {
-				logger.Fatal("graceful shutdown timed out.. forcing exit.")
-			}
-		}()
+	// Create servers with context and graceful shutdown timer
+	httpServer := httpService(c, httpAddress, httpTimeout)
+	grpcServer := grpcService(c, grpcAddress, grpcTimeout)
+	app := kratos.New(
+		kratos.Name("inventory"),
+		kratos.Server(httpServer, grpcServer),
+		kratos.Version(Version),
+	)
 
-		// Trigger graceful shutdown
-		err := server.Shutdown(shutdownCtx)
-		if err != nil {
-			log.Fatal(err)
-		}
-		serverStopCtx()
-	}()
-
-	logger.Info("Server running")
-	err = server.ListenAndServe()
-	if err != nil && err != http.ErrServerClosed {
-		logger.Fatal(err.Error())
+	if err := app.Run(); err != nil {
+		log.Fatal(err)
 	}
-
-	// Wait for server context to be stopped
-	<-serverCtx.Done()
-	logger.Info("Server stopped")
 }

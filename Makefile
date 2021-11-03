@@ -2,8 +2,10 @@ GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
 
 .PHONY: init
+# Install dependencies
 init:
 	go install entgo.io/ent/cmd/ent@latest
+	go install entgo.io/contrib/entproto/cmd/protoc-gen-entgrpc@latest
 
 .PHONY: build
 # build binary

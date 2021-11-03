@@ -7,18 +7,20 @@ import "google/protobuf/empty.proto";
 
 import "google/protobuf/timestamp.proto";
 
+import "google/protobuf/wrappers.proto";
+
 option go_package = "github.com/open-farms/inventory/ent/proto/entpb";
 
 message Equipment {
   int32 id = 1;
 
-  string name = 2;
+  google.protobuf.Timestamp create_time = 2;
 
-  string condition = 3;
+  google.protobuf.Timestamp update_time = 3;
 
-  google.protobuf.Timestamp create_time = 4;
+  string name = 4;
 
-  google.protobuf.Timestamp update_time = 5;
+  string condition = 5;
 }
 
 message CreateEquipmentRequest {
@@ -47,6 +49,56 @@ message DeleteEquipmentRequest {
   int32 id = 1;
 }
 
+message Vehicle {
+  int32 id = 1;
+
+  google.protobuf.Timestamp create_time = 2;
+
+  google.protobuf.Timestamp update_time = 3;
+
+  string make = 4;
+
+  string model = 5;
+
+  google.protobuf.Int64Value miles = 6;
+
+  google.protobuf.Int64Value mpg = 7;
+
+  google.protobuf.StringValue owner = 8;
+
+  google.protobuf.StringValue year = 9;
+
+  google.protobuf.BoolValue active = 10;
+
+  google.protobuf.StringValue condition = 11;
+}
+
+message CreateVehicleRequest {
+  Vehicle vehicle = 1;
+}
+
+message GetVehicleRequest {
+  int32 id = 1;
+
+  View view = 2;
+
+  enum View {
+    VIEW_UNSPECIFIED = 0;
+
+    BASIC = 1;
+
+    WITH_EDGE_IDS = 2;
+  }
+}
+
+message UpdateVehicleRequest {
+  Vehicle vehicle = 1;
+}
+
+message DeleteVehicleRequest {
+  int32 id = 1;
+}
+
 service EquipmentService {
   rpc Create ( CreateEquipmentRequest ) returns ( Equipment );
 
@@ -55,4 +107,14 @@ service EquipmentService {
   rpc Update ( UpdateEquipmentRequest ) returns ( Equipment );
 
   rpc Delete ( DeleteEquipmentRequest ) returns ( google.protobuf.Empty );
+}
+
+service VehicleService {
+  rpc Create ( CreateVehicleRequest ) returns ( Vehicle );
+
+  rpc Get ( GetVehicleRequest ) returns ( Vehicle );
+
+  rpc Update ( UpdateVehicleRequest ) returns ( Vehicle );
+
+  rpc Delete ( DeleteVehicleRequest ) returns ( google.protobuf.Empty );
 }

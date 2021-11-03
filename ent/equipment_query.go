@@ -253,12 +253,12 @@ func (eq *EquipmentQuery) Clone() *EquipmentQuery {
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		CreateTime time.Time `json:"create_time,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Equipment.Query().
-//		GroupBy(equipment.FieldName).
+//		GroupBy(equipment.FieldCreateTime).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 //
@@ -280,11 +280,11 @@ func (eq *EquipmentQuery) GroupBy(field string, fields ...string) *EquipmentGrou
 // Example:
 //
 //	var v []struct {
-//		Name string `json:"name,omitempty"`
+//		CreateTime time.Time `json:"create_time,omitempty"`
 //	}
 //
 //	client.Equipment.Query().
-//		Select(equipment.FieldName).
+//		Select(equipment.FieldCreateTime).
 //		Scan(ctx, &v)
 //
 func (eq *EquipmentQuery) Select(fields ...string) *EquipmentSelect {

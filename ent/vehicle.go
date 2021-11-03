@@ -3,7 +3,6 @@
 package ent
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -16,7 +15,11 @@ import (
 type Vehicle struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int64 `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
+	// CreateTime holds the value of the "create_time" field.
+	CreateTime time.Time `json:"create_time,omitempty"`
+	// UpdateTime holds the value of the "update_time" field.
+	UpdateTime time.Time `json:"update_time,omitempty"`
 	// Make holds the value of the "make" field.
 	Make string `json:"make,omitempty"`
 	// Model holds the value of the "model" field.
@@ -31,14 +34,8 @@ type Vehicle struct {
 	Year string `json:"year,omitempty"`
 	// Active holds the value of the "active" field.
 	Active bool `json:"active,omitempty"`
-	// Tags holds the value of the "tags" field.
-	Tags []string `json:"tags,omitempty"`
 	// Condition holds the value of the "condition" field.
-	Condition vehicle.Condition `json:"condition,omitempty"`
-	// CreateTime holds the value of the "create_time" field.
-	CreateTime time.Time `json:"create_time,omitempty"`
-	// UpdateTime holds the value of the "update_time" field.
-	UpdateTime time.Time `json:"update_time,omitempty"`
+	Condition string `json:"condition,omitempty"`
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -46,8 +43,6 @@ func (*Vehicle) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case vehicle.FieldTags:
-			values[i] = new([]byte)
 		case vehicle.FieldActive:
 			values[i] = new(sql.NullBool)
 		case vehicle.FieldID, vehicle.FieldMiles, vehicle.FieldMpg:
@@ -76,7 +71,19 @@ func (v *Vehicle) assignValues(columns []string, values []interface{}) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			v.ID = int64(value.Int64)
+			v.ID = int(value.Int64)
+		case vehicle.FieldCreateTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field create_time", values[i])
+			} else if value.Valid {
+				v.CreateTime = value.Time
+			}
+		case vehicle.FieldUpdateTime:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field update_time", values[i])
+			} else if value.Valid {
+				v.UpdateTime = value.Time
+			}
 		case vehicle.FieldMake:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field make", values[i])
@@ -119,31 +126,11 @@ func (v *Vehicle) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				v.Active = value.Bool
 			}
-		case vehicle.FieldTags:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field tags", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &v.Tags); err != nil {
-					return fmt.Errorf("unmarshal field tags: %w", err)
-				}
-			}
 		case vehicle.FieldCondition:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field condition", values[i])
 			} else if value.Valid {
-				v.Condition = vehicle.Condition(value.String)
-			}
-		case vehicle.FieldCreateTime:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field create_time", values[i])
-			} else if value.Valid {
-				v.CreateTime = value.Time
-			}
-		case vehicle.FieldUpdateTime:
-			if value, ok := values[i].(*sql.NullTime); !ok {
-				return fmt.Errorf("unexpected type %T for field update_time", values[i])
-			} else if value.Valid {
-				v.UpdateTime = value.Time
+				v.Condition = value.String
 			}
 		}
 	}
@@ -173,6 +160,10 @@ func (v *Vehicle) String() string {
 	var builder strings.Builder
 	builder.WriteString("Vehicle(")
 	builder.WriteString(fmt.Sprintf("id=%v", v.ID))
+	builder.WriteString(", create_time=")
+	builder.WriteString(v.CreateTime.Format(time.ANSIC))
+	builder.WriteString(", update_time=")
+	builder.WriteString(v.UpdateTime.Format(time.ANSIC))
 	builder.WriteString(", make=")
 	builder.WriteString(v.Make)
 	builder.WriteString(", model=")
@@ -187,14 +178,8 @@ func (v *Vehicle) String() string {
 	builder.WriteString(v.Year)
 	builder.WriteString(", active=")
 	builder.WriteString(fmt.Sprintf("%v", v.Active))
-	builder.WriteString(", tags=")
-	builder.WriteString(fmt.Sprintf("%v", v.Tags))
 	builder.WriteString(", condition=")
-	builder.WriteString(fmt.Sprintf("%v", v.Condition))
-	builder.WriteString(", create_time=")
-	builder.WriteString(v.CreateTime.Format(time.ANSIC))
-	builder.WriteString(", update_time=")
-	builder.WriteString(v.UpdateTime.Format(time.ANSIC))
+	builder.WriteString(v.Condition)
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -14,32 +14,42 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
+	equipmentMixin := schema.Equipment{}.Mixin()
+	equipmentMixinFields0 := equipmentMixin[0].Fields()
+	_ = equipmentMixinFields0
 	equipmentFields := schema.Equipment{}.Fields()
 	_ = equipmentFields
 	// equipmentDescCreateTime is the schema descriptor for create_time field.
-	equipmentDescCreateTime := equipmentFields[2].Descriptor()
+	equipmentDescCreateTime := equipmentMixinFields0[0].Descriptor()
 	// equipment.DefaultCreateTime holds the default value on creation for the create_time field.
 	equipment.DefaultCreateTime = equipmentDescCreateTime.Default.(func() time.Time)
-	// equipment.UpdateDefaultCreateTime holds the default value on update for the create_time field.
-	equipment.UpdateDefaultCreateTime = equipmentDescCreateTime.UpdateDefault.(func() time.Time)
 	// equipmentDescUpdateTime is the schema descriptor for update_time field.
-	equipmentDescUpdateTime := equipmentFields[3].Descriptor()
+	equipmentDescUpdateTime := equipmentMixinFields0[1].Descriptor()
 	// equipment.DefaultUpdateTime holds the default value on creation for the update_time field.
 	equipment.DefaultUpdateTime = equipmentDescUpdateTime.Default.(func() time.Time)
 	// equipment.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	equipment.UpdateDefaultUpdateTime = equipmentDescUpdateTime.UpdateDefault.(func() time.Time)
+	// equipmentDescCondition is the schema descriptor for condition field.
+	equipmentDescCondition := equipmentFields[1].Descriptor()
+	// equipment.ConditionValidator is a validator for the "condition" field. It is called by the builders before save.
+	equipment.ConditionValidator = equipmentDescCondition.Validators[0].(func(string) error)
+	vehicleMixin := schema.Vehicle{}.Mixin()
+	vehicleMixinFields0 := vehicleMixin[0].Fields()
+	_ = vehicleMixinFields0
 	vehicleFields := schema.Vehicle{}.Fields()
 	_ = vehicleFields
 	// vehicleDescCreateTime is the schema descriptor for create_time field.
-	vehicleDescCreateTime := vehicleFields[10].Descriptor()
+	vehicleDescCreateTime := vehicleMixinFields0[0].Descriptor()
 	// vehicle.DefaultCreateTime holds the default value on creation for the create_time field.
 	vehicle.DefaultCreateTime = vehicleDescCreateTime.Default.(func() time.Time)
-	// vehicle.UpdateDefaultCreateTime holds the default value on update for the create_time field.
-	vehicle.UpdateDefaultCreateTime = vehicleDescCreateTime.UpdateDefault.(func() time.Time)
 	// vehicleDescUpdateTime is the schema descriptor for update_time field.
-	vehicleDescUpdateTime := vehicleFields[11].Descriptor()
+	vehicleDescUpdateTime := vehicleMixinFields0[1].Descriptor()
 	// vehicle.DefaultUpdateTime holds the default value on creation for the update_time field.
 	vehicle.DefaultUpdateTime = vehicleDescUpdateTime.Default.(func() time.Time)
 	// vehicle.UpdateDefaultUpdateTime holds the default value on update for the update_time field.
 	vehicle.UpdateDefaultUpdateTime = vehicleDescUpdateTime.UpdateDefault.(func() time.Time)
+	// vehicleDescCondition is the schema descriptor for condition field.
+	vehicleDescCondition := vehicleFields[7].Descriptor()
+	// vehicle.ConditionValidator is a validator for the "condition" field. It is called by the builders before save.
+	vehicle.ConditionValidator = vehicleDescCondition.Validators[0].(func(string) error)
 }
