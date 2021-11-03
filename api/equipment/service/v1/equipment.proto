@@ -83,7 +83,7 @@ message DeleteEquipmentRequest {
 }
 
 message DeleteEquipmentResponse {
-	Equipment equipment = 1;
+	uint64 id = 1;
 }
 
 message GetEquipmentRequest {

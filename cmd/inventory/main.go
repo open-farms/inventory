@@ -75,7 +75,7 @@ func main() {
 		),
 	)
 
-	equipmentSvc := service.NewEquipmentService()
+	equipmentSvc := service.NewEquipmentService(logger, flagconf)
 	equipment.RegisterEquipmentServiceServer(grpcSrv, equipmentSvc)
 	equipment.RegisterEquipmentServiceHTTPServer(httpSrv, equipmentSvc)
 

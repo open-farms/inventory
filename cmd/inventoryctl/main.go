@@ -7,7 +7,9 @@ import (
 
 type CLI struct {
 	commands.Globals
-	Migrate commands.MigrateCmd `cmd:"" help:"Perform database migrations."`
+	Vehicles  commands.VehiclesCmd  `cmd:"" help:"Interact with vehicles in your inventory"`
+	Equipment commands.EquipmentCmd `cmd:"" help:"Interact with equipment in your inventory"`
+	Migrate   commands.MigrateCmd   `cmd:"" help:"Perform database migrations."`
 }
 
 func main() {

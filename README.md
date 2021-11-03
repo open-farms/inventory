@@ -28,27 +28,26 @@ The inventory service enables users to keep track of farm inventory across multi
 
 ## Quickstart ⚡
 
+You can either install inventory directly with go, build the project from source, or [download a binary from the latest release](https://github.com/open-farms/inventory/releases)
+
+Install with `go install`
+
 ```shell
-# Download all dependencies for the project
-make init
+# Install the server
+go install github.com/open-farms/inventory/cmd/inventory@latest
 
-# Build it
-make build
-
-# Run it
-./bin/inventory
+# Install the admin cli
+go install github.com/open-farms/inventory/cmd/inventoryctl@latest
 ```
+
 
 ## Start the service 🏃
 
-Start the service directly with go or containerize it with Docker.
+Start the service directly with the binary or run it containerized with Docker.
 
 ```shell
-# Build the binary
-VERSION="<x.x.x>" make build
-
-# Run the service
-./bin/inventory
+# Run the inventory service
+inventory
 ```
 
 ```shell
@@ -65,19 +64,22 @@ docker run --rm -v ./config:/data/config -p 8000:8000 -p 9000:9000 <your-docker-
 # Start the postgres database
 docker-compose up
 
-# Run the inventoryctl cli to performa database migration
-make migrate
+# Run the inventoryctl cli to perform database migrations
+inventoryctl --help
+inventoryctl migrate
 ```
 
+## Generate code and build from source 🏗️
 
-## Generate code 🏗️
-
-Generate the protobuf code, openapi spec, 
+Generate the protobuf code, openapi spec, and build from source
 
 ```
 # Generate API files (include: pb.go, http, grpc, validate) by proto
+make init
 make api
 make proto
+make generate
+make build
 ```
 
 ## Services

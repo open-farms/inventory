@@ -53,7 +53,7 @@ func Migrate(configPath string, dry bool) error {
 
 	// Run the auto migration tool
 	ctx := context.Background()
-	err = client.Schema.Create(ctx)
+	err = client.Debug().Schema.Create(ctx)
 	if err != nil {
 		return err
 	}

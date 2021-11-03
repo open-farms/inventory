@@ -33,11 +33,17 @@ api:
 build:
 	mkdir -p bin/
 	go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/ ./cmd/inventory
-	go build -o ./bin/ ./cmd/inventoryctl
+	go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/ ./cmd/inventoryctl
 
 .PHONY: migrate
+# run database migrations
 migrate:
 	go run cmd/inventoryctl/main.go migrate
+
+.PHONY: run
+# run the gRPC and API service
+run:
+	go run cmd/inventory/main.go
 
 .PHONY: generate
 # run go generators
