@@ -60,8 +60,8 @@ inventory
 # Build the docker image
 docker build -t <your-docker-image-name> .
 
-# Run the docker image, exposing http and gRPC services
-docker run --rm -v ./config:/data/config -p 8000:8000 -p 9000:9000 <your-docker-image-name>
+# Run the docker image, exposing the service
+docker run --rm -v ./config:/data/config -p 8000:8000 <your-docker-image-name>
 ```
 
 ## Manage the inventory database with the [inventoryctl](./cmd/inventoryctl) CLI
