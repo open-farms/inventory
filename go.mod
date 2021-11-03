@@ -13,5 +13,4 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.9
 	go.uber.org/zap v1.19.1
 	golang.org/x/sys v0.0.0-20211102192858-4dd72447c267 // indirect
-	google.golang.org/protobuf v1.27.1
 )
