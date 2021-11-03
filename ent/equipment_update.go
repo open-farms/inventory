@@ -33,15 +33,9 @@ func (eu *EquipmentUpdate) SetName(s string) *EquipmentUpdate {
 	return eu
 }
 
-// SetTags sets the "tags" field.
-func (eu *EquipmentUpdate) SetTags(s []string) *EquipmentUpdate {
-	eu.mutation.SetTags(s)
-	return eu
-}
-
 // SetCondition sets the "condition" field.
-func (eu *EquipmentUpdate) SetCondition(e equipment.Condition) *EquipmentUpdate {
-	eu.mutation.SetCondition(e)
+func (eu *EquipmentUpdate) SetCondition(s string) *EquipmentUpdate {
+	eu.mutation.SetCondition(s)
 	return eu
 }
 
@@ -64,18 +58,12 @@ func (eu *EquipmentUpdate) Save(ctx context.Context) (int, error) {
 	)
 	eu.defaults()
 	if len(eu.hooks) == 0 {
-		if err = eu.check(); err != nil {
-			return 0, err
-		}
 		affected, err = eu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*EquipmentMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			if err = eu.check(); err != nil {
-				return 0, err
 			}
 			eu.mutation = mutation
 			affected, err = eu.sqlSave(ctx)
@@ -129,28 +117,13 @@ func (eu *EquipmentUpdate) defaults() {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (eu *EquipmentUpdate) check() error {
-	if v, ok := eu.mutation.Name(); ok {
-		if err := equipment.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf("ent: validator failed for field \"name\": %w", err)}
-		}
-	}
-	if v, ok := eu.mutation.Condition(); ok {
-		if err := equipment.ConditionValidator(v); err != nil {
-			return &ValidationError{Name: "condition", err: fmt.Errorf("ent: validator failed for field \"condition\": %w", err)}
-		}
-	}
-	return nil
-}
-
 func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   equipment.Table,
 			Columns: equipment.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt64,
+				Type:   field.TypeInt,
 				Column: equipment.FieldID,
 			},
 		},
@@ -169,16 +142,9 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: equipment.FieldName,
 		})
 	}
-	if value, ok := eu.mutation.Tags(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: equipment.FieldTags,
-		})
-	}
 	if value, ok := eu.mutation.Condition(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
+			Type:   field.TypeString,
 			Value:  value,
 			Column: equipment.FieldCondition,
 		})
@@ -222,15 +188,9 @@ func (euo *EquipmentUpdateOne) SetName(s string) *EquipmentUpdateOne {
 	return euo
 }
 
-// SetTags sets the "tags" field.
-func (euo *EquipmentUpdateOne) SetTags(s []string) *EquipmentUpdateOne {
-	euo.mutation.SetTags(s)
-	return euo
-}
-
 // SetCondition sets the "condition" field.
-func (euo *EquipmentUpdateOne) SetCondition(e equipment.Condition) *EquipmentUpdateOne {
-	euo.mutation.SetCondition(e)
+func (euo *EquipmentUpdateOne) SetCondition(s string) *EquipmentUpdateOne {
+	euo.mutation.SetCondition(s)
 	return euo
 }
 
@@ -260,18 +220,12 @@ func (euo *EquipmentUpdateOne) Save(ctx context.Context) (*Equipment, error) {
 	)
 	euo.defaults()
 	if len(euo.hooks) == 0 {
-		if err = euo.check(); err != nil {
-			return nil, err
-		}
 		node, err = euo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*EquipmentMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
-			}
-			if err = euo.check(); err != nil {
-				return nil, err
 			}
 			euo.mutation = mutation
 			node, err = euo.sqlSave(ctx)
@@ -325,28 +279,13 @@ func (euo *EquipmentUpdateOne) defaults() {
 	}
 }
 
-// check runs all checks and user-defined validators on the builder.
-func (euo *EquipmentUpdateOne) check() error {
-	if v, ok := euo.mutation.Name(); ok {
-		if err := equipment.NameValidator(v); err != nil {
-			return &ValidationError{Name: "name", err: fmt.Errorf("ent: validator failed for field \"name\": %w", err)}
-		}
-	}
-	if v, ok := euo.mutation.Condition(); ok {
-		if err := equipment.ConditionValidator(v); err != nil {
-			return &ValidationError{Name: "condition", err: fmt.Errorf("ent: validator failed for field \"condition\": %w", err)}
-		}
-	}
-	return nil
-}
-
 func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
 			Table:   equipment.Table,
 			Columns: equipment.Columns,
 			ID: &sqlgraph.FieldSpec{
-				Type:   field.TypeInt64,
+				Type:   field.TypeInt,
 				Column: equipment.FieldID,
 			},
 		},
@@ -382,16 +321,9 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Column: equipment.FieldName,
 		})
 	}
-	if value, ok := euo.mutation.Tags(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeJSON,
-			Value:  value,
-			Column: equipment.FieldTags,
-		})
-	}
 	if value, ok := euo.mutation.Condition(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeEnum,
+			Type:   field.TypeString,
 			Value:  value,
 			Column: equipment.FieldCondition,
 		})

@@ -33,10 +33,9 @@ type EquipmentMutation struct {
 	config
 	op            Op
 	typ           string
-	id            *int64
+	id            *int
 	name          *string
-	tags          *[]string
-	condition     *equipment.Condition
+	condition     *string
 	create_time   *time.Time
 	update_time   *time.Time
 	clearedFields map[string]struct{}
@@ -65,7 +64,7 @@ func newEquipmentMutation(c config, op Op, opts ...equipmentOption) *EquipmentMu
 }
 
 // withEquipmentID sets the ID field of the mutation.
-func withEquipmentID(id int64) equipmentOption {
+func withEquipmentID(id int) equipmentOption {
 	return func(m *EquipmentMutation) {
 		var (
 			err   error
@@ -115,15 +114,9 @@ func (m EquipmentMutation) Tx() (*Tx, error) {
 	return tx, nil
 }
 
-// SetID sets the value of the id field. Note that this
-// operation is only accepted on creation of Equipment entities.
-func (m *EquipmentMutation) SetID(id int64) {
-	m.id = &id
-}
-
 // ID returns the ID value in the mutation. Note that the ID is only available
 // if it was provided to the builder or after it was returned from the database.
-func (m *EquipmentMutation) ID() (id int64, exists bool) {
+func (m *EquipmentMutation) ID() (id int, exists bool) {
 	if m.id == nil {
 		return
 	}
@@ -166,49 +159,13 @@ func (m *EquipmentMutation) ResetName() {
 	m.name = nil
 }
 
-// SetTags sets the "tags" field.
-func (m *EquipmentMutation) SetTags(s []string) {
-	m.tags = &s
-}
-
-// Tags returns the value of the "tags" field in the mutation.
-func (m *EquipmentMutation) Tags() (r []string, exists bool) {
-	v := m.tags
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTags returns the old "tags" field's value of the Equipment entity.
-// If the Equipment object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EquipmentMutation) OldTags(ctx context.Context) (v []string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, fmt.Errorf("OldTags is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, fmt.Errorf("OldTags requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTags: %w", err)
-	}
-	return oldValue.Tags, nil
-}
-
-// ResetTags resets all changes to the "tags" field.
-func (m *EquipmentMutation) ResetTags() {
-	m.tags = nil
-}
-
 // SetCondition sets the "condition" field.
-func (m *EquipmentMutation) SetCondition(e equipment.Condition) {
-	m.condition = &e
+func (m *EquipmentMutation) SetCondition(s string) {
+	m.condition = &s
 }
 
 // Condition returns the value of the "condition" field in the mutation.
-func (m *EquipmentMutation) Condition() (r equipment.Condition, exists bool) {
+func (m *EquipmentMutation) Condition() (r string, exists bool) {
 	v := m.condition
 	if v == nil {
 		return
@@ -219,7 +176,7 @@ func (m *EquipmentMutation) Condition() (r equipment.Condition, exists bool) {
 // OldCondition returns the old "condition" field's value of the Equipment entity.
 // If the Equipment object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *EquipmentMutation) OldCondition(ctx context.Context) (v equipment.Condition, err error) {
+func (m *EquipmentMutation) OldCondition(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldCondition is only allowed on UpdateOne operations")
 	}
@@ -329,12 +286,9 @@ func (m *EquipmentMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *EquipmentMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 4)
 	if m.name != nil {
 		fields = append(fields, equipment.FieldName)
-	}
-	if m.tags != nil {
-		fields = append(fields, equipment.FieldTags)
 	}
 	if m.condition != nil {
 		fields = append(fields, equipment.FieldCondition)
@@ -355,8 +309,6 @@ func (m *EquipmentMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case equipment.FieldName:
 		return m.Name()
-	case equipment.FieldTags:
-		return m.Tags()
 	case equipment.FieldCondition:
 		return m.Condition()
 	case equipment.FieldCreateTime:
@@ -374,8 +326,6 @@ func (m *EquipmentMutation) OldField(ctx context.Context, name string) (ent.Valu
 	switch name {
 	case equipment.FieldName:
 		return m.OldName(ctx)
-	case equipment.FieldTags:
-		return m.OldTags(ctx)
 	case equipment.FieldCondition:
 		return m.OldCondition(ctx)
 	case equipment.FieldCreateTime:
@@ -398,15 +348,8 @@ func (m *EquipmentMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetName(v)
 		return nil
-	case equipment.FieldTags:
-		v, ok := value.([]string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTags(v)
-		return nil
 	case equipment.FieldCondition:
-		v, ok := value.(equipment.Condition)
+		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -477,9 +420,6 @@ func (m *EquipmentMutation) ResetField(name string) error {
 	switch name {
 	case equipment.FieldName:
 		m.ResetName()
-		return nil
-	case equipment.FieldTags:
-		m.ResetTags()
 		return nil
 	case equipment.FieldCondition:
 		m.ResetCondition()

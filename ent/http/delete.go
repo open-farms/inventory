@@ -15,27 +15,26 @@ import (
 func (h EquipmentHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	l := h.log.With(zap.String("method", "Delete"))
 	// ID is URL parameter.
-	id64, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 0)
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		BadRequest(w, "id must be an integer greater zero")
+		BadRequest(w, "id must be an integer")
 		return
 	}
-	id := int64(id64)
 	err = h.client.Equipment.DeleteOneID(id).Exec(r.Context())
 	if err != nil {
 		switch {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
-			l.Info(msg, zap.Error(err), zap.Int64("id", id))
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
 			NotFound(w, msg)
 		default:
-			l.Error("could-not-delete-equipment", zap.Error(err), zap.Int64("id", id))
+			l.Error("could-not-delete-equipment", zap.Error(err), zap.Int("id", id))
 			InternalServerError(w, nil)
 		}
 		return
 	}
-	l.Info("equipment deleted", zap.Int64("id", id))
+	l.Info("equipment deleted", zap.Int("id", id))
 	w.WriteHeader(http.StatusNoContent)
 }
 

@@ -10,28 +10,28 @@ import (
 )
 
 // ID filters vertices based on their ID field.
-func ID(id int64) predicate.Equipment {
+func ID(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
 	})
 }
 
 // IDEQ applies the EQ predicate on the ID field.
-func IDEQ(id int64) predicate.Equipment {
+func IDEQ(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldID), id))
 	})
 }
 
 // IDNEQ applies the NEQ predicate on the ID field.
-func IDNEQ(id int64) predicate.Equipment {
+func IDNEQ(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldID), id))
 	})
 }
 
 // IDIn applies the In predicate on the ID field.
-func IDIn(ids ...int64) predicate.Equipment {
+func IDIn(ids ...int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
@@ -48,7 +48,7 @@ func IDIn(ids ...int64) predicate.Equipment {
 }
 
 // IDNotIn applies the NotIn predicate on the ID field.
-func IDNotIn(ids ...int64) predicate.Equipment {
+func IDNotIn(ids ...int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		// if not arguments were provided, append the FALSE constants,
 		// since we can't apply "IN ()". This will make this predicate falsy.
@@ -65,28 +65,28 @@ func IDNotIn(ids ...int64) predicate.Equipment {
 }
 
 // IDGT applies the GT predicate on the ID field.
-func IDGT(id int64) predicate.Equipment {
+func IDGT(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldID), id))
 	})
 }
 
 // IDGTE applies the GTE predicate on the ID field.
-func IDGTE(id int64) predicate.Equipment {
+func IDGTE(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldID), id))
 	})
 }
 
 // IDLT applies the LT predicate on the ID field.
-func IDLT(id int64) predicate.Equipment {
+func IDLT(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldID), id))
 	})
 }
 
 // IDLTE applies the LTE predicate on the ID field.
-func IDLTE(id int64) predicate.Equipment {
+func IDLTE(id int) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldID), id))
 	})
@@ -96,6 +96,13 @@ func IDLTE(id int64) predicate.Equipment {
 func Name(v string) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldName), v))
+	})
+}
+
+// Condition applies equality check predicate on the "condition" field. It's identical to ConditionEQ.
+func Condition(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.EQ(s.C(FieldCondition), v))
 	})
 }
 
@@ -225,21 +232,21 @@ func NameContainsFold(v string) predicate.Equipment {
 }
 
 // ConditionEQ applies the EQ predicate on the "condition" field.
-func ConditionEQ(v Condition) predicate.Equipment {
+func ConditionEQ(v string) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldCondition), v))
 	})
 }
 
 // ConditionNEQ applies the NEQ predicate on the "condition" field.
-func ConditionNEQ(v Condition) predicate.Equipment {
+func ConditionNEQ(v string) predicate.Equipment {
 	return predicate.Equipment(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldCondition), v))
 	})
 }
 
 // ConditionIn applies the In predicate on the "condition" field.
-func ConditionIn(vs ...Condition) predicate.Equipment {
+func ConditionIn(vs ...string) predicate.Equipment {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -256,7 +263,7 @@ func ConditionIn(vs ...Condition) predicate.Equipment {
 }
 
 // ConditionNotIn applies the NotIn predicate on the "condition" field.
-func ConditionNotIn(vs ...Condition) predicate.Equipment {
+func ConditionNotIn(vs ...string) predicate.Equipment {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -269,6 +276,69 @@ func ConditionNotIn(vs ...Condition) predicate.Equipment {
 			return
 		}
 		s.Where(sql.NotIn(s.C(FieldCondition), v...))
+	})
+}
+
+// ConditionGT applies the GT predicate on the "condition" field.
+func ConditionGT(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.GT(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionGTE applies the GTE predicate on the "condition" field.
+func ConditionGTE(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.GTE(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionLT applies the LT predicate on the "condition" field.
+func ConditionLT(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.LT(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionLTE applies the LTE predicate on the "condition" field.
+func ConditionLTE(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.LTE(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionContains applies the Contains predicate on the "condition" field.
+func ConditionContains(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.Contains(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionHasPrefix applies the HasPrefix predicate on the "condition" field.
+func ConditionHasPrefix(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.HasPrefix(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionHasSuffix applies the HasSuffix predicate on the "condition" field.
+func ConditionHasSuffix(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.HasSuffix(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionEqualFold applies the EqualFold predicate on the "condition" field.
+func ConditionEqualFold(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.EqualFold(s.C(FieldCondition), v))
+	})
+}
+
+// ConditionContainsFold applies the ContainsFold predicate on the "condition" field.
+func ConditionContainsFold(v string) predicate.Equipment {
+	return predicate.Equipment(func(s *sql.Selector) {
+		s.Where(sql.ContainsFold(s.C(FieldCondition), v))
 	})
 }
 

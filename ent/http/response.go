@@ -9,7 +9,6 @@ import (
 
 	"github.com/mailru/easyjson"
 	"github.com/open-farms/inventory/ent"
-	equipment "github.com/open-farms/inventory/ent/equipment"
 	"github.com/open-farms/inventory/ent/vehicle"
 )
 
@@ -80,40 +79,38 @@ func Unauthorized(w http.ResponseWriter, msg interface{}) (int, error) {
 }
 
 type (
-	// Equipment2075188150View represents the data serialized for the following serialization group combinations:
+	// Equipment822375389View represents the data serialized for the following serialization group combinations:
 	// []
-	Equipment2075188150View struct {
-		ID         int64               `json:"id,omitempty"`
-		Name       string              `json:"name,omitempty"`
-		Tags       []string            `json:"tags,omitempty"`
-		Condition  equipment.Condition `json:"condition,omitempty"`
-		CreateTime time.Time           `json:"create_time,omitempty"`
-		UpdateTime time.Time           `json:"update_time,omitempty"`
+	Equipment822375389View struct {
+		ID         int       `json:"id,omitempty"`
+		Name       string    `json:"name,omitempty"`
+		Condition  string    `json:"condition,omitempty"`
+		CreateTime time.Time `json:"create_time,omitempty"`
+		UpdateTime time.Time `json:"update_time,omitempty"`
 	}
-	Equipment2075188150Views []*Equipment2075188150View
+	Equipment822375389Views []*Equipment822375389View
 )
 
-func NewEquipment2075188150View(e *ent.Equipment) *Equipment2075188150View {
+func NewEquipment822375389View(e *ent.Equipment) *Equipment822375389View {
 	if e == nil {
 		return nil
 	}
-	return &Equipment2075188150View{
+	return &Equipment822375389View{
 		ID:         e.ID,
 		Name:       e.Name,
-		Tags:       e.Tags,
 		Condition:  e.Condition,
 		CreateTime: e.CreateTime,
 		UpdateTime: e.UpdateTime,
 	}
 }
 
-func NewEquipment2075188150Views(es []*ent.Equipment) Equipment2075188150Views {
+func NewEquipment822375389Views(es []*ent.Equipment) Equipment822375389Views {
 	if len(es) == 0 {
 		return nil
 	}
-	r := make(Equipment2075188150Views, len(es))
+	r := make(Equipment822375389Views, len(es))
 	for i, e := range es {
-		r[i] = NewEquipment2075188150View(e)
+		r[i] = NewEquipment822375389View(e)
 	}
 	return r
 }

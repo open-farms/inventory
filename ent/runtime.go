@@ -16,18 +16,14 @@ import (
 func init() {
 	equipmentFields := schema.Equipment{}.Fields()
 	_ = equipmentFields
-	// equipmentDescName is the schema descriptor for name field.
-	equipmentDescName := equipmentFields[1].Descriptor()
-	// equipment.NameValidator is a validator for the "name" field. It is called by the builders before save.
-	equipment.NameValidator = equipmentDescName.Validators[0].(func(string) error)
 	// equipmentDescCreateTime is the schema descriptor for create_time field.
-	equipmentDescCreateTime := equipmentFields[4].Descriptor()
+	equipmentDescCreateTime := equipmentFields[2].Descriptor()
 	// equipment.DefaultCreateTime holds the default value on creation for the create_time field.
 	equipment.DefaultCreateTime = equipmentDescCreateTime.Default.(func() time.Time)
 	// equipment.UpdateDefaultCreateTime holds the default value on update for the create_time field.
 	equipment.UpdateDefaultCreateTime = equipmentDescCreateTime.UpdateDefault.(func() time.Time)
 	// equipmentDescUpdateTime is the schema descriptor for update_time field.
-	equipmentDescUpdateTime := equipmentFields[5].Descriptor()
+	equipmentDescUpdateTime := equipmentFields[3].Descriptor()
 	// equipment.DefaultUpdateTime holds the default value on creation for the update_time field.
 	equipment.DefaultUpdateTime = equipmentDescUpdateTime.Default.(func() time.Time)
 	// equipment.UpdateDefaultUpdateTime holds the default value on update for the update_time field.

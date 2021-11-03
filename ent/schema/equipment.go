@@ -1,11 +1,12 @@
 package schema
 
 import (
-	"errors"
-	"strings"
 	"time"
 
+	"entgo.io/contrib/entproto"
 	"entgo.io/ent"
+	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -14,42 +15,33 @@ type Equipment struct {
 	ent.Schema
 }
 
-func validateName() func(s string) error {
-	return func(s string) error {
-		if strings.ToLower(s) == s {
-			return errors.New("name must begin with uppercase")
-		}
-		return nil
-	}
-}
-
 // Fields of the Equipment.
 func (Equipment) Fields() []ent.Field {
 	return []ent.Field{
-		field.Int64("id").Unique(),
-		field.String("name").Validate(
-			validateName(),
-		),
-		field.Strings("tags"),
-		field.Enum("condition").
-			Values(
-				"UNSPECIFIED",
-				"MINT",
-				"GOOD",
-				"POOR",
-				"BROKEN",
-			),
+		field.String("name").Unique().Annotations(entproto.Field(2)),
+		field.String("condition").Annotations(entproto.Field(3)),
 		field.Time("create_time").
 			Default(time.Now).
 			UpdateDefault(time.Now).
-			Immutable(),
+			Immutable().Annotations(entproto.Field(4)),
 		field.Time("update_time").
 			Default(time.Now).
-			UpdateDefault(time.Now),
+			UpdateDefault(time.Now).Annotations(entproto.Field(5)),
+	}
+}
+
+func (Equipment) Annotations() []schema.Annotation {
+	return []schema.Annotation{
+		entproto.Message(),
+		entproto.Service(),
 	}
 }
 
 // Edges of the Equipment.
 func (Equipment) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("administered", Category.Type).
+			Ref("admin").
+			Annotations(entproto.Field(5)),
+	}
 }

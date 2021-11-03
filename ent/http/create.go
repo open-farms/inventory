@@ -4,11 +4,10 @@ package http
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/mailru/easyjson"
 	"github.com/open-farms/inventory/ent"
-	equipment "github.com/open-farms/inventory/ent/equipment"
+	"github.com/open-farms/inventory/ent/equipment"
 	"github.com/open-farms/inventory/ent/vehicle"
 	"go.uber.org/zap"
 )
@@ -23,33 +22,10 @@ func (h EquipmentHandler) Create(w http.ResponseWriter, r *http.Request) {
 		BadRequest(w, "invalid json string")
 		return
 	}
-	// Validate the data.
-	errs := make(map[string]string)
-	if d.Name == nil {
-		errs["name"] = `missing required field: "name"`
-	} else if err := equipment.NameValidator(*d.Name); err != nil {
-		errs["name"] = strings.TrimPrefix(err.Error(), "equipment: ")
-	}
-	if d.Tags == nil {
-		errs["tags"] = `missing required field: "tags"`
-	}
-	if d.Condition == nil {
-		errs["condition"] = `missing required field: "condition"`
-	} else if err := equipment.ConditionValidator(*d.Condition); err != nil {
-		errs["condition"] = strings.TrimPrefix(err.Error(), "equipment: ")
-	}
-	if len(errs) > 0 {
-		l.Info("validation failed", zapFields(errs)...)
-		BadRequest(w, errs)
-		return
-	}
 	// Save the data.
 	b := h.client.Equipment.Create()
 	if d.Name != nil {
 		b.SetName(*d.Name)
-	}
-	if d.Tags != nil {
-		b.SetTags(*d.Tags)
 	}
 	if d.Condition != nil {
 		b.SetCondition(*d.Condition)
@@ -78,20 +54,20 @@ func (h EquipmentHandler) Create(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
-			l.Info(msg, zap.Error(err), zap.Int64("id", id))
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
 			NotFound(w, msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
-			l.Error(msg, zap.Error(err), zap.Int64("id", id))
+			l.Error(msg, zap.Error(err), zap.Int("id", id))
 			BadRequest(w, msg)
 		default:
-			l.Error("could not read equipment", zap.Error(err), zap.Int64("id", id))
+			l.Error("could not read equipment", zap.Error(err), zap.Int("id", id))
 			InternalServerError(w, nil)
 		}
 		return
 	}
-	l.Info("equipment rendered", zap.Int64("id", id))
-	easyjson.MarshalToHTTPResponseWriter(NewEquipment2075188150View(ret), w)
+	l.Info("equipment rendered", zap.Int("id", id))
+	easyjson.MarshalToHTTPResponseWriter(NewEquipment822375389View(ret), w)
 }
 
 // Create creates a new ent.Vehicle and stores it in the database.

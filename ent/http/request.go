@@ -5,25 +5,22 @@ package http
 import (
 	"time"
 
-	equipment "github.com/open-farms/inventory/ent/equipment"
 	"github.com/open-farms/inventory/ent/vehicle"
 )
 
 // Payload of a ent.Equipment create request.
 type EquipmentCreateRequest struct {
-	Name       *string              `json:"name"`
-	Tags       *[]string            `json:"tags"`
-	Condition  *equipment.Condition `json:"condition"`
-	CreateTime *time.Time           `json:"create_time"`
-	UpdateTime *time.Time           `json:"update_time"`
+	Name       *string    `json:"name"`
+	Condition  *string    `json:"condition"`
+	CreateTime *time.Time `json:"create_time"`
+	UpdateTime *time.Time `json:"update_time"`
 }
 
 // Payload of a ent.Equipment update request.
 type EquipmentUpdateRequest struct {
-	Name       *string              `json:"name"`
-	Tags       *[]string            `json:"tags"`
-	Condition  *equipment.Condition `json:"condition"`
-	UpdateTime *time.Time           `json:"update_time"`
+	Name       *string    `json:"name"`
+	Condition  *string    `json:"condition"`
+	UpdateTime *time.Time `json:"update_time"`
 }
 
 // Payload of a ent.Vehicle create request.

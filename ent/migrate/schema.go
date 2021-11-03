@@ -10,10 +10,9 @@ import (
 var (
 	// EquipmentColumns holds the columns for the "equipment" table.
 	EquipmentColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "tags", Type: field.TypeJSON},
-		{Name: "condition", Type: field.TypeEnum, Enums: []string{"UNSPECIFIED", "MINT", "GOOD", "POOR", "BROKEN"}},
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "condition", Type: field.TypeString},
 		{Name: "create_time", Type: field.TypeTime},
 		{Name: "update_time", Type: field.TypeTime},
 	}

@@ -3,7 +3,6 @@
 package ent
 
 import (
-	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -16,13 +15,11 @@ import (
 type Equipment struct {
 	config `json:"-"`
 	// ID of the ent.
-	ID int64 `json:"id,omitempty"`
+	ID int `json:"id,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
-	// Tags holds the value of the "tags" field.
-	Tags []string `json:"tags,omitempty"`
 	// Condition holds the value of the "condition" field.
-	Condition equipment.Condition `json:"condition,omitempty"`
+	Condition string `json:"condition,omitempty"`
 	// CreateTime holds the value of the "create_time" field.
 	CreateTime time.Time `json:"create_time,omitempty"`
 	// UpdateTime holds the value of the "update_time" field.
@@ -34,8 +31,6 @@ func (*Equipment) scanValues(columns []string) ([]interface{}, error) {
 	values := make([]interface{}, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case equipment.FieldTags:
-			values[i] = new([]byte)
 		case equipment.FieldID:
 			values[i] = new(sql.NullInt64)
 		case equipment.FieldName, equipment.FieldCondition:
@@ -62,26 +57,18 @@ func (e *Equipment) assignValues(columns []string, values []interface{}) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			e.ID = int64(value.Int64)
+			e.ID = int(value.Int64)
 		case equipment.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				e.Name = value.String
 			}
-		case equipment.FieldTags:
-			if value, ok := values[i].(*[]byte); !ok {
-				return fmt.Errorf("unexpected type %T for field tags", values[i])
-			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &e.Tags); err != nil {
-					return fmt.Errorf("unmarshal field tags: %w", err)
-				}
-			}
 		case equipment.FieldCondition:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field condition", values[i])
 			} else if value.Valid {
-				e.Condition = equipment.Condition(value.String)
+				e.Condition = value.String
 			}
 		case equipment.FieldCreateTime:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -125,10 +112,8 @@ func (e *Equipment) String() string {
 	builder.WriteString(fmt.Sprintf("id=%v", e.ID))
 	builder.WriteString(", name=")
 	builder.WriteString(e.Name)
-	builder.WriteString(", tags=")
-	builder.WriteString(fmt.Sprintf("%v", e.Tags))
 	builder.WriteString(", condition=")
-	builder.WriteString(fmt.Sprintf("%v", e.Condition))
+	builder.WriteString(e.Condition)
 	builder.WriteString(", create_time=")
 	builder.WriteString(e.CreateTime.Format(time.ANSIC))
 	builder.WriteString(", update_time=")

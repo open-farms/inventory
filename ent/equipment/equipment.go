@@ -3,7 +3,6 @@
 package equipment
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -14,8 +13,6 @@ const (
 	FieldID = "id"
 	// FieldName holds the string denoting the name field in the database.
 	FieldName = "name"
-	// FieldTags holds the string denoting the tags field in the database.
-	FieldTags = "tags"
 	// FieldCondition holds the string denoting the condition field in the database.
 	FieldCondition = "condition"
 	// FieldCreateTime holds the string denoting the create_time field in the database.
@@ -30,7 +27,6 @@ const (
 var Columns = []string{
 	FieldID,
 	FieldName,
-	FieldTags,
 	FieldCondition,
 	FieldCreateTime,
 	FieldUpdateTime,
@@ -47,8 +43,6 @@ func ValidColumn(column string) bool {
 }
 
 var (
-	// NameValidator is a validator for the "name" field. It is called by the builders before save.
-	NameValidator func(string) error
 	// DefaultCreateTime holds the default value on creation for the "create_time" field.
 	DefaultCreateTime func() time.Time
 	// UpdateDefaultCreateTime holds the default value on update for the "create_time" field.
@@ -58,29 +52,3 @@ var (
 	// UpdateDefaultUpdateTime holds the default value on update for the "update_time" field.
 	UpdateDefaultUpdateTime func() time.Time
 )
-
-// Condition defines the type for the "condition" enum field.
-type Condition string
-
-// Condition values.
-const (
-	ConditionUNSPECIFIED Condition = "UNSPECIFIED"
-	ConditionMINT        Condition = "MINT"
-	ConditionGOOD        Condition = "GOOD"
-	ConditionPOOR        Condition = "POOR"
-	ConditionBROKEN      Condition = "BROKEN"
-)
-
-func (c Condition) String() string {
-	return string(c)
-}
-
-// ConditionValidator is a validator for the "condition" field enum values. It is called by the builders before save.
-func ConditionValidator(c Condition) error {
-	switch c {
-	case ConditionUNSPECIFIED, ConditionMINT, ConditionGOOD, ConditionPOOR, ConditionBROKEN:
-		return nil
-	default:
-		return fmt.Errorf("equipment: invalid enum value for condition field: %q", c)
-	}
-}

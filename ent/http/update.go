@@ -5,12 +5,11 @@ package http
 import (
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/mailru/easyjson"
 	"github.com/open-farms/inventory/ent"
-	equipment "github.com/open-farms/inventory/ent/equipment"
+	"github.com/open-farms/inventory/ent/equipment"
 	"github.com/open-farms/inventory/ent/vehicle"
 	"go.uber.org/zap"
 )
@@ -19,13 +18,12 @@ import (
 func (h EquipmentHandler) Update(w http.ResponseWriter, r *http.Request) {
 	l := h.log.With(zap.String("method", "Update"))
 	// ID is URL parameter.
-	id64, err := strconv.ParseInt(chi.URLParam(r, "id"), 10, 0)
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
-		BadRequest(w, "id must be an integer greater zero")
+		BadRequest(w, "id must be an integer")
 		return
 	}
-	id := int64(id64)
 	// Get the post data.
 	var d EquipmentUpdateRequest
 	if err := easyjson.UnmarshalFromReader(r.Body, &d); err != nil {
@@ -33,33 +31,10 @@ func (h EquipmentHandler) Update(w http.ResponseWriter, r *http.Request) {
 		BadRequest(w, "invalid json string")
 		return
 	}
-	// Validate the data.
-	errs := make(map[string]string)
-	if d.Name == nil {
-		errs["name"] = `missing required field: "name"`
-	} else if err := equipment.NameValidator(*d.Name); err != nil {
-		errs["name"] = strings.TrimPrefix(err.Error(), "equipment: ")
-	}
-	if d.Tags == nil {
-		errs["tags"] = `missing required field: "tags"`
-	}
-	if d.Condition == nil {
-		errs["condition"] = `missing required field: "condition"`
-	} else if err := equipment.ConditionValidator(*d.Condition); err != nil {
-		errs["condition"] = strings.TrimPrefix(err.Error(), "equipment: ")
-	}
-	if len(errs) > 0 {
-		l.Info("validation failed", zapFields(errs)...)
-		BadRequest(w, errs)
-		return
-	}
 	// Save the data.
 	b := h.client.Equipment.UpdateOneID(id)
 	if d.Name != nil {
 		b.SetName(*d.Name)
-	}
-	if d.Tags != nil {
-		b.SetTags(*d.Tags)
 	}
 	if d.Condition != nil {
 		b.SetCondition(*d.Condition)
@@ -73,14 +48,14 @@ func (h EquipmentHandler) Update(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
-			l.Info(msg, zap.Error(err), zap.Int64("id", id))
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
 			NotFound(w, msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
-			l.Error(msg, zap.Error(err), zap.Int64("id", id))
+			l.Error(msg, zap.Error(err), zap.Int("id", id))
 			BadRequest(w, msg)
 		default:
-			l.Error("could-not-update-equipment", zap.Error(err), zap.Int64("id", id))
+			l.Error("could-not-update-equipment", zap.Error(err), zap.Int("id", id))
 			InternalServerError(w, nil)
 		}
 		return
@@ -92,20 +67,20 @@ func (h EquipmentHandler) Update(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case ent.IsNotFound(err):
 			msg := stripEntError(err)
-			l.Info(msg, zap.Error(err), zap.Int64("id", id))
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
 			NotFound(w, msg)
 		case ent.IsNotSingular(err):
 			msg := stripEntError(err)
-			l.Error(msg, zap.Error(err), zap.Int64("id", id))
+			l.Error(msg, zap.Error(err), zap.Int("id", id))
 			BadRequest(w, msg)
 		default:
-			l.Error("could-not-read-equipment", zap.Error(err), zap.Int64("id", id))
+			l.Error("could-not-read-equipment", zap.Error(err), zap.Int("id", id))
 			InternalServerError(w, nil)
 		}
 		return
 	}
-	l.Info("equipment rendered", zap.Int64("id", id))
-	easyjson.MarshalToHTTPResponseWriter(NewEquipment2075188150View(e), w)
+	l.Info("equipment rendered", zap.Int("id", id))
+	easyjson.MarshalToHTTPResponseWriter(NewEquipment822375389View(e), w)
 }
 
 // Update updates a given ent.Vehicle and saves the changes to the database.

@@ -41,7 +41,7 @@ func (h *EquipmentHandler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	l.Info("equipment rendered", zap.Int("amount", len(es)))
-	easyjson.MarshalToHTTPResponseWriter(NewEquipment2075188150Views(es), w)
+	easyjson.MarshalToHTTPResponseWriter(NewEquipment822375389Views(es), w)
 }
 
 // Read fetches the ent.Vehicle identified by a given url-parameter from the

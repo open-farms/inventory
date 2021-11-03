@@ -3,6 +3,7 @@ module github.com/open-farms/inventory
 go 1.16
 
 require (
+	entgo.io/contrib v0.1.0
 	entgo.io/ent v0.9.2-0.20210822190728-d84ac191b1c7
 	github.com/99designs/gqlgen v0.14.0
 	github.com/alecthomas/kong v0.2.17

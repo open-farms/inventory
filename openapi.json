@@ -46,7 +46,7 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/Equipment2075188150View"
+                    "$ref": "#/components/schemas/Equipment822375389View"
                   }
                 }
               }
@@ -80,13 +80,11 @@
                   "condition",
                   "create_time",
                   "name",
-                  "tags",
                   "update_time"
                 ],
                 "properties": {
                   "condition": {
-                    "type": "string",
-                    "example": "UNSPECIFIED"
+                    "type": "string"
                   },
                   "create_time": {
                     "type": "string",
@@ -94,12 +92,6 @@
                   },
                   "name": {
                     "type": "string"
-                  },
-                  "tags": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
                   },
                   "update_time": {
                     "type": "string",
@@ -116,7 +108,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Equipment2075188150View"
+                  "$ref": "#/components/schemas/Equipment822375389View"
                 }
               }
             }
@@ -146,7 +138,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -156,7 +148,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Equipment2075188150View"
+                  "$ref": "#/components/schemas/Equipment822375389View"
                 }
               }
             }
@@ -187,7 +179,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -221,7 +213,7 @@
             "required": true,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "format": "int32"
             }
           }
         ],
@@ -234,22 +226,14 @@
                 "required": [
                   "condition",
                   "name",
-                  "tags",
                   "update_time"
                 ],
                 "properties": {
                   "condition": {
-                    "type": "string",
-                    "example": "UNSPECIFIED"
+                    "type": "string"
                   },
                   "name": {
                     "type": "string"
-                  },
-                  "tags": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
                   },
                   "update_time": {
                     "type": "string",
@@ -266,7 +250,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Equipment2075188150View"
+                  "$ref": "#/components/schemas/Equipment822375389View"
                 }
               }
             }
@@ -593,20 +577,18 @@
   },
   "components": {
     "schemas": {
-      "Equipment2075188150View": {
+      "Equipment822375389View": {
         "type": "object",
         "required": [
           "condition",
           "create_time",
           "id",
           "name",
-          "tags",
           "update_time"
         ],
         "properties": {
           "condition": {
-            "type": "string",
-            "example": "UNSPECIFIED"
+            "type": "string"
           },
           "create_time": {
             "type": "string",
@@ -614,16 +596,10 @@
           },
           "id": {
             "type": "integer",
-            "format": "int64"
+            "format": "int32"
           },
           "name": {
             "type": "string"
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           },
           "update_time": {
             "type": "string",
