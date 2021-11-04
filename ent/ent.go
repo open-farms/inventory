@@ -10,6 +10,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/open-farms/inventory/ent/category"
 	"github.com/open-farms/inventory/ent/equipment"
+	"github.com/open-farms/inventory/ent/implement"
+	"github.com/open-farms/inventory/ent/location"
+	"github.com/open-farms/inventory/ent/tool"
 	"github.com/open-farms/inventory/ent/vehicle"
 )
 
@@ -33,6 +36,9 @@ func columnChecker(table string) func(string) error {
 	checks := map[string]func(string) bool{
 		category.Table:  category.ValidColumn,
 		equipment.Table: equipment.ValidColumn,
+		implement.Table: implement.ValidColumn,
+		location.Table:  location.ValidColumn,
+		tool.Table:      tool.ValidColumn,
 		vehicle.Table:   vehicle.ValidColumn,
 	}
 	check, ok := checks[table]

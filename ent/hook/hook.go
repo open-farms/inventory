@@ -35,6 +35,45 @@ func (f EquipmentFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, e
 	return f(ctx, mv)
 }
 
+// The ImplementFunc type is an adapter to allow the use of ordinary
+// function as Implement mutator.
+type ImplementFunc func(context.Context, *ent.ImplementMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ImplementFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ImplementMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ImplementMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The LocationFunc type is an adapter to allow the use of ordinary
+// function as Location mutator.
+type LocationFunc func(context.Context, *ent.LocationMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f LocationFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.LocationMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.LocationMutation", m)
+	}
+	return f(ctx, mv)
+}
+
+// The ToolFunc type is an adapter to allow the use of ordinary
+// function as Tool mutator.
+type ToolFunc func(context.Context, *ent.ToolMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f ToolFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	mv, ok := m.(*ent.ToolMutation)
+	if !ok {
+		return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.ToolMutation", m)
+	}
+	return f(ctx, mv)
+}
+
 // The VehicleFunc type is an adapter to allow the use of ordinary
 // function as Vehicle mutator.
 type VehicleFunc func(context.Context, *ent.VehicleMutation) (ent.Value, error)

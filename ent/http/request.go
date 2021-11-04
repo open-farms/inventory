@@ -8,12 +8,16 @@ import (
 
 // Payload of a ent.Category create request.
 type CategoryCreateRequest struct {
-	Name *string `json:"name"`
+	CreateTime *time.Time `json:"create_time"`
+	UpdateTime *time.Time `json:"update_time"`
+	Name       *string    `json:"name"`
 }
 
 // Payload of a ent.Category update request.
 type CategoryUpdateRequest struct {
-	Name *string `json:"name"`
+	CreateTime *time.Time `json:"create_time"`
+	UpdateTime *time.Time `json:"update_time"`
+	Name       *string    `json:"name"`
 }
 
 // Payload of a ent.Equipment create request.
@@ -32,18 +36,65 @@ type EquipmentUpdateRequest struct {
 	Condition  *string    `json:"condition"`
 }
 
+// Payload of a ent.Implement create request.
+type ImplementCreateRequest struct {
+	CreateTime *time.Time `json:"create_time"`
+	UpdateTime *time.Time `json:"update_time"`
+	Name       *string    `json:"name"`
+}
+
+// Payload of a ent.Implement update request.
+type ImplementUpdateRequest struct {
+	CreateTime *time.Time `json:"create_time"`
+	UpdateTime *time.Time `json:"update_time"`
+	Name       *string    `json:"name"`
+}
+
+// Payload of a ent.Location create request.
+type LocationCreateRequest struct {
+	CreateTime *time.Time `json:"create_time"`
+	UpdateTime *time.Time `json:"update_time"`
+	Name       *string    `json:"name"`
+	Zone       *int32     `json:"zone"`
+	Vehicle    []int      `json:"vehicle"`
+}
+
+// Payload of a ent.Location update request.
+type LocationUpdateRequest struct {
+	CreateTime *time.Time `json:"create_time"`
+	UpdateTime *time.Time `json:"update_time"`
+	Name       *string    `json:"name"`
+	Zone       *int32     `json:"zone"`
+	Vehicle    []int      `json:"vehicle"`
+}
+
+// Payload of a ent.Tool create request.
+type ToolCreateRequest struct {
+	CreateTime *time.Time `json:"create_time"`
+	UpdateTime *time.Time `json:"update_time"`
+	Name       *string    `json:"name"`
+	Powered    *bool      `json:"powered"`
+}
+
+// Payload of a ent.Tool update request.
+type ToolUpdateRequest struct {
+	CreateTime *time.Time `json:"create_time"`
+	UpdateTime *time.Time `json:"update_time"`
+	Name       *string    `json:"name"`
+	Powered    *bool      `json:"powered"`
+}
+
 // Payload of a ent.Vehicle create request.
 type VehicleCreateRequest struct {
 	CreateTime *time.Time `json:"create_time"`
 	UpdateTime *time.Time `json:"update_time"`
 	Make       *string    `json:"make"`
 	Model      *string    `json:"model"`
-	Miles      *int64     `json:"miles"`
-	Mpg        *int64     `json:"mpg"`
-	Owner      *string    `json:"owner"`
+	Hours      *int64     `json:"hours"`
 	Year       *string    `json:"year"`
 	Active     *bool      `json:"active"`
-	Condition  *string    `json:"condition"`
+	Power      *string    `json:"power"`
+	Location   *int       `json:"location"`
 }
 
 // Payload of a ent.Vehicle update request.
@@ -52,10 +103,9 @@ type VehicleUpdateRequest struct {
 	UpdateTime *time.Time `json:"update_time"`
 	Make       *string    `json:"make"`
 	Model      *string    `json:"model"`
-	Miles      *int64     `json:"miles"`
-	Mpg        *int64     `json:"mpg"`
-	Owner      *string    `json:"owner"`
+	Hours      *int64     `json:"hours"`
 	Year       *string    `json:"year"`
 	Active     *bool      `json:"active"`
-	Condition  *string    `json:"condition"`
+	Power      *string    `json:"power"`
+	Location   *int       `json:"location"`
 }

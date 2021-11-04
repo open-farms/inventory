@@ -11,6 +11,9 @@ import (
 	"github.com/open-farms/inventory/ent"
 	"github.com/open-farms/inventory/ent/category"
 	"github.com/open-farms/inventory/ent/equipment"
+	"github.com/open-farms/inventory/ent/implement"
+	"github.com/open-farms/inventory/ent/location"
+	"github.com/open-farms/inventory/ent/tool"
 	"github.com/open-farms/inventory/ent/vehicle"
 	"go.uber.org/zap"
 )
@@ -46,7 +49,7 @@ func (h *CategoryHandler) Read(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	l.Info("category rendered", zap.Int("id", id))
-	easyjson.MarshalToHTTPResponseWriter(NewCategory4094953247View(e), w)
+	easyjson.MarshalToHTTPResponseWriter(NewCategory1462705340View(e), w)
 }
 
 // Read fetches the ent.Equipment identified by a given url-parameter from the
@@ -83,6 +86,108 @@ func (h *EquipmentHandler) Read(w http.ResponseWriter, r *http.Request) {
 	easyjson.MarshalToHTTPResponseWriter(NewEquipment3958372643View(e), w)
 }
 
+// Read fetches the ent.Implement identified by a given url-parameter from the
+// database and renders it to the client.
+func (h *ImplementHandler) Read(w http.ResponseWriter, r *http.Request) {
+	l := h.log.With(zap.String("method", "Read"))
+	// ID is URL parameter.
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
+		BadRequest(w, "id must be an integer")
+		return
+	}
+	// Create the query to fetch the Implement
+	q := h.client.Implement.Query().Where(implement.ID(id))
+	e, err := q.Only(r.Context())
+	if err != nil {
+		switch {
+		case ent.IsNotFound(err):
+			msg := stripEntError(err)
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
+			NotFound(w, msg)
+		case ent.IsNotSingular(err):
+			msg := stripEntError(err)
+			l.Error(msg, zap.Error(err), zap.Int("id", id))
+			BadRequest(w, msg)
+		default:
+			l.Error("could not read implement", zap.Error(err), zap.Int("id", id))
+			InternalServerError(w, nil)
+		}
+		return
+	}
+	l.Info("implement rendered", zap.Int("id", id))
+	easyjson.MarshalToHTTPResponseWriter(NewImplement1296325875View(e), w)
+}
+
+// Read fetches the ent.Location identified by a given url-parameter from the
+// database and renders it to the client.
+func (h *LocationHandler) Read(w http.ResponseWriter, r *http.Request) {
+	l := h.log.With(zap.String("method", "Read"))
+	// ID is URL parameter.
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
+		BadRequest(w, "id must be an integer")
+		return
+	}
+	// Create the query to fetch the Location
+	q := h.client.Location.Query().Where(location.ID(id))
+	e, err := q.Only(r.Context())
+	if err != nil {
+		switch {
+		case ent.IsNotFound(err):
+			msg := stripEntError(err)
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
+			NotFound(w, msg)
+		case ent.IsNotSingular(err):
+			msg := stripEntError(err)
+			l.Error(msg, zap.Error(err), zap.Int("id", id))
+			BadRequest(w, msg)
+		default:
+			l.Error("could not read location", zap.Error(err), zap.Int("id", id))
+			InternalServerError(w, nil)
+		}
+		return
+	}
+	l.Info("location rendered", zap.Int("id", id))
+	easyjson.MarshalToHTTPResponseWriter(NewLocation948740745View(e), w)
+}
+
+// Read fetches the ent.Tool identified by a given url-parameter from the
+// database and renders it to the client.
+func (h *ToolHandler) Read(w http.ResponseWriter, r *http.Request) {
+	l := h.log.With(zap.String("method", "Read"))
+	// ID is URL parameter.
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
+		BadRequest(w, "id must be an integer")
+		return
+	}
+	// Create the query to fetch the Tool
+	q := h.client.Tool.Query().Where(tool.ID(id))
+	e, err := q.Only(r.Context())
+	if err != nil {
+		switch {
+		case ent.IsNotFound(err):
+			msg := stripEntError(err)
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
+			NotFound(w, msg)
+		case ent.IsNotSingular(err):
+			msg := stripEntError(err)
+			l.Error(msg, zap.Error(err), zap.Int("id", id))
+			BadRequest(w, msg)
+		default:
+			l.Error("could not read tool", zap.Error(err), zap.Int("id", id))
+			InternalServerError(w, nil)
+		}
+		return
+	}
+	l.Info("tool rendered", zap.Int("id", id))
+	easyjson.MarshalToHTTPResponseWriter(NewTool178816486View(e), w)
+}
+
 // Read fetches the ent.Vehicle identified by a given url-parameter from the
 // database and renders it to the client.
 func (h *VehicleHandler) Read(w http.ResponseWriter, r *http.Request) {
@@ -114,5 +219,5 @@ func (h *VehicleHandler) Read(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	l.Info("vehicle rendered", zap.Int("id", id))
-	easyjson.MarshalToHTTPResponseWriter(NewVehicle2530256765View(e), w)
+	easyjson.MarshalToHTTPResponseWriter(NewVehicle1702989761View(e), w)
 }

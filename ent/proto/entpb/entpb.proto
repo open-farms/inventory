@@ -11,6 +11,16 @@ import "google/protobuf/wrappers.proto";
 
 option go_package = "github.com/open-farms/inventory/ent/proto/entpb";
 
+message Category {
+  int32 id = 1;
+
+  google.protobuf.Timestamp create_time = 2;
+
+  google.protobuf.Timestamp update_time = 3;
+
+  string name = 4;
+}
+
 message Equipment {
   int32 id = 1;
 
@@ -49,6 +59,94 @@ message DeleteEquipmentRequest {
   int32 id = 1;
 }
 
+message Implement {
+  int32 id = 1;
+
+  google.protobuf.Timestamp create_time = 2;
+
+  google.protobuf.Timestamp update_time = 3;
+
+  string name = 4;
+}
+
+message CreateImplementRequest {
+  Implement implement = 1;
+}
+
+message GetImplementRequest {
+  int32 id = 1;
+
+  View view = 2;
+
+  enum View {
+    VIEW_UNSPECIFIED = 0;
+
+    BASIC = 1;
+
+    WITH_EDGE_IDS = 2;
+  }
+}
+
+message UpdateImplementRequest {
+  Implement implement = 1;
+}
+
+message DeleteImplementRequest {
+  int32 id = 1;
+}
+
+message Location {
+  int32 id = 1;
+
+  google.protobuf.Timestamp create_time = 2;
+
+  google.protobuf.Timestamp update_time = 3;
+
+  string name = 4;
+
+  int32 zone = 5;
+
+  repeated Vehicle vehicle = 6;
+}
+
+message Tool {
+  int32 id = 1;
+
+  google.protobuf.Timestamp create_time = 2;
+
+  google.protobuf.Timestamp update_time = 3;
+
+  string name = 4;
+
+  bool powered = 5;
+}
+
+message CreateToolRequest {
+  Tool tool = 1;
+}
+
+message GetToolRequest {
+  int32 id = 1;
+
+  View view = 2;
+
+  enum View {
+    VIEW_UNSPECIFIED = 0;
+
+    BASIC = 1;
+
+    WITH_EDGE_IDS = 2;
+  }
+}
+
+message UpdateToolRequest {
+  Tool tool = 1;
+}
+
+message DeleteToolRequest {
+  int32 id = 1;
+}
+
 message Vehicle {
   int32 id = 1;
 
@@ -60,17 +158,15 @@ message Vehicle {
 
   string model = 5;
 
-  google.protobuf.Int64Value miles = 6;
+  int64 hours = 6;
 
-  google.protobuf.Int64Value mpg = 7;
+  google.protobuf.StringValue year = 7;
 
-  google.protobuf.StringValue owner = 8;
+  bool active = 8;
 
-  google.protobuf.StringValue year = 9;
+  google.protobuf.StringValue power = 9;
 
-  google.protobuf.BoolValue active = 10;
-
-  google.protobuf.StringValue condition = 11;
+  Location location = 10;
 }
 
 message CreateVehicleRequest {
@@ -107,6 +203,26 @@ service EquipmentService {
   rpc Update ( UpdateEquipmentRequest ) returns ( Equipment );
 
   rpc Delete ( DeleteEquipmentRequest ) returns ( google.protobuf.Empty );
+}
+
+service ImplementService {
+  rpc Create ( CreateImplementRequest ) returns ( Implement );
+
+  rpc Get ( GetImplementRequest ) returns ( Implement );
+
+  rpc Update ( UpdateImplementRequest ) returns ( Implement );
+
+  rpc Delete ( DeleteImplementRequest ) returns ( google.protobuf.Empty );
+}
+
+service ToolService {
+  rpc Create ( CreateToolRequest ) returns ( Tool );
+
+  rpc Get ( GetToolRequest ) returns ( Tool );
+
+  rpc Update ( UpdateToolRequest ) returns ( Tool );
+
+  rpc Delete ( DeleteToolRequest ) returns ( google.protobuf.Empty );
 }
 
 service VehicleService {

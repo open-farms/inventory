@@ -21,6 +21,9 @@ func NewHandler(c *ent.Client, l *zap.Logger) chi.Router {
 func MountRoutes(c *ent.Client, l *zap.Logger, r chi.Router) {
 	NewCategoryHandler(c, l).MountRoutes(r)
 	NewEquipmentHandler(c, l).MountRoutes(r)
+	NewImplementHandler(c, l).MountRoutes(r)
+	NewLocationHandler(c, l).MountRoutes(r)
+	NewToolHandler(c, l).MountRoutes(r)
 	NewVehicleHandler(c, l).MountRoutes(r)
 }
 
@@ -96,6 +99,118 @@ func (h *EquipmentHandler) MountRoutes(r chi.Router) {
 	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r)
 }
 
+// ImplementHandler handles http crud operations on ent.Implement.
+type ImplementHandler struct {
+	client *ent.Client
+	log    *zap.Logger
+}
+
+func NewImplementHandler(c *ent.Client, l *zap.Logger) *ImplementHandler {
+	return &ImplementHandler{
+		client: c,
+		log:    l.With(zap.String("handler", "ImplementHandler")),
+	}
+}
+func (h *ImplementHandler) MountCreateRoute(r chi.Router) *ImplementHandler {
+	r.Post("/implements", h.Create)
+	return h
+}
+func (h *ImplementHandler) MountReadRoute(r chi.Router) *ImplementHandler {
+	r.Get("/implements/{id}", h.Read)
+	return h
+}
+func (h *ImplementHandler) MountUpdateRoute(r chi.Router) *ImplementHandler {
+	r.Patch("/implements/{id}", h.Update)
+	return h
+}
+func (h *ImplementHandler) MountDeleteRoute(r chi.Router) *ImplementHandler {
+	r.Delete("/implements/{id}", h.Delete)
+	return h
+}
+func (h *ImplementHandler) MountListRoute(r chi.Router) *ImplementHandler {
+	r.Get("/implements", h.List)
+	return h
+}
+func (h *ImplementHandler) MountRoutes(r chi.Router) {
+	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r)
+}
+
+// LocationHandler handles http crud operations on ent.Location.
+type LocationHandler struct {
+	client *ent.Client
+	log    *zap.Logger
+}
+
+func NewLocationHandler(c *ent.Client, l *zap.Logger) *LocationHandler {
+	return &LocationHandler{
+		client: c,
+		log:    l.With(zap.String("handler", "LocationHandler")),
+	}
+}
+func (h *LocationHandler) MountCreateRoute(r chi.Router) *LocationHandler {
+	r.Post("/locations", h.Create)
+	return h
+}
+func (h *LocationHandler) MountReadRoute(r chi.Router) *LocationHandler {
+	r.Get("/locations/{id}", h.Read)
+	return h
+}
+func (h *LocationHandler) MountUpdateRoute(r chi.Router) *LocationHandler {
+	r.Patch("/locations/{id}", h.Update)
+	return h
+}
+func (h *LocationHandler) MountDeleteRoute(r chi.Router) *LocationHandler {
+	r.Delete("/locations/{id}", h.Delete)
+	return h
+}
+func (h *LocationHandler) MountListRoute(r chi.Router) *LocationHandler {
+	r.Get("/locations", h.List)
+	return h
+}
+func (h *LocationHandler) MountVehicleRoute(r chi.Router) *LocationHandler {
+	r.Get("/locations/{id}/vehicle", h.Vehicle)
+	return h
+}
+func (h *LocationHandler) MountRoutes(r chi.Router) {
+	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r).MountVehicleRoute(r)
+}
+
+// ToolHandler handles http crud operations on ent.Tool.
+type ToolHandler struct {
+	client *ent.Client
+	log    *zap.Logger
+}
+
+func NewToolHandler(c *ent.Client, l *zap.Logger) *ToolHandler {
+	return &ToolHandler{
+		client: c,
+		log:    l.With(zap.String("handler", "ToolHandler")),
+	}
+}
+func (h *ToolHandler) MountCreateRoute(r chi.Router) *ToolHandler {
+	r.Post("/tools", h.Create)
+	return h
+}
+func (h *ToolHandler) MountReadRoute(r chi.Router) *ToolHandler {
+	r.Get("/tools/{id}", h.Read)
+	return h
+}
+func (h *ToolHandler) MountUpdateRoute(r chi.Router) *ToolHandler {
+	r.Patch("/tools/{id}", h.Update)
+	return h
+}
+func (h *ToolHandler) MountDeleteRoute(r chi.Router) *ToolHandler {
+	r.Delete("/tools/{id}", h.Delete)
+	return h
+}
+func (h *ToolHandler) MountListRoute(r chi.Router) *ToolHandler {
+	r.Get("/tools", h.List)
+	return h
+}
+func (h *ToolHandler) MountRoutes(r chi.Router) {
+	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r)
+}
+
 // VehicleHandler handles http crud operations on ent.Vehicle.
 type VehicleHandler struct {
 	client *ent.Client
@@ -128,8 +243,12 @@ func (h *VehicleHandler) MountListRoute(r chi.Router) *VehicleHandler {
 	r.Get("/vehicles", h.List)
 	return h
 }
+func (h *VehicleHandler) MountLocationRoute(r chi.Router) *VehicleHandler {
+	r.Get("/vehicles/{id}/location", h.Location)
+	return h
+}
 func (h *VehicleHandler) MountRoutes(r chi.Router) {
-	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r)
+	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r).MountLocationRoute(r)
 }
 
 func stripEntError(err error) string {

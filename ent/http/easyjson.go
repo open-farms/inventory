@@ -81,35 +81,15 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp(in *jlexer.Lexer, 
 				}
 				*out.Model = string(in.String())
 			}
-		case "miles":
+		case "hours":
 			if in.IsNull() {
 				in.Skip()
-				out.Miles = nil
+				out.Hours = nil
 			} else {
-				if out.Miles == nil {
-					out.Miles = new(int64)
+				if out.Hours == nil {
+					out.Hours = new(int64)
 				}
-				*out.Miles = int64(in.Int64())
-			}
-		case "mpg":
-			if in.IsNull() {
-				in.Skip()
-				out.Mpg = nil
-			} else {
-				if out.Mpg == nil {
-					out.Mpg = new(int64)
-				}
-				*out.Mpg = int64(in.Int64())
-			}
-		case "owner":
-			if in.IsNull() {
-				in.Skip()
-				out.Owner = nil
-			} else {
-				if out.Owner == nil {
-					out.Owner = new(string)
-				}
-				*out.Owner = string(in.String())
+				*out.Hours = int64(in.Int64())
 			}
 		case "year":
 			if in.IsNull() {
@@ -131,15 +111,25 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp(in *jlexer.Lexer, 
 				}
 				*out.Active = bool(in.Bool())
 			}
-		case "condition":
+		case "power":
 			if in.IsNull() {
 				in.Skip()
-				out.Condition = nil
+				out.Power = nil
 			} else {
-				if out.Condition == nil {
-					out.Condition = new(string)
+				if out.Power == nil {
+					out.Power = new(string)
 				}
-				*out.Condition = string(in.String())
+				*out.Power = string(in.String())
+			}
+		case "location":
+			if in.IsNull() {
+				in.Skip()
+				out.Location = nil
+			} else {
+				if out.Location == nil {
+					out.Location = new(int)
+				}
+				*out.Location = int(in.Int())
 			}
 		default:
 			in.AddError(&jlexer.LexerError{
@@ -196,30 +186,12 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp(out *jwriter.Write
 		}
 	}
 	{
-		const prefix string = ",\"miles\":"
+		const prefix string = ",\"hours\":"
 		out.RawString(prefix)
-		if in.Miles == nil {
+		if in.Hours == nil {
 			out.RawString("null")
 		} else {
-			out.Int64(int64(*in.Miles))
-		}
-	}
-	{
-		const prefix string = ",\"mpg\":"
-		out.RawString(prefix)
-		if in.Mpg == nil {
-			out.RawString("null")
-		} else {
-			out.Int64(int64(*in.Mpg))
-		}
-	}
-	{
-		const prefix string = ",\"owner\":"
-		out.RawString(prefix)
-		if in.Owner == nil {
-			out.RawString("null")
-		} else {
-			out.String(string(*in.Owner))
+			out.Int64(int64(*in.Hours))
 		}
 	}
 	{
@@ -241,12 +213,21 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp(out *jwriter.Write
 		}
 	}
 	{
-		const prefix string = ",\"condition\":"
+		const prefix string = ",\"power\":"
 		out.RawString(prefix)
-		if in.Condition == nil {
+		if in.Power == nil {
 			out.RawString("null")
 		} else {
-			out.String(string(*in.Condition))
+			out.String(string(*in.Power))
+		}
+	}
+	{
+		const prefix string = ",\"location\":"
+		out.RawString(prefix)
+		if in.Location == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Location))
 		}
 	}
 	out.RawByte('}')
@@ -324,35 +305,15 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp1(in *jlexer.Lexer,
 				}
 				*out.Model = string(in.String())
 			}
-		case "miles":
+		case "hours":
 			if in.IsNull() {
 				in.Skip()
-				out.Miles = nil
+				out.Hours = nil
 			} else {
-				if out.Miles == nil {
-					out.Miles = new(int64)
+				if out.Hours == nil {
+					out.Hours = new(int64)
 				}
-				*out.Miles = int64(in.Int64())
-			}
-		case "mpg":
-			if in.IsNull() {
-				in.Skip()
-				out.Mpg = nil
-			} else {
-				if out.Mpg == nil {
-					out.Mpg = new(int64)
-				}
-				*out.Mpg = int64(in.Int64())
-			}
-		case "owner":
-			if in.IsNull() {
-				in.Skip()
-				out.Owner = nil
-			} else {
-				if out.Owner == nil {
-					out.Owner = new(string)
-				}
-				*out.Owner = string(in.String())
+				*out.Hours = int64(in.Int64())
 			}
 		case "year":
 			if in.IsNull() {
@@ -374,15 +335,25 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp1(in *jlexer.Lexer,
 				}
 				*out.Active = bool(in.Bool())
 			}
-		case "condition":
+		case "power":
 			if in.IsNull() {
 				in.Skip()
-				out.Condition = nil
+				out.Power = nil
 			} else {
-				if out.Condition == nil {
-					out.Condition = new(string)
+				if out.Power == nil {
+					out.Power = new(string)
 				}
-				*out.Condition = string(in.String())
+				*out.Power = string(in.String())
+			}
+		case "location":
+			if in.IsNull() {
+				in.Skip()
+				out.Location = nil
+			} else {
+				if out.Location == nil {
+					out.Location = new(int)
+				}
+				*out.Location = int(in.Int())
 			}
 		default:
 			in.AddError(&jlexer.LexerError{
@@ -439,30 +410,12 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp1(out *jwriter.Writ
 		}
 	}
 	{
-		const prefix string = ",\"miles\":"
+		const prefix string = ",\"hours\":"
 		out.RawString(prefix)
-		if in.Miles == nil {
+		if in.Hours == nil {
 			out.RawString("null")
 		} else {
-			out.Int64(int64(*in.Miles))
-		}
-	}
-	{
-		const prefix string = ",\"mpg\":"
-		out.RawString(prefix)
-		if in.Mpg == nil {
-			out.RawString("null")
-		} else {
-			out.Int64(int64(*in.Mpg))
-		}
-	}
-	{
-		const prefix string = ",\"owner\":"
-		out.RawString(prefix)
-		if in.Owner == nil {
-			out.RawString("null")
-		} else {
-			out.String(string(*in.Owner))
+			out.Int64(int64(*in.Hours))
 		}
 	}
 	{
@@ -484,12 +437,21 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp1(out *jwriter.Writ
 		}
 	}
 	{
-		const prefix string = ",\"condition\":"
+		const prefix string = ",\"power\":"
 		out.RawString(prefix)
-		if in.Condition == nil {
+		if in.Power == nil {
 			out.RawString("null")
 		} else {
-			out.String(string(*in.Condition))
+			out.String(string(*in.Power))
+		}
+	}
+	{
+		const prefix string = ",\"location\":"
+		out.RawString(prefix)
+		if in.Location == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Location))
 		}
 	}
 	out.RawByte('}')
@@ -504,7 +466,7 @@ func (v VehicleCreateRequest) MarshalEasyJSON(w *jwriter.Writer) {
 func (v *VehicleCreateRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp1(l, v)
 }
-func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp2(in *jlexer.Lexer, out *Vehicle2530256765Views) {
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp2(in *jlexer.Lexer, out *Vehicle1702989761Views) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		in.Skip()
@@ -513,21 +475,21 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp2(in *jlexer.Lexer,
 		in.Delim('[')
 		if *out == nil {
 			if !in.IsDelim(']') {
-				*out = make(Vehicle2530256765Views, 0, 8)
+				*out = make(Vehicle1702989761Views, 0, 8)
 			} else {
-				*out = Vehicle2530256765Views{}
+				*out = Vehicle1702989761Views{}
 			}
 		} else {
 			*out = (*out)[:0]
 		}
 		for !in.IsDelim(']') {
-			var v1 *Vehicle2530256765View
+			var v1 *Vehicle1702989761View
 			if in.IsNull() {
 				in.Skip()
 				v1 = nil
 			} else {
 				if v1 == nil {
-					v1 = new(Vehicle2530256765View)
+					v1 = new(Vehicle1702989761View)
 				}
 				(*v1).UnmarshalEasyJSON(in)
 			}
@@ -540,7 +502,7 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp2(in *jlexer.Lexer,
 		in.Consumed()
 	}
 }
-func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp2(out *jwriter.Writer, in Vehicle2530256765Views) {
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp2(out *jwriter.Writer, in Vehicle1702989761Views) {
 	if in == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
 		out.RawString("null")
 	} else {
@@ -560,15 +522,15 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp2(out *jwriter.Writ
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
-func (v Vehicle2530256765Views) MarshalEasyJSON(w *jwriter.Writer) {
+func (v Vehicle1702989761Views) MarshalEasyJSON(w *jwriter.Writer) {
 	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp2(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *Vehicle2530256765Views) UnmarshalEasyJSON(l *jlexer.Lexer) {
+func (v *Vehicle1702989761Views) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp2(l, v)
 }
-func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp3(in *jlexer.Lexer, out *Vehicle2530256765View) {
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp3(in *jlexer.Lexer, out *Vehicle1702989761View) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -601,18 +563,14 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp3(in *jlexer.Lexer,
 			out.Make = string(in.String())
 		case "model":
 			out.Model = string(in.String())
-		case "miles":
-			out.Miles = int64(in.Int64())
-		case "mpg":
-			out.Mpg = int64(in.Int64())
-		case "owner":
-			out.Owner = string(in.String())
+		case "hours":
+			out.Hours = int64(in.Int64())
 		case "year":
 			out.Year = string(in.String())
 		case "active":
 			out.Active = bool(in.Bool())
-		case "condition":
-			out.Condition = string(in.String())
+		case "power":
+			out.Power = string(in.String())
 		default:
 			in.AddError(&jlexer.LexerError{
 				Offset: in.GetPos(),
@@ -627,7 +585,7 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp3(in *jlexer.Lexer,
 		in.Consumed()
 	}
 }
-func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp3(out *jwriter.Writer, in Vehicle2530256765View) {
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp3(out *jwriter.Writer, in Vehicle1702989761View) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -677,35 +635,15 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp3(out *jwriter.Writ
 		}
 		out.String(string(in.Model))
 	}
-	if in.Miles != 0 {
-		const prefix string = ",\"miles\":"
+	if in.Hours != 0 {
+		const prefix string = ",\"hours\":"
 		if first {
 			first = false
 			out.RawString(prefix[1:])
 		} else {
 			out.RawString(prefix)
 		}
-		out.Int64(int64(in.Miles))
-	}
-	if in.Mpg != 0 {
-		const prefix string = ",\"mpg\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.Int64(int64(in.Mpg))
-	}
-	if in.Owner != "" {
-		const prefix string = ",\"owner\":"
-		if first {
-			first = false
-			out.RawString(prefix[1:])
-		} else {
-			out.RawString(prefix)
-		}
-		out.String(string(in.Owner))
+		out.Int64(int64(in.Hours))
 	}
 	if in.Year != "" {
 		const prefix string = ",\"year\":"
@@ -727,29 +665,1350 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp3(out *jwriter.Writ
 		}
 		out.Bool(bool(in.Active))
 	}
-	if in.Condition != "" {
-		const prefix string = ",\"condition\":"
+	if in.Power != "" {
+		const prefix string = ",\"power\":"
 		if first {
 			first = false
 			out.RawString(prefix[1:])
 		} else {
 			out.RawString(prefix)
 		}
-		out.String(string(in.Condition))
+		out.String(string(in.Power))
 	}
 	out.RawByte('}')
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
-func (v Vehicle2530256765View) MarshalEasyJSON(w *jwriter.Writer) {
+func (v Vehicle1702989761View) MarshalEasyJSON(w *jwriter.Writer) {
 	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp3(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *Vehicle2530256765View) UnmarshalEasyJSON(l *jlexer.Lexer) {
+func (v *Vehicle1702989761View) UnmarshalEasyJSON(l *jlexer.Lexer) {
 	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp3(l, v)
 }
-func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp4(in *jlexer.Lexer, out *ErrResponse) {
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp4(in *jlexer.Lexer, out *ToolUpdateRequest) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "create_time":
+			if in.IsNull() {
+				in.Skip()
+				out.CreateTime = nil
+			} else {
+				if out.CreateTime == nil {
+					out.CreateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.CreateTime).UnmarshalJSON(data))
+				}
+			}
+		case "update_time":
+			if in.IsNull() {
+				in.Skip()
+				out.UpdateTime = nil
+			} else {
+				if out.UpdateTime == nil {
+					out.UpdateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.UpdateTime).UnmarshalJSON(data))
+				}
+			}
+		case "name":
+			if in.IsNull() {
+				in.Skip()
+				out.Name = nil
+			} else {
+				if out.Name == nil {
+					out.Name = new(string)
+				}
+				*out.Name = string(in.String())
+			}
+		case "powered":
+			if in.IsNull() {
+				in.Skip()
+				out.Powered = nil
+			} else {
+				if out.Powered == nil {
+					out.Powered = new(bool)
+				}
+				*out.Powered = bool(in.Bool())
+			}
+		default:
+			in.AddError(&jlexer.LexerError{
+				Offset: in.GetPos(),
+				Reason: "unknown field",
+				Data:   key,
+			})
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp4(out *jwriter.Writer, in ToolUpdateRequest) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"create_time\":"
+		out.RawString(prefix[1:])
+		if in.CreateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.CreateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"update_time\":"
+		out.RawString(prefix)
+		if in.UpdateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.UpdateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"name\":"
+		out.RawString(prefix)
+		if in.Name == nil {
+			out.RawString("null")
+		} else {
+			out.String(string(*in.Name))
+		}
+	}
+	{
+		const prefix string = ",\"powered\":"
+		out.RawString(prefix)
+		if in.Powered == nil {
+			out.RawString("null")
+		} else {
+			out.Bool(bool(*in.Powered))
+		}
+	}
+	out.RawByte('}')
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v ToolUpdateRequest) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp4(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *ToolUpdateRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp4(l, v)
+}
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp5(in *jlexer.Lexer, out *ToolCreateRequest) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "create_time":
+			if in.IsNull() {
+				in.Skip()
+				out.CreateTime = nil
+			} else {
+				if out.CreateTime == nil {
+					out.CreateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.CreateTime).UnmarshalJSON(data))
+				}
+			}
+		case "update_time":
+			if in.IsNull() {
+				in.Skip()
+				out.UpdateTime = nil
+			} else {
+				if out.UpdateTime == nil {
+					out.UpdateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.UpdateTime).UnmarshalJSON(data))
+				}
+			}
+		case "name":
+			if in.IsNull() {
+				in.Skip()
+				out.Name = nil
+			} else {
+				if out.Name == nil {
+					out.Name = new(string)
+				}
+				*out.Name = string(in.String())
+			}
+		case "powered":
+			if in.IsNull() {
+				in.Skip()
+				out.Powered = nil
+			} else {
+				if out.Powered == nil {
+					out.Powered = new(bool)
+				}
+				*out.Powered = bool(in.Bool())
+			}
+		default:
+			in.AddError(&jlexer.LexerError{
+				Offset: in.GetPos(),
+				Reason: "unknown field",
+				Data:   key,
+			})
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp5(out *jwriter.Writer, in ToolCreateRequest) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"create_time\":"
+		out.RawString(prefix[1:])
+		if in.CreateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.CreateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"update_time\":"
+		out.RawString(prefix)
+		if in.UpdateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.UpdateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"name\":"
+		out.RawString(prefix)
+		if in.Name == nil {
+			out.RawString("null")
+		} else {
+			out.String(string(*in.Name))
+		}
+	}
+	{
+		const prefix string = ",\"powered\":"
+		out.RawString(prefix)
+		if in.Powered == nil {
+			out.RawString("null")
+		} else {
+			out.Bool(bool(*in.Powered))
+		}
+	}
+	out.RawByte('}')
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v ToolCreateRequest) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp5(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *ToolCreateRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp5(l, v)
+}
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp6(in *jlexer.Lexer, out *Tool178816486Views) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		in.Skip()
+		*out = nil
+	} else {
+		in.Delim('[')
+		if *out == nil {
+			if !in.IsDelim(']') {
+				*out = make(Tool178816486Views, 0, 8)
+			} else {
+				*out = Tool178816486Views{}
+			}
+		} else {
+			*out = (*out)[:0]
+		}
+		for !in.IsDelim(']') {
+			var v4 *Tool178816486View
+			if in.IsNull() {
+				in.Skip()
+				v4 = nil
+			} else {
+				if v4 == nil {
+					v4 = new(Tool178816486View)
+				}
+				(*v4).UnmarshalEasyJSON(in)
+			}
+			*out = append(*out, v4)
+			in.WantComma()
+		}
+		in.Delim(']')
+	}
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp6(out *jwriter.Writer, in Tool178816486Views) {
+	if in == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v5, v6 := range in {
+			if v5 > 0 {
+				out.RawByte(',')
+			}
+			if v6 == nil {
+				out.RawString("null")
+			} else {
+				(*v6).MarshalEasyJSON(out)
+			}
+		}
+		out.RawByte(']')
+	}
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Tool178816486Views) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp6(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Tool178816486Views) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp6(l, v)
+}
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp7(in *jlexer.Lexer, out *Tool178816486View) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "id":
+			out.ID = int(in.Int())
+		case "create_time":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.CreateTime).UnmarshalJSON(data))
+			}
+		case "update_time":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.UpdateTime).UnmarshalJSON(data))
+			}
+		case "name":
+			out.Name = string(in.String())
+		case "powered":
+			out.Powered = bool(in.Bool())
+		default:
+			in.AddError(&jlexer.LexerError{
+				Offset: in.GetPos(),
+				Reason: "unknown field",
+				Data:   key,
+			})
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp7(out *jwriter.Writer, in Tool178816486View) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if in.ID != 0 {
+		const prefix string = ",\"id\":"
+		first = false
+		out.RawString(prefix[1:])
+		out.Int(int(in.ID))
+	}
+	if true {
+		const prefix string = ",\"create_time\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Raw((in.CreateTime).MarshalJSON())
+	}
+	if true {
+		const prefix string = ",\"update_time\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Raw((in.UpdateTime).MarshalJSON())
+	}
+	if in.Name != "" {
+		const prefix string = ",\"name\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(in.Name))
+	}
+	if in.Powered {
+		const prefix string = ",\"powered\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Bool(bool(in.Powered))
+	}
+	out.RawByte('}')
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Tool178816486View) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp7(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Tool178816486View) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp7(l, v)
+}
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp8(in *jlexer.Lexer, out *LocationUpdateRequest) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "create_time":
+			if in.IsNull() {
+				in.Skip()
+				out.CreateTime = nil
+			} else {
+				if out.CreateTime == nil {
+					out.CreateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.CreateTime).UnmarshalJSON(data))
+				}
+			}
+		case "update_time":
+			if in.IsNull() {
+				in.Skip()
+				out.UpdateTime = nil
+			} else {
+				if out.UpdateTime == nil {
+					out.UpdateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.UpdateTime).UnmarshalJSON(data))
+				}
+			}
+		case "name":
+			if in.IsNull() {
+				in.Skip()
+				out.Name = nil
+			} else {
+				if out.Name == nil {
+					out.Name = new(string)
+				}
+				*out.Name = string(in.String())
+			}
+		case "zone":
+			if in.IsNull() {
+				in.Skip()
+				out.Zone = nil
+			} else {
+				if out.Zone == nil {
+					out.Zone = new(int32)
+				}
+				*out.Zone = int32(in.Int32())
+			}
+		case "vehicle":
+			if in.IsNull() {
+				in.Skip()
+				out.Vehicle = nil
+			} else {
+				in.Delim('[')
+				if out.Vehicle == nil {
+					if !in.IsDelim(']') {
+						out.Vehicle = make([]int, 0, 8)
+					} else {
+						out.Vehicle = []int{}
+					}
+				} else {
+					out.Vehicle = (out.Vehicle)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v7 int
+					v7 = int(in.Int())
+					out.Vehicle = append(out.Vehicle, v7)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		default:
+			in.AddError(&jlexer.LexerError{
+				Offset: in.GetPos(),
+				Reason: "unknown field",
+				Data:   key,
+			})
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp8(out *jwriter.Writer, in LocationUpdateRequest) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"create_time\":"
+		out.RawString(prefix[1:])
+		if in.CreateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.CreateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"update_time\":"
+		out.RawString(prefix)
+		if in.UpdateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.UpdateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"name\":"
+		out.RawString(prefix)
+		if in.Name == nil {
+			out.RawString("null")
+		} else {
+			out.String(string(*in.Name))
+		}
+	}
+	{
+		const prefix string = ",\"zone\":"
+		out.RawString(prefix)
+		if in.Zone == nil {
+			out.RawString("null")
+		} else {
+			out.Int32(int32(*in.Zone))
+		}
+	}
+	{
+		const prefix string = ",\"vehicle\":"
+		out.RawString(prefix)
+		if in.Vehicle == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v8, v9 := range in.Vehicle {
+				if v8 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v9))
+			}
+			out.RawByte(']')
+		}
+	}
+	out.RawByte('}')
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v LocationUpdateRequest) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp8(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *LocationUpdateRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp8(l, v)
+}
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp9(in *jlexer.Lexer, out *LocationCreateRequest) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "create_time":
+			if in.IsNull() {
+				in.Skip()
+				out.CreateTime = nil
+			} else {
+				if out.CreateTime == nil {
+					out.CreateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.CreateTime).UnmarshalJSON(data))
+				}
+			}
+		case "update_time":
+			if in.IsNull() {
+				in.Skip()
+				out.UpdateTime = nil
+			} else {
+				if out.UpdateTime == nil {
+					out.UpdateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.UpdateTime).UnmarshalJSON(data))
+				}
+			}
+		case "name":
+			if in.IsNull() {
+				in.Skip()
+				out.Name = nil
+			} else {
+				if out.Name == nil {
+					out.Name = new(string)
+				}
+				*out.Name = string(in.String())
+			}
+		case "zone":
+			if in.IsNull() {
+				in.Skip()
+				out.Zone = nil
+			} else {
+				if out.Zone == nil {
+					out.Zone = new(int32)
+				}
+				*out.Zone = int32(in.Int32())
+			}
+		case "vehicle":
+			if in.IsNull() {
+				in.Skip()
+				out.Vehicle = nil
+			} else {
+				in.Delim('[')
+				if out.Vehicle == nil {
+					if !in.IsDelim(']') {
+						out.Vehicle = make([]int, 0, 8)
+					} else {
+						out.Vehicle = []int{}
+					}
+				} else {
+					out.Vehicle = (out.Vehicle)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v10 int
+					v10 = int(in.Int())
+					out.Vehicle = append(out.Vehicle, v10)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		default:
+			in.AddError(&jlexer.LexerError{
+				Offset: in.GetPos(),
+				Reason: "unknown field",
+				Data:   key,
+			})
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp9(out *jwriter.Writer, in LocationCreateRequest) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"create_time\":"
+		out.RawString(prefix[1:])
+		if in.CreateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.CreateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"update_time\":"
+		out.RawString(prefix)
+		if in.UpdateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.UpdateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"name\":"
+		out.RawString(prefix)
+		if in.Name == nil {
+			out.RawString("null")
+		} else {
+			out.String(string(*in.Name))
+		}
+	}
+	{
+		const prefix string = ",\"zone\":"
+		out.RawString(prefix)
+		if in.Zone == nil {
+			out.RawString("null")
+		} else {
+			out.Int32(int32(*in.Zone))
+		}
+	}
+	{
+		const prefix string = ",\"vehicle\":"
+		out.RawString(prefix)
+		if in.Vehicle == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v11, v12 := range in.Vehicle {
+				if v11 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v12))
+			}
+			out.RawByte(']')
+		}
+	}
+	out.RawByte('}')
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v LocationCreateRequest) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp9(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *LocationCreateRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp9(l, v)
+}
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp10(in *jlexer.Lexer, out *Location948740745Views) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		in.Skip()
+		*out = nil
+	} else {
+		in.Delim('[')
+		if *out == nil {
+			if !in.IsDelim(']') {
+				*out = make(Location948740745Views, 0, 8)
+			} else {
+				*out = Location948740745Views{}
+			}
+		} else {
+			*out = (*out)[:0]
+		}
+		for !in.IsDelim(']') {
+			var v13 *Location948740745View
+			if in.IsNull() {
+				in.Skip()
+				v13 = nil
+			} else {
+				if v13 == nil {
+					v13 = new(Location948740745View)
+				}
+				(*v13).UnmarshalEasyJSON(in)
+			}
+			*out = append(*out, v13)
+			in.WantComma()
+		}
+		in.Delim(']')
+	}
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp10(out *jwriter.Writer, in Location948740745Views) {
+	if in == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v14, v15 := range in {
+			if v14 > 0 {
+				out.RawByte(',')
+			}
+			if v15 == nil {
+				out.RawString("null")
+			} else {
+				(*v15).MarshalEasyJSON(out)
+			}
+		}
+		out.RawByte(']')
+	}
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Location948740745Views) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp10(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Location948740745Views) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp10(l, v)
+}
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp11(in *jlexer.Lexer, out *Location948740745View) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "id":
+			out.ID = int(in.Int())
+		case "create_time":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.CreateTime).UnmarshalJSON(data))
+			}
+		case "update_time":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.UpdateTime).UnmarshalJSON(data))
+			}
+		case "name":
+			out.Name = string(in.String())
+		case "zone":
+			out.Zone = int32(in.Int32())
+		default:
+			in.AddError(&jlexer.LexerError{
+				Offset: in.GetPos(),
+				Reason: "unknown field",
+				Data:   key,
+			})
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp11(out *jwriter.Writer, in Location948740745View) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if in.ID != 0 {
+		const prefix string = ",\"id\":"
+		first = false
+		out.RawString(prefix[1:])
+		out.Int(int(in.ID))
+	}
+	if true {
+		const prefix string = ",\"create_time\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Raw((in.CreateTime).MarshalJSON())
+	}
+	if true {
+		const prefix string = ",\"update_time\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Raw((in.UpdateTime).MarshalJSON())
+	}
+	if in.Name != "" {
+		const prefix string = ",\"name\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(in.Name))
+	}
+	if in.Zone != 0 {
+		const prefix string = ",\"zone\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Int32(int32(in.Zone))
+	}
+	out.RawByte('}')
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Location948740745View) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp11(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Location948740745View) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp11(l, v)
+}
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp12(in *jlexer.Lexer, out *ImplementUpdateRequest) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "create_time":
+			if in.IsNull() {
+				in.Skip()
+				out.CreateTime = nil
+			} else {
+				if out.CreateTime == nil {
+					out.CreateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.CreateTime).UnmarshalJSON(data))
+				}
+			}
+		case "update_time":
+			if in.IsNull() {
+				in.Skip()
+				out.UpdateTime = nil
+			} else {
+				if out.UpdateTime == nil {
+					out.UpdateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.UpdateTime).UnmarshalJSON(data))
+				}
+			}
+		case "name":
+			if in.IsNull() {
+				in.Skip()
+				out.Name = nil
+			} else {
+				if out.Name == nil {
+					out.Name = new(string)
+				}
+				*out.Name = string(in.String())
+			}
+		default:
+			in.AddError(&jlexer.LexerError{
+				Offset: in.GetPos(),
+				Reason: "unknown field",
+				Data:   key,
+			})
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp12(out *jwriter.Writer, in ImplementUpdateRequest) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"create_time\":"
+		out.RawString(prefix[1:])
+		if in.CreateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.CreateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"update_time\":"
+		out.RawString(prefix)
+		if in.UpdateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.UpdateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"name\":"
+		out.RawString(prefix)
+		if in.Name == nil {
+			out.RawString("null")
+		} else {
+			out.String(string(*in.Name))
+		}
+	}
+	out.RawByte('}')
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v ImplementUpdateRequest) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp12(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *ImplementUpdateRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp12(l, v)
+}
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp13(in *jlexer.Lexer, out *ImplementCreateRequest) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "create_time":
+			if in.IsNull() {
+				in.Skip()
+				out.CreateTime = nil
+			} else {
+				if out.CreateTime == nil {
+					out.CreateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.CreateTime).UnmarshalJSON(data))
+				}
+			}
+		case "update_time":
+			if in.IsNull() {
+				in.Skip()
+				out.UpdateTime = nil
+			} else {
+				if out.UpdateTime == nil {
+					out.UpdateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.UpdateTime).UnmarshalJSON(data))
+				}
+			}
+		case "name":
+			if in.IsNull() {
+				in.Skip()
+				out.Name = nil
+			} else {
+				if out.Name == nil {
+					out.Name = new(string)
+				}
+				*out.Name = string(in.String())
+			}
+		default:
+			in.AddError(&jlexer.LexerError{
+				Offset: in.GetPos(),
+				Reason: "unknown field",
+				Data:   key,
+			})
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp13(out *jwriter.Writer, in ImplementCreateRequest) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	{
+		const prefix string = ",\"create_time\":"
+		out.RawString(prefix[1:])
+		if in.CreateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.CreateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"update_time\":"
+		out.RawString(prefix)
+		if in.UpdateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.UpdateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"name\":"
+		out.RawString(prefix)
+		if in.Name == nil {
+			out.RawString("null")
+		} else {
+			out.String(string(*in.Name))
+		}
+	}
+	out.RawByte('}')
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v ImplementCreateRequest) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp13(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *ImplementCreateRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp13(l, v)
+}
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp14(in *jlexer.Lexer, out *Implement1296325875Views) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		in.Skip()
+		*out = nil
+	} else {
+		in.Delim('[')
+		if *out == nil {
+			if !in.IsDelim(']') {
+				*out = make(Implement1296325875Views, 0, 8)
+			} else {
+				*out = Implement1296325875Views{}
+			}
+		} else {
+			*out = (*out)[:0]
+		}
+		for !in.IsDelim(']') {
+			var v16 *Implement1296325875View
+			if in.IsNull() {
+				in.Skip()
+				v16 = nil
+			} else {
+				if v16 == nil {
+					v16 = new(Implement1296325875View)
+				}
+				(*v16).UnmarshalEasyJSON(in)
+			}
+			*out = append(*out, v16)
+			in.WantComma()
+		}
+		in.Delim(']')
+	}
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp14(out *jwriter.Writer, in Implement1296325875Views) {
+	if in == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+		out.RawString("null")
+	} else {
+		out.RawByte('[')
+		for v17, v18 := range in {
+			if v17 > 0 {
+				out.RawByte(',')
+			}
+			if v18 == nil {
+				out.RawString("null")
+			} else {
+				(*v18).MarshalEasyJSON(out)
+			}
+		}
+		out.RawByte(']')
+	}
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Implement1296325875Views) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp14(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Implement1296325875Views) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp14(l, v)
+}
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp15(in *jlexer.Lexer, out *Implement1296325875View) {
+	isTopLevel := in.IsStart()
+	if in.IsNull() {
+		if isTopLevel {
+			in.Consumed()
+		}
+		in.Skip()
+		return
+	}
+	in.Delim('{')
+	for !in.IsDelim('}') {
+		key := in.UnsafeFieldName(false)
+		in.WantColon()
+		if in.IsNull() {
+			in.Skip()
+			in.WantComma()
+			continue
+		}
+		switch key {
+		case "id":
+			out.ID = int(in.Int())
+		case "create_time":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.CreateTime).UnmarshalJSON(data))
+			}
+		case "update_time":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.UpdateTime).UnmarshalJSON(data))
+			}
+		case "name":
+			out.Name = string(in.String())
+		default:
+			in.AddError(&jlexer.LexerError{
+				Offset: in.GetPos(),
+				Reason: "unknown field",
+				Data:   key,
+			})
+		}
+		in.WantComma()
+	}
+	in.Delim('}')
+	if isTopLevel {
+		in.Consumed()
+	}
+}
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp15(out *jwriter.Writer, in Implement1296325875View) {
+	out.RawByte('{')
+	first := true
+	_ = first
+	if in.ID != 0 {
+		const prefix string = ",\"id\":"
+		first = false
+		out.RawString(prefix[1:])
+		out.Int(int(in.ID))
+	}
+	if true {
+		const prefix string = ",\"create_time\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Raw((in.CreateTime).MarshalJSON())
+	}
+	if true {
+		const prefix string = ",\"update_time\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Raw((in.UpdateTime).MarshalJSON())
+	}
+	if in.Name != "" {
+		const prefix string = ",\"name\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.String(string(in.Name))
+	}
+	out.RawByte('}')
+}
+
+// MarshalEasyJSON supports easyjson.Marshaler interface
+func (v Implement1296325875View) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp15(w, v)
+}
+
+// UnmarshalEasyJSON supports easyjson.Unmarshaler interface
+func (v *Implement1296325875View) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp15(l, v)
+}
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp16(in *jlexer.Lexer, out *ErrResponse) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -794,7 +2053,7 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp4(in *jlexer.Lexer,
 		in.Consumed()
 	}
 }
-func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp4(out *jwriter.Writer, in ErrResponse) {
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp16(out *jwriter.Writer, in ErrResponse) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -824,14 +2083,14 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp4(out *jwriter.Writ
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v ErrResponse) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp4(w, v)
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp16(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *ErrResponse) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp4(l, v)
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp16(l, v)
 }
-func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp5(in *jlexer.Lexer, out *EquipmentUpdateRequest) {
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp17(in *jlexer.Lexer, out *EquipmentUpdateRequest) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -908,7 +2167,7 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp5(in *jlexer.Lexer,
 		in.Consumed()
 	}
 }
-func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp5(out *jwriter.Writer, in EquipmentUpdateRequest) {
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp17(out *jwriter.Writer, in EquipmentUpdateRequest) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -953,14 +2212,14 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp5(out *jwriter.Writ
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v EquipmentUpdateRequest) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp5(w, v)
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp17(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *EquipmentUpdateRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp5(l, v)
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp17(l, v)
 }
-func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp6(in *jlexer.Lexer, out *EquipmentCreateRequest) {
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp18(in *jlexer.Lexer, out *EquipmentCreateRequest) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1037,7 +2296,7 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp6(in *jlexer.Lexer,
 		in.Consumed()
 	}
 }
-func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp6(out *jwriter.Writer, in EquipmentCreateRequest) {
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp18(out *jwriter.Writer, in EquipmentCreateRequest) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1082,14 +2341,14 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp6(out *jwriter.Writ
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v EquipmentCreateRequest) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp6(w, v)
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp18(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *EquipmentCreateRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp6(l, v)
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp18(l, v)
 }
-func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp7(in *jlexer.Lexer, out *Equipment3958372643Views) {
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp19(in *jlexer.Lexer, out *Equipment3958372643Views) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		in.Skip()
@@ -1106,17 +2365,17 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp7(in *jlexer.Lexer,
 			*out = (*out)[:0]
 		}
 		for !in.IsDelim(']') {
-			var v4 *Equipment3958372643View
+			var v19 *Equipment3958372643View
 			if in.IsNull() {
 				in.Skip()
-				v4 = nil
+				v19 = nil
 			} else {
-				if v4 == nil {
-					v4 = new(Equipment3958372643View)
+				if v19 == nil {
+					v19 = new(Equipment3958372643View)
 				}
-				(*v4).UnmarshalEasyJSON(in)
+				(*v19).UnmarshalEasyJSON(in)
 			}
-			*out = append(*out, v4)
+			*out = append(*out, v19)
 			in.WantComma()
 		}
 		in.Delim(']')
@@ -1125,19 +2384,19 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp7(in *jlexer.Lexer,
 		in.Consumed()
 	}
 }
-func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp7(out *jwriter.Writer, in Equipment3958372643Views) {
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp19(out *jwriter.Writer, in Equipment3958372643Views) {
 	if in == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v5, v6 := range in {
-			if v5 > 0 {
+		for v20, v21 := range in {
+			if v20 > 0 {
 				out.RawByte(',')
 			}
-			if v6 == nil {
+			if v21 == nil {
 				out.RawString("null")
 			} else {
-				(*v6).MarshalEasyJSON(out)
+				(*v21).MarshalEasyJSON(out)
 			}
 		}
 		out.RawByte(']')
@@ -1146,14 +2405,14 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp7(out *jwriter.Writ
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Equipment3958372643Views) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp7(w, v)
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp19(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Equipment3958372643Views) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp7(l, v)
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp19(l, v)
 }
-func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp8(in *jlexer.Lexer, out *Equipment3958372643View) {
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp20(in *jlexer.Lexer, out *Equipment3958372643View) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1200,7 +2459,7 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp8(in *jlexer.Lexer,
 		in.Consumed()
 	}
 }
-func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp8(out *jwriter.Writer, in Equipment3958372643View) {
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp20(out *jwriter.Writer, in Equipment3958372643View) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1255,14 +2514,14 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp8(out *jwriter.Writ
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Equipment3958372643View) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp8(w, v)
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp20(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Equipment3958372643View) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp8(l, v)
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp20(l, v)
 }
-func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp9(in *jlexer.Lexer, out *CategoryUpdateRequest) {
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp21(in *jlexer.Lexer, out *CategoryUpdateRequest) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1281,6 +2540,30 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp9(in *jlexer.Lexer,
 			continue
 		}
 		switch key {
+		case "create_time":
+			if in.IsNull() {
+				in.Skip()
+				out.CreateTime = nil
+			} else {
+				if out.CreateTime == nil {
+					out.CreateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.CreateTime).UnmarshalJSON(data))
+				}
+			}
+		case "update_time":
+			if in.IsNull() {
+				in.Skip()
+				out.UpdateTime = nil
+			} else {
+				if out.UpdateTime == nil {
+					out.UpdateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.UpdateTime).UnmarshalJSON(data))
+				}
+			}
 		case "name":
 			if in.IsNull() {
 				in.Skip()
@@ -1305,13 +2588,31 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp9(in *jlexer.Lexer,
 		in.Consumed()
 	}
 }
-func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp9(out *jwriter.Writer, in CategoryUpdateRequest) {
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp21(out *jwriter.Writer, in CategoryUpdateRequest) {
 	out.RawByte('{')
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"name\":"
+		const prefix string = ",\"create_time\":"
 		out.RawString(prefix[1:])
+		if in.CreateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.CreateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"update_time\":"
+		out.RawString(prefix)
+		if in.UpdateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.UpdateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"name\":"
+		out.RawString(prefix)
 		if in.Name == nil {
 			out.RawString("null")
 		} else {
@@ -1323,14 +2624,14 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp9(out *jwriter.Writ
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v CategoryUpdateRequest) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp9(w, v)
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp21(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *CategoryUpdateRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp9(l, v)
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp21(l, v)
 }
-func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp10(in *jlexer.Lexer, out *CategoryCreateRequest) {
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp22(in *jlexer.Lexer, out *CategoryCreateRequest) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1349,6 +2650,30 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp10(in *jlexer.Lexer
 			continue
 		}
 		switch key {
+		case "create_time":
+			if in.IsNull() {
+				in.Skip()
+				out.CreateTime = nil
+			} else {
+				if out.CreateTime == nil {
+					out.CreateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.CreateTime).UnmarshalJSON(data))
+				}
+			}
+		case "update_time":
+			if in.IsNull() {
+				in.Skip()
+				out.UpdateTime = nil
+			} else {
+				if out.UpdateTime == nil {
+					out.UpdateTime = new(time.Time)
+				}
+				if data := in.Raw(); in.Ok() {
+					in.AddError((*out.UpdateTime).UnmarshalJSON(data))
+				}
+			}
 		case "name":
 			if in.IsNull() {
 				in.Skip()
@@ -1373,13 +2698,31 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp10(in *jlexer.Lexer
 		in.Consumed()
 	}
 }
-func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp10(out *jwriter.Writer, in CategoryCreateRequest) {
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp22(out *jwriter.Writer, in CategoryCreateRequest) {
 	out.RawByte('{')
 	first := true
 	_ = first
 	{
-		const prefix string = ",\"name\":"
+		const prefix string = ",\"create_time\":"
 		out.RawString(prefix[1:])
+		if in.CreateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.CreateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"update_time\":"
+		out.RawString(prefix)
+		if in.UpdateTime == nil {
+			out.RawString("null")
+		} else {
+			out.Raw((*in.UpdateTime).MarshalJSON())
+		}
+	}
+	{
+		const prefix string = ",\"name\":"
+		out.RawString(prefix)
 		if in.Name == nil {
 			out.RawString("null")
 		} else {
@@ -1391,14 +2734,14 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp10(out *jwriter.Wri
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v CategoryCreateRequest) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp10(w, v)
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp22(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *CategoryCreateRequest) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp10(l, v)
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp22(l, v)
 }
-func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp11(in *jlexer.Lexer, out *Category4094953247Views) {
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp23(in *jlexer.Lexer, out *Category1462705340Views) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		in.Skip()
@@ -1407,25 +2750,25 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp11(in *jlexer.Lexer
 		in.Delim('[')
 		if *out == nil {
 			if !in.IsDelim(']') {
-				*out = make(Category4094953247Views, 0, 8)
+				*out = make(Category1462705340Views, 0, 8)
 			} else {
-				*out = Category4094953247Views{}
+				*out = Category1462705340Views{}
 			}
 		} else {
 			*out = (*out)[:0]
 		}
 		for !in.IsDelim(']') {
-			var v7 *Category4094953247View
+			var v22 *Category1462705340View
 			if in.IsNull() {
 				in.Skip()
-				v7 = nil
+				v22 = nil
 			} else {
-				if v7 == nil {
-					v7 = new(Category4094953247View)
+				if v22 == nil {
+					v22 = new(Category1462705340View)
 				}
-				(*v7).UnmarshalEasyJSON(in)
+				(*v22).UnmarshalEasyJSON(in)
 			}
-			*out = append(*out, v7)
+			*out = append(*out, v22)
 			in.WantComma()
 		}
 		in.Delim(']')
@@ -1434,19 +2777,19 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp11(in *jlexer.Lexer
 		in.Consumed()
 	}
 }
-func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp11(out *jwriter.Writer, in Category4094953247Views) {
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp23(out *jwriter.Writer, in Category1462705340Views) {
 	if in == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v8, v9 := range in {
-			if v8 > 0 {
+		for v23, v24 := range in {
+			if v23 > 0 {
 				out.RawByte(',')
 			}
-			if v9 == nil {
+			if v24 == nil {
 				out.RawString("null")
 			} else {
-				(*v9).MarshalEasyJSON(out)
+				(*v24).MarshalEasyJSON(out)
 			}
 		}
 		out.RawByte(']')
@@ -1454,15 +2797,15 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp11(out *jwriter.Wri
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
-func (v Category4094953247Views) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp11(w, v)
+func (v Category1462705340Views) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp23(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *Category4094953247Views) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp11(l, v)
+func (v *Category1462705340Views) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp23(l, v)
 }
-func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp12(in *jlexer.Lexer, out *Category4094953247View) {
+func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp24(in *jlexer.Lexer, out *Category1462705340View) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -1483,6 +2826,14 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp12(in *jlexer.Lexer
 		switch key {
 		case "id":
 			out.ID = int(in.Int())
+		case "create_time":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.CreateTime).UnmarshalJSON(data))
+			}
+		case "update_time":
+			if data := in.Raw(); in.Ok() {
+				in.AddError((out.UpdateTime).UnmarshalJSON(data))
+			}
 		case "name":
 			out.Name = string(in.String())
 		default:
@@ -1499,7 +2850,7 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp12(in *jlexer.Lexer
 		in.Consumed()
 	}
 }
-func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp12(out *jwriter.Writer, in Category4094953247View) {
+func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp24(out *jwriter.Writer, in Category1462705340View) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -1508,6 +2859,26 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp12(out *jwriter.Wri
 		first = false
 		out.RawString(prefix[1:])
 		out.Int(int(in.ID))
+	}
+	if true {
+		const prefix string = ",\"create_time\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Raw((in.CreateTime).MarshalJSON())
+	}
+	if true {
+		const prefix string = ",\"update_time\":"
+		if first {
+			first = false
+			out.RawString(prefix[1:])
+		} else {
+			out.RawString(prefix)
+		}
+		out.Raw((in.UpdateTime).MarshalJSON())
 	}
 	if in.Name != "" {
 		const prefix string = ",\"name\":"
@@ -1523,11 +2894,11 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp12(out *jwriter.Wri
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
-func (v Category4094953247View) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp12(w, v)
+func (v Category1462705340View) MarshalEasyJSON(w *jwriter.Writer) {
+	easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp24(w, v)
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
-func (v *Category4094953247View) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp12(l, v)
+func (v *Category1462705340View) UnmarshalEasyJSON(l *jlexer.Lexer) {
+	easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp24(l, v)
 }

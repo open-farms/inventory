@@ -4,10 +4,10 @@ package entpb
 
 import (
 	context "context"
+	empty "github.com/golang/protobuf/ptypes/empty"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -22,7 +22,7 @@ type EquipmentServiceClient interface {
 	Create(ctx context.Context, in *CreateEquipmentRequest, opts ...grpc.CallOption) (*Equipment, error)
 	Get(ctx context.Context, in *GetEquipmentRequest, opts ...grpc.CallOption) (*Equipment, error)
 	Update(ctx context.Context, in *UpdateEquipmentRequest, opts ...grpc.CallOption) (*Equipment, error)
-	Delete(ctx context.Context, in *DeleteEquipmentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Delete(ctx context.Context, in *DeleteEquipmentRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type equipmentServiceClient struct {
@@ -60,8 +60,8 @@ func (c *equipmentServiceClient) Update(ctx context.Context, in *UpdateEquipment
 	return out, nil
 }
 
-func (c *equipmentServiceClient) Delete(ctx context.Context, in *DeleteEquipmentRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
+func (c *equipmentServiceClient) Delete(ctx context.Context, in *DeleteEquipmentRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/entpb.EquipmentService/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -76,7 +76,7 @@ type EquipmentServiceServer interface {
 	Create(context.Context, *CreateEquipmentRequest) (*Equipment, error)
 	Get(context.Context, *GetEquipmentRequest) (*Equipment, error)
 	Update(context.Context, *UpdateEquipmentRequest) (*Equipment, error)
-	Delete(context.Context, *DeleteEquipmentRequest) (*emptypb.Empty, error)
+	Delete(context.Context, *DeleteEquipmentRequest) (*empty.Empty, error)
 	mustEmbedUnimplementedEquipmentServiceServer()
 }
 
@@ -93,7 +93,7 @@ func (UnimplementedEquipmentServiceServer) Get(context.Context, *GetEquipmentReq
 func (UnimplementedEquipmentServiceServer) Update(context.Context, *UpdateEquipmentRequest) (*Equipment, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (UnimplementedEquipmentServiceServer) Delete(context.Context, *DeleteEquipmentRequest) (*emptypb.Empty, error) {
+func (UnimplementedEquipmentServiceServer) Delete(context.Context, *DeleteEquipmentRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedEquipmentServiceServer) mustEmbedUnimplementedEquipmentServiceServer() {}
@@ -209,6 +209,394 @@ var EquipmentService_ServiceDesc = grpc.ServiceDesc{
 	Metadata: "entpb/entpb.proto",
 }
 
+// ImplementServiceClient is the client API for ImplementService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ImplementServiceClient interface {
+	Create(ctx context.Context, in *CreateImplementRequest, opts ...grpc.CallOption) (*Implement, error)
+	Get(ctx context.Context, in *GetImplementRequest, opts ...grpc.CallOption) (*Implement, error)
+	Update(ctx context.Context, in *UpdateImplementRequest, opts ...grpc.CallOption) (*Implement, error)
+	Delete(ctx context.Context, in *DeleteImplementRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+}
+
+type implementServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewImplementServiceClient(cc grpc.ClientConnInterface) ImplementServiceClient {
+	return &implementServiceClient{cc}
+}
+
+func (c *implementServiceClient) Create(ctx context.Context, in *CreateImplementRequest, opts ...grpc.CallOption) (*Implement, error) {
+	out := new(Implement)
+	err := c.cc.Invoke(ctx, "/entpb.ImplementService/Create", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *implementServiceClient) Get(ctx context.Context, in *GetImplementRequest, opts ...grpc.CallOption) (*Implement, error) {
+	out := new(Implement)
+	err := c.cc.Invoke(ctx, "/entpb.ImplementService/Get", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *implementServiceClient) Update(ctx context.Context, in *UpdateImplementRequest, opts ...grpc.CallOption) (*Implement, error) {
+	out := new(Implement)
+	err := c.cc.Invoke(ctx, "/entpb.ImplementService/Update", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *implementServiceClient) Delete(ctx context.Context, in *DeleteImplementRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/entpb.ImplementService/Delete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ImplementServiceServer is the server API for ImplementService service.
+// All implementations must embed UnimplementedImplementServiceServer
+// for forward compatibility
+type ImplementServiceServer interface {
+	Create(context.Context, *CreateImplementRequest) (*Implement, error)
+	Get(context.Context, *GetImplementRequest) (*Implement, error)
+	Update(context.Context, *UpdateImplementRequest) (*Implement, error)
+	Delete(context.Context, *DeleteImplementRequest) (*empty.Empty, error)
+	mustEmbedUnimplementedImplementServiceServer()
+}
+
+// UnimplementedImplementServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedImplementServiceServer struct {
+}
+
+func (UnimplementedImplementServiceServer) Create(context.Context, *CreateImplementRequest) (*Implement, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedImplementServiceServer) Get(context.Context, *GetImplementRequest) (*Implement, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedImplementServiceServer) Update(context.Context, *UpdateImplementRequest) (*Implement, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+}
+func (UnimplementedImplementServiceServer) Delete(context.Context, *DeleteImplementRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedImplementServiceServer) mustEmbedUnimplementedImplementServiceServer() {}
+
+// UnsafeImplementServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ImplementServiceServer will
+// result in compilation errors.
+type UnsafeImplementServiceServer interface {
+	mustEmbedUnimplementedImplementServiceServer()
+}
+
+func RegisterImplementServiceServer(s grpc.ServiceRegistrar, srv ImplementServiceServer) {
+	s.RegisterService(&ImplementService_ServiceDesc, srv)
+}
+
+func _ImplementService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateImplementRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ImplementServiceServer).Create(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/entpb.ImplementService/Create",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ImplementServiceServer).Create(ctx, req.(*CreateImplementRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ImplementService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetImplementRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ImplementServiceServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/entpb.ImplementService/Get",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ImplementServiceServer).Get(ctx, req.(*GetImplementRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ImplementService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateImplementRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ImplementServiceServer).Update(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/entpb.ImplementService/Update",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ImplementServiceServer).Update(ctx, req.(*UpdateImplementRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ImplementService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteImplementRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ImplementServiceServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/entpb.ImplementService/Delete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ImplementServiceServer).Delete(ctx, req.(*DeleteImplementRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ImplementService_ServiceDesc is the grpc.ServiceDesc for ImplementService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ImplementService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "entpb.ImplementService",
+	HandlerType: (*ImplementServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Create",
+			Handler:    _ImplementService_Create_Handler,
+		},
+		{
+			MethodName: "Get",
+			Handler:    _ImplementService_Get_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _ImplementService_Update_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _ImplementService_Delete_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "entpb/entpb.proto",
+}
+
+// ToolServiceClient is the client API for ToolService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ToolServiceClient interface {
+	Create(ctx context.Context, in *CreateToolRequest, opts ...grpc.CallOption) (*Tool, error)
+	Get(ctx context.Context, in *GetToolRequest, opts ...grpc.CallOption) (*Tool, error)
+	Update(ctx context.Context, in *UpdateToolRequest, opts ...grpc.CallOption) (*Tool, error)
+	Delete(ctx context.Context, in *DeleteToolRequest, opts ...grpc.CallOption) (*empty.Empty, error)
+}
+
+type toolServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewToolServiceClient(cc grpc.ClientConnInterface) ToolServiceClient {
+	return &toolServiceClient{cc}
+}
+
+func (c *toolServiceClient) Create(ctx context.Context, in *CreateToolRequest, opts ...grpc.CallOption) (*Tool, error) {
+	out := new(Tool)
+	err := c.cc.Invoke(ctx, "/entpb.ToolService/Create", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toolServiceClient) Get(ctx context.Context, in *GetToolRequest, opts ...grpc.CallOption) (*Tool, error) {
+	out := new(Tool)
+	err := c.cc.Invoke(ctx, "/entpb.ToolService/Get", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toolServiceClient) Update(ctx context.Context, in *UpdateToolRequest, opts ...grpc.CallOption) (*Tool, error) {
+	out := new(Tool)
+	err := c.cc.Invoke(ctx, "/entpb.ToolService/Update", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *toolServiceClient) Delete(ctx context.Context, in *DeleteToolRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
+	err := c.cc.Invoke(ctx, "/entpb.ToolService/Delete", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ToolServiceServer is the server API for ToolService service.
+// All implementations must embed UnimplementedToolServiceServer
+// for forward compatibility
+type ToolServiceServer interface {
+	Create(context.Context, *CreateToolRequest) (*Tool, error)
+	Get(context.Context, *GetToolRequest) (*Tool, error)
+	Update(context.Context, *UpdateToolRequest) (*Tool, error)
+	Delete(context.Context, *DeleteToolRequest) (*empty.Empty, error)
+	mustEmbedUnimplementedToolServiceServer()
+}
+
+// UnimplementedToolServiceServer must be embedded to have forward compatible implementations.
+type UnimplementedToolServiceServer struct {
+}
+
+func (UnimplementedToolServiceServer) Create(context.Context, *CreateToolRequest) (*Tool, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
+}
+func (UnimplementedToolServiceServer) Get(context.Context, *GetToolRequest) (*Tool, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+}
+func (UnimplementedToolServiceServer) Update(context.Context, *UpdateToolRequest) (*Tool, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
+}
+func (UnimplementedToolServiceServer) Delete(context.Context, *DeleteToolRequest) (*empty.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
+}
+func (UnimplementedToolServiceServer) mustEmbedUnimplementedToolServiceServer() {}
+
+// UnsafeToolServiceServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ToolServiceServer will
+// result in compilation errors.
+type UnsafeToolServiceServer interface {
+	mustEmbedUnimplementedToolServiceServer()
+}
+
+func RegisterToolServiceServer(s grpc.ServiceRegistrar, srv ToolServiceServer) {
+	s.RegisterService(&ToolService_ServiceDesc, srv)
+}
+
+func _ToolService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateToolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToolServiceServer).Create(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/entpb.ToolService/Create",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToolServiceServer).Create(ctx, req.(*CreateToolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToolService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetToolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToolServiceServer).Get(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/entpb.ToolService/Get",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToolServiceServer).Get(ctx, req.(*GetToolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToolService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateToolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToolServiceServer).Update(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/entpb.ToolService/Update",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToolServiceServer).Update(ctx, req.(*UpdateToolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ToolService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteToolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToolServiceServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/entpb.ToolService/Delete",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToolServiceServer).Delete(ctx, req.(*DeleteToolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// ToolService_ServiceDesc is the grpc.ServiceDesc for ToolService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ToolService_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "entpb.ToolService",
+	HandlerType: (*ToolServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Create",
+			Handler:    _ToolService_Create_Handler,
+		},
+		{
+			MethodName: "Get",
+			Handler:    _ToolService_Get_Handler,
+		},
+		{
+			MethodName: "Update",
+			Handler:    _ToolService_Update_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _ToolService_Delete_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "entpb/entpb.proto",
+}
+
 // VehicleServiceClient is the client API for VehicleService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
@@ -216,7 +604,7 @@ type VehicleServiceClient interface {
 	Create(ctx context.Context, in *CreateVehicleRequest, opts ...grpc.CallOption) (*Vehicle, error)
 	Get(ctx context.Context, in *GetVehicleRequest, opts ...grpc.CallOption) (*Vehicle, error)
 	Update(ctx context.Context, in *UpdateVehicleRequest, opts ...grpc.CallOption) (*Vehicle, error)
-	Delete(ctx context.Context, in *DeleteVehicleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Delete(ctx context.Context, in *DeleteVehicleRequest, opts ...grpc.CallOption) (*empty.Empty, error)
 }
 
 type vehicleServiceClient struct {
@@ -254,8 +642,8 @@ func (c *vehicleServiceClient) Update(ctx context.Context, in *UpdateVehicleRequ
 	return out, nil
 }
 
-func (c *vehicleServiceClient) Delete(ctx context.Context, in *DeleteVehicleRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
+func (c *vehicleServiceClient) Delete(ctx context.Context, in *DeleteVehicleRequest, opts ...grpc.CallOption) (*empty.Empty, error) {
+	out := new(empty.Empty)
 	err := c.cc.Invoke(ctx, "/entpb.VehicleService/Delete", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -270,7 +658,7 @@ type VehicleServiceServer interface {
 	Create(context.Context, *CreateVehicleRequest) (*Vehicle, error)
 	Get(context.Context, *GetVehicleRequest) (*Vehicle, error)
 	Update(context.Context, *UpdateVehicleRequest) (*Vehicle, error)
-	Delete(context.Context, *DeleteVehicleRequest) (*emptypb.Empty, error)
+	Delete(context.Context, *DeleteVehicleRequest) (*empty.Empty, error)
 	mustEmbedUnimplementedVehicleServiceServer()
 }
 
@@ -287,7 +675,7 @@ func (UnimplementedVehicleServiceServer) Get(context.Context, *GetVehicleRequest
 func (UnimplementedVehicleServiceServer) Update(context.Context, *UpdateVehicleRequest) (*Vehicle, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
-func (UnimplementedVehicleServiceServer) Delete(context.Context, *DeleteVehicleRequest) (*emptypb.Empty, error) {
+func (UnimplementedVehicleServiceServer) Delete(context.Context, *DeleteVehicleRequest) (*empty.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedVehicleServiceServer) mustEmbedUnimplementedVehicleServiceServer() {}

@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/predicate"
 	"github.com/open-farms/inventory/ent/vehicle"
 )
@@ -24,6 +25,9 @@ type VehicleQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.Vehicle
+	// eager-loading edges.
+	withLocation *LocationQuery
+	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -58,6 +62,28 @@ func (vq *VehicleQuery) Unique(unique bool) *VehicleQuery {
 func (vq *VehicleQuery) Order(o ...OrderFunc) *VehicleQuery {
 	vq.order = append(vq.order, o...)
 	return vq
+}
+
+// QueryLocation chains the current query on the "location" edge.
+func (vq *VehicleQuery) QueryLocation() *LocationQuery {
+	query := &LocationQuery{config: vq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := vq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := vq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(vehicle.Table, vehicle.FieldID, selector),
+			sqlgraph.To(location.Table, location.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, vehicle.LocationTable, vehicle.LocationColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(vq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Vehicle entity from the query.
@@ -236,15 +262,27 @@ func (vq *VehicleQuery) Clone() *VehicleQuery {
 		return nil
 	}
 	return &VehicleQuery{
-		config:     vq.config,
-		limit:      vq.limit,
-		offset:     vq.offset,
-		order:      append([]OrderFunc{}, vq.order...),
-		predicates: append([]predicate.Vehicle{}, vq.predicates...),
+		config:       vq.config,
+		limit:        vq.limit,
+		offset:       vq.offset,
+		order:        append([]OrderFunc{}, vq.order...),
+		predicates:   append([]predicate.Vehicle{}, vq.predicates...),
+		withLocation: vq.withLocation.Clone(),
 		// clone intermediate query.
 		sql:  vq.sql.Clone(),
 		path: vq.path,
 	}
+}
+
+// WithLocation tells the query-builder to eager-load the nodes that are connected to
+// the "location" edge. The optional arguments are used to configure the query builder of the edge.
+func (vq *VehicleQuery) WithLocation(opts ...func(*LocationQuery)) *VehicleQuery {
+	query := &LocationQuery{config: vq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	vq.withLocation = query
+	return vq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -310,9 +348,19 @@ func (vq *VehicleQuery) prepareQuery(ctx context.Context) error {
 
 func (vq *VehicleQuery) sqlAll(ctx context.Context) ([]*Vehicle, error) {
 	var (
-		nodes = []*Vehicle{}
-		_spec = vq.querySpec()
+		nodes       = []*Vehicle{}
+		withFKs     = vq.withFKs
+		_spec       = vq.querySpec()
+		loadedTypes = [1]bool{
+			vq.withLocation != nil,
+		}
 	)
+	if vq.withLocation != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, vehicle.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &Vehicle{config: vq.config}
 		nodes = append(nodes, node)
@@ -323,6 +371,7 @@ func (vq *VehicleQuery) sqlAll(ctx context.Context) ([]*Vehicle, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if err := sqlgraph.QueryNodes(ctx, vq.driver, _spec); err != nil {
@@ -331,6 +380,36 @@ func (vq *VehicleQuery) sqlAll(ctx context.Context) ([]*Vehicle, error) {
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+
+	if query := vq.withLocation; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Vehicle)
+		for i := range nodes {
+			if nodes[i].location_vehicle == nil {
+				continue
+			}
+			fk := *nodes[i].location_vehicle
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(location.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "location_vehicle" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Location = n
+			}
+		}
+	}
+
 	return nodes, nil
 }
 

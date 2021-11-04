@@ -9,12 +9,19 @@ require (
 	github.com/alecthomas/kong v0.2.17
 	github.com/go-chi/chi/v5 v5.0.4
 	github.com/go-kratos/kratos/v2 v2.1.1
+	github.com/golang/protobuf v1.5.2
+	github.com/kr/pretty v0.3.0 // indirect
 	github.com/lib/pq v1.10.3
 	github.com/mailru/easyjson v0.7.7
 	github.com/masseelch/elk v0.5.2 // indirect
 	github.com/mattn/go-sqlite3 v1.14.9
+	github.com/mitchellh/mapstructure v1.4.2 // indirect
+	github.com/rogpeppe/go-internal v1.8.0 // indirect
+	github.com/treastech/logger v0.0.0-20180705232552-e381e9ecf2e3 // indirect
 	go.uber.org/zap v1.19.1
 	golang.org/x/sys v0.0.0-20211102192858-4dd72447c267 // indirect
+	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/grpc v1.39.1
 	google.golang.org/protobuf v1.27.1
+	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 )

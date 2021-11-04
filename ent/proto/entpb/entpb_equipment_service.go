@@ -5,6 +5,7 @@ import (
 	context "context"
 	runtime "entgo.io/contrib/entproto/runtime"
 	sqlgraph "entgo.io/ent/dialect/sql/sqlgraph"
+	empty "github.com/golang/protobuf/ptypes/empty"
 	ent "github.com/open-farms/inventory/ent"
 	equipment "github.com/open-farms/inventory/ent/equipment"
 	codes "google.golang.org/grpc/codes"
@@ -133,7 +134,7 @@ func (svc *EquipmentService) Update(ctx context.Context, req *UpdateEquipmentReq
 }
 
 // Delete implements EquipmentServiceServer.Delete
-func (svc *EquipmentService) Delete(ctx context.Context, req *DeleteEquipmentRequest) (*emptypb.Empty, error) {
+func (svc *EquipmentService) Delete(ctx context.Context, req *DeleteEquipmentRequest) (*empty.Empty, error) {
 	var err error
 	id := int(req.GetId())
 	err = svc.client.Equipment.DeleteOneID(id).Exec(ctx)

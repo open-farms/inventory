@@ -65,6 +65,87 @@ func (h EquipmentHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// Delete removes a ent.Implement from the database.
+func (h ImplementHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	l := h.log.With(zap.String("method", "Delete"))
+	// ID is URL parameter.
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
+		BadRequest(w, "id must be an integer")
+		return
+	}
+	err = h.client.Implement.DeleteOneID(id).Exec(r.Context())
+	if err != nil {
+		switch {
+		case ent.IsNotFound(err):
+			msg := stripEntError(err)
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
+			NotFound(w, msg)
+		default:
+			l.Error("could-not-delete-implement", zap.Error(err), zap.Int("id", id))
+			InternalServerError(w, nil)
+		}
+		return
+	}
+	l.Info("implement deleted", zap.Int("id", id))
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// Delete removes a ent.Location from the database.
+func (h LocationHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	l := h.log.With(zap.String("method", "Delete"))
+	// ID is URL parameter.
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
+		BadRequest(w, "id must be an integer")
+		return
+	}
+	err = h.client.Location.DeleteOneID(id).Exec(r.Context())
+	if err != nil {
+		switch {
+		case ent.IsNotFound(err):
+			msg := stripEntError(err)
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
+			NotFound(w, msg)
+		default:
+			l.Error("could-not-delete-location", zap.Error(err), zap.Int("id", id))
+			InternalServerError(w, nil)
+		}
+		return
+	}
+	l.Info("location deleted", zap.Int("id", id))
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// Delete removes a ent.Tool from the database.
+func (h ToolHandler) Delete(w http.ResponseWriter, r *http.Request) {
+	l := h.log.With(zap.String("method", "Delete"))
+	// ID is URL parameter.
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		l.Error("error getting id from url parameter", zap.String("id", chi.URLParam(r, "id")), zap.Error(err))
+		BadRequest(w, "id must be an integer")
+		return
+	}
+	err = h.client.Tool.DeleteOneID(id).Exec(r.Context())
+	if err != nil {
+		switch {
+		case ent.IsNotFound(err):
+			msg := stripEntError(err)
+			l.Info(msg, zap.Error(err), zap.Int("id", id))
+			NotFound(w, msg)
+		default:
+			l.Error("could-not-delete-tool", zap.Error(err), zap.Int("id", id))
+			InternalServerError(w, nil)
+		}
+		return
+	}
+	l.Info("tool deleted", zap.Int("id", id))
+	w.WriteHeader(http.StatusNoContent)
+}
+
 // Delete removes a ent.Vehicle from the database.
 func (h VehicleHandler) Delete(w http.ResponseWriter, r *http.Request) {
 	l := h.log.With(zap.String("method", "Delete"))

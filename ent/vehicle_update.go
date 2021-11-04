@@ -4,12 +4,14 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/predicate"
 	"github.com/open-farms/inventory/ent/vehicle"
 )
@@ -59,77 +61,24 @@ func (vu *VehicleUpdate) SetModel(s string) *VehicleUpdate {
 	return vu
 }
 
-// SetMiles sets the "miles" field.
-func (vu *VehicleUpdate) SetMiles(i int64) *VehicleUpdate {
-	vu.mutation.ResetMiles()
-	vu.mutation.SetMiles(i)
+// SetHours sets the "hours" field.
+func (vu *VehicleUpdate) SetHours(i int64) *VehicleUpdate {
+	vu.mutation.ResetHours()
+	vu.mutation.SetHours(i)
 	return vu
 }
 
-// SetNillableMiles sets the "miles" field if the given value is not nil.
-func (vu *VehicleUpdate) SetNillableMiles(i *int64) *VehicleUpdate {
+// SetNillableHours sets the "hours" field if the given value is not nil.
+func (vu *VehicleUpdate) SetNillableHours(i *int64) *VehicleUpdate {
 	if i != nil {
-		vu.SetMiles(*i)
+		vu.SetHours(*i)
 	}
 	return vu
 }
 
-// AddMiles adds i to the "miles" field.
-func (vu *VehicleUpdate) AddMiles(i int64) *VehicleUpdate {
-	vu.mutation.AddMiles(i)
-	return vu
-}
-
-// ClearMiles clears the value of the "miles" field.
-func (vu *VehicleUpdate) ClearMiles() *VehicleUpdate {
-	vu.mutation.ClearMiles()
-	return vu
-}
-
-// SetMpg sets the "mpg" field.
-func (vu *VehicleUpdate) SetMpg(i int64) *VehicleUpdate {
-	vu.mutation.ResetMpg()
-	vu.mutation.SetMpg(i)
-	return vu
-}
-
-// SetNillableMpg sets the "mpg" field if the given value is not nil.
-func (vu *VehicleUpdate) SetNillableMpg(i *int64) *VehicleUpdate {
-	if i != nil {
-		vu.SetMpg(*i)
-	}
-	return vu
-}
-
-// AddMpg adds i to the "mpg" field.
-func (vu *VehicleUpdate) AddMpg(i int64) *VehicleUpdate {
-	vu.mutation.AddMpg(i)
-	return vu
-}
-
-// ClearMpg clears the value of the "mpg" field.
-func (vu *VehicleUpdate) ClearMpg() *VehicleUpdate {
-	vu.mutation.ClearMpg()
-	return vu
-}
-
-// SetOwner sets the "owner" field.
-func (vu *VehicleUpdate) SetOwner(s string) *VehicleUpdate {
-	vu.mutation.SetOwner(s)
-	return vu
-}
-
-// SetNillableOwner sets the "owner" field if the given value is not nil.
-func (vu *VehicleUpdate) SetNillableOwner(s *string) *VehicleUpdate {
-	if s != nil {
-		vu.SetOwner(*s)
-	}
-	return vu
-}
-
-// ClearOwner clears the value of the "owner" field.
-func (vu *VehicleUpdate) ClearOwner() *VehicleUpdate {
-	vu.mutation.ClearOwner()
+// AddHours adds i to the "hours" field.
+func (vu *VehicleUpdate) AddHours(i int64) *VehicleUpdate {
+	vu.mutation.AddHours(i)
 	return vu
 }
 
@@ -167,35 +116,46 @@ func (vu *VehicleUpdate) SetNillableActive(b *bool) *VehicleUpdate {
 	return vu
 }
 
-// ClearActive clears the value of the "active" field.
-func (vu *VehicleUpdate) ClearActive() *VehicleUpdate {
-	vu.mutation.ClearActive()
+// SetPower sets the "power" field.
+func (vu *VehicleUpdate) SetPower(s string) *VehicleUpdate {
+	vu.mutation.SetPower(s)
 	return vu
 }
 
-// SetCondition sets the "condition" field.
-func (vu *VehicleUpdate) SetCondition(s string) *VehicleUpdate {
-	vu.mutation.SetCondition(s)
-	return vu
-}
-
-// SetNillableCondition sets the "condition" field if the given value is not nil.
-func (vu *VehicleUpdate) SetNillableCondition(s *string) *VehicleUpdate {
+// SetNillablePower sets the "power" field if the given value is not nil.
+func (vu *VehicleUpdate) SetNillablePower(s *string) *VehicleUpdate {
 	if s != nil {
-		vu.SetCondition(*s)
+		vu.SetPower(*s)
 	}
 	return vu
 }
 
-// ClearCondition clears the value of the "condition" field.
-func (vu *VehicleUpdate) ClearCondition() *VehicleUpdate {
-	vu.mutation.ClearCondition()
+// ClearPower clears the value of the "power" field.
+func (vu *VehicleUpdate) ClearPower() *VehicleUpdate {
+	vu.mutation.ClearPower()
 	return vu
+}
+
+// SetLocationID sets the "location" edge to the Location entity by ID.
+func (vu *VehicleUpdate) SetLocationID(id int) *VehicleUpdate {
+	vu.mutation.SetLocationID(id)
+	return vu
+}
+
+// SetLocation sets the "location" edge to the Location entity.
+func (vu *VehicleUpdate) SetLocation(l *Location) *VehicleUpdate {
+	return vu.SetLocationID(l.ID)
 }
 
 // Mutation returns the VehicleMutation object of the builder.
 func (vu *VehicleUpdate) Mutation() *VehicleMutation {
 	return vu.mutation
+}
+
+// ClearLocation clears the "location" edge to the Location entity.
+func (vu *VehicleUpdate) ClearLocation() *VehicleUpdate {
+	vu.mutation.ClearLocation()
+	return vu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -269,10 +229,18 @@ func (vu *VehicleUpdate) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (vu *VehicleUpdate) check() error {
-	if v, ok := vu.mutation.Condition(); ok {
-		if err := vehicle.ConditionValidator(v); err != nil {
-			return &ValidationError{Name: "condition", err: fmt.Errorf("ent: validator failed for field \"condition\": %w", err)}
+	if v, ok := vu.mutation.Hours(); ok {
+		if err := vehicle.HoursValidator(v); err != nil {
+			return &ValidationError{Name: "hours", err: fmt.Errorf("ent: validator failed for field \"hours\": %w", err)}
 		}
+	}
+	if v, ok := vu.mutation.Power(); ok {
+		if err := vehicle.PowerValidator(v); err != nil {
+			return &ValidationError{Name: "power", err: fmt.Errorf("ent: validator failed for field \"power\": %w", err)}
+		}
+	}
+	if _, ok := vu.mutation.LocationID(); vu.mutation.LocationCleared() && !ok {
+		return errors.New("ent: clearing a required unique edge \"location\"")
 	}
 	return nil
 }
@@ -323,57 +291,18 @@ func (vu *VehicleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: vehicle.FieldModel,
 		})
 	}
-	if value, ok := vu.mutation.Miles(); ok {
+	if value, ok := vu.mutation.Hours(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  value,
-			Column: vehicle.FieldMiles,
+			Column: vehicle.FieldHours,
 		})
 	}
-	if value, ok := vu.mutation.AddedMiles(); ok {
+	if value, ok := vu.mutation.AddedHours(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  value,
-			Column: vehicle.FieldMiles,
-		})
-	}
-	if vu.mutation.MilesCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: vehicle.FieldMiles,
-		})
-	}
-	if value, ok := vu.mutation.Mpg(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: vehicle.FieldMpg,
-		})
-	}
-	if value, ok := vu.mutation.AddedMpg(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: vehicle.FieldMpg,
-		})
-	}
-	if vu.mutation.MpgCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: vehicle.FieldMpg,
-		})
-	}
-	if value, ok := vu.mutation.Owner(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: vehicle.FieldOwner,
-		})
-	}
-	if vu.mutation.OwnerCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: vehicle.FieldOwner,
+			Column: vehicle.FieldHours,
 		})
 	}
 	if value, ok := vu.mutation.Year(); ok {
@@ -396,24 +325,53 @@ func (vu *VehicleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: vehicle.FieldActive,
 		})
 	}
-	if vu.mutation.ActiveCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Column: vehicle.FieldActive,
-		})
-	}
-	if value, ok := vu.mutation.Condition(); ok {
+	if value, ok := vu.mutation.Power(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: vehicle.FieldCondition,
+			Column: vehicle.FieldPower,
 		})
 	}
-	if vu.mutation.ConditionCleared() {
+	if vu.mutation.PowerCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Column: vehicle.FieldCondition,
+			Column: vehicle.FieldPower,
 		})
+	}
+	if vu.mutation.LocationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   vehicle.LocationTable,
+			Columns: []string{vehicle.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := vu.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   vehicle.LocationTable,
+			Columns: []string{vehicle.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, vu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -466,77 +424,24 @@ func (vuo *VehicleUpdateOne) SetModel(s string) *VehicleUpdateOne {
 	return vuo
 }
 
-// SetMiles sets the "miles" field.
-func (vuo *VehicleUpdateOne) SetMiles(i int64) *VehicleUpdateOne {
-	vuo.mutation.ResetMiles()
-	vuo.mutation.SetMiles(i)
+// SetHours sets the "hours" field.
+func (vuo *VehicleUpdateOne) SetHours(i int64) *VehicleUpdateOne {
+	vuo.mutation.ResetHours()
+	vuo.mutation.SetHours(i)
 	return vuo
 }
 
-// SetNillableMiles sets the "miles" field if the given value is not nil.
-func (vuo *VehicleUpdateOne) SetNillableMiles(i *int64) *VehicleUpdateOne {
+// SetNillableHours sets the "hours" field if the given value is not nil.
+func (vuo *VehicleUpdateOne) SetNillableHours(i *int64) *VehicleUpdateOne {
 	if i != nil {
-		vuo.SetMiles(*i)
+		vuo.SetHours(*i)
 	}
 	return vuo
 }
 
-// AddMiles adds i to the "miles" field.
-func (vuo *VehicleUpdateOne) AddMiles(i int64) *VehicleUpdateOne {
-	vuo.mutation.AddMiles(i)
-	return vuo
-}
-
-// ClearMiles clears the value of the "miles" field.
-func (vuo *VehicleUpdateOne) ClearMiles() *VehicleUpdateOne {
-	vuo.mutation.ClearMiles()
-	return vuo
-}
-
-// SetMpg sets the "mpg" field.
-func (vuo *VehicleUpdateOne) SetMpg(i int64) *VehicleUpdateOne {
-	vuo.mutation.ResetMpg()
-	vuo.mutation.SetMpg(i)
-	return vuo
-}
-
-// SetNillableMpg sets the "mpg" field if the given value is not nil.
-func (vuo *VehicleUpdateOne) SetNillableMpg(i *int64) *VehicleUpdateOne {
-	if i != nil {
-		vuo.SetMpg(*i)
-	}
-	return vuo
-}
-
-// AddMpg adds i to the "mpg" field.
-func (vuo *VehicleUpdateOne) AddMpg(i int64) *VehicleUpdateOne {
-	vuo.mutation.AddMpg(i)
-	return vuo
-}
-
-// ClearMpg clears the value of the "mpg" field.
-func (vuo *VehicleUpdateOne) ClearMpg() *VehicleUpdateOne {
-	vuo.mutation.ClearMpg()
-	return vuo
-}
-
-// SetOwner sets the "owner" field.
-func (vuo *VehicleUpdateOne) SetOwner(s string) *VehicleUpdateOne {
-	vuo.mutation.SetOwner(s)
-	return vuo
-}
-
-// SetNillableOwner sets the "owner" field if the given value is not nil.
-func (vuo *VehicleUpdateOne) SetNillableOwner(s *string) *VehicleUpdateOne {
-	if s != nil {
-		vuo.SetOwner(*s)
-	}
-	return vuo
-}
-
-// ClearOwner clears the value of the "owner" field.
-func (vuo *VehicleUpdateOne) ClearOwner() *VehicleUpdateOne {
-	vuo.mutation.ClearOwner()
+// AddHours adds i to the "hours" field.
+func (vuo *VehicleUpdateOne) AddHours(i int64) *VehicleUpdateOne {
+	vuo.mutation.AddHours(i)
 	return vuo
 }
 
@@ -574,35 +479,46 @@ func (vuo *VehicleUpdateOne) SetNillableActive(b *bool) *VehicleUpdateOne {
 	return vuo
 }
 
-// ClearActive clears the value of the "active" field.
-func (vuo *VehicleUpdateOne) ClearActive() *VehicleUpdateOne {
-	vuo.mutation.ClearActive()
+// SetPower sets the "power" field.
+func (vuo *VehicleUpdateOne) SetPower(s string) *VehicleUpdateOne {
+	vuo.mutation.SetPower(s)
 	return vuo
 }
 
-// SetCondition sets the "condition" field.
-func (vuo *VehicleUpdateOne) SetCondition(s string) *VehicleUpdateOne {
-	vuo.mutation.SetCondition(s)
-	return vuo
-}
-
-// SetNillableCondition sets the "condition" field if the given value is not nil.
-func (vuo *VehicleUpdateOne) SetNillableCondition(s *string) *VehicleUpdateOne {
+// SetNillablePower sets the "power" field if the given value is not nil.
+func (vuo *VehicleUpdateOne) SetNillablePower(s *string) *VehicleUpdateOne {
 	if s != nil {
-		vuo.SetCondition(*s)
+		vuo.SetPower(*s)
 	}
 	return vuo
 }
 
-// ClearCondition clears the value of the "condition" field.
-func (vuo *VehicleUpdateOne) ClearCondition() *VehicleUpdateOne {
-	vuo.mutation.ClearCondition()
+// ClearPower clears the value of the "power" field.
+func (vuo *VehicleUpdateOne) ClearPower() *VehicleUpdateOne {
+	vuo.mutation.ClearPower()
 	return vuo
+}
+
+// SetLocationID sets the "location" edge to the Location entity by ID.
+func (vuo *VehicleUpdateOne) SetLocationID(id int) *VehicleUpdateOne {
+	vuo.mutation.SetLocationID(id)
+	return vuo
+}
+
+// SetLocation sets the "location" edge to the Location entity.
+func (vuo *VehicleUpdateOne) SetLocation(l *Location) *VehicleUpdateOne {
+	return vuo.SetLocationID(l.ID)
 }
 
 // Mutation returns the VehicleMutation object of the builder.
 func (vuo *VehicleUpdateOne) Mutation() *VehicleMutation {
 	return vuo.mutation
+}
+
+// ClearLocation clears the "location" edge to the Location entity.
+func (vuo *VehicleUpdateOne) ClearLocation() *VehicleUpdateOne {
+	vuo.mutation.ClearLocation()
+	return vuo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -683,10 +599,18 @@ func (vuo *VehicleUpdateOne) defaults() {
 
 // check runs all checks and user-defined validators on the builder.
 func (vuo *VehicleUpdateOne) check() error {
-	if v, ok := vuo.mutation.Condition(); ok {
-		if err := vehicle.ConditionValidator(v); err != nil {
-			return &ValidationError{Name: "condition", err: fmt.Errorf("ent: validator failed for field \"condition\": %w", err)}
+	if v, ok := vuo.mutation.Hours(); ok {
+		if err := vehicle.HoursValidator(v); err != nil {
+			return &ValidationError{Name: "hours", err: fmt.Errorf("ent: validator failed for field \"hours\": %w", err)}
 		}
+	}
+	if v, ok := vuo.mutation.Power(); ok {
+		if err := vehicle.PowerValidator(v); err != nil {
+			return &ValidationError{Name: "power", err: fmt.Errorf("ent: validator failed for field \"power\": %w", err)}
+		}
+	}
+	if _, ok := vuo.mutation.LocationID(); vuo.mutation.LocationCleared() && !ok {
+		return errors.New("ent: clearing a required unique edge \"location\"")
 	}
 	return nil
 }
@@ -754,57 +678,18 @@ func (vuo *VehicleUpdateOne) sqlSave(ctx context.Context) (_node *Vehicle, err e
 			Column: vehicle.FieldModel,
 		})
 	}
-	if value, ok := vuo.mutation.Miles(); ok {
+	if value, ok := vuo.mutation.Hours(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  value,
-			Column: vehicle.FieldMiles,
+			Column: vehicle.FieldHours,
 		})
 	}
-	if value, ok := vuo.mutation.AddedMiles(); ok {
+	if value, ok := vuo.mutation.AddedHours(); ok {
 		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  value,
-			Column: vehicle.FieldMiles,
-		})
-	}
-	if vuo.mutation.MilesCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: vehicle.FieldMiles,
-		})
-	}
-	if value, ok := vuo.mutation.Mpg(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: vehicle.FieldMpg,
-		})
-	}
-	if value, ok := vuo.mutation.AddedMpg(); ok {
-		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: vehicle.FieldMpg,
-		})
-	}
-	if vuo.mutation.MpgCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Column: vehicle.FieldMpg,
-		})
-	}
-	if value, ok := vuo.mutation.Owner(); ok {
-		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: vehicle.FieldOwner,
-		})
-	}
-	if vuo.mutation.OwnerCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Column: vehicle.FieldOwner,
+			Column: vehicle.FieldHours,
 		})
 	}
 	if value, ok := vuo.mutation.Year(); ok {
@@ -827,24 +712,53 @@ func (vuo *VehicleUpdateOne) sqlSave(ctx context.Context) (_node *Vehicle, err e
 			Column: vehicle.FieldActive,
 		})
 	}
-	if vuo.mutation.ActiveCleared() {
-		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeBool,
-			Column: vehicle.FieldActive,
-		})
-	}
-	if value, ok := vuo.mutation.Condition(); ok {
+	if value, ok := vuo.mutation.Power(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: vehicle.FieldCondition,
+			Column: vehicle.FieldPower,
 		})
 	}
-	if vuo.mutation.ConditionCleared() {
+	if vuo.mutation.PowerCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
-			Column: vehicle.FieldCondition,
+			Column: vehicle.FieldPower,
 		})
+	}
+	if vuo.mutation.LocationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   vehicle.LocationTable,
+			Columns: []string{vehicle.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := vuo.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   vehicle.LocationTable,
+			Columns: []string{vehicle.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Vehicle{config: vuo.config}
 	_spec.Assign = _node.assignValues

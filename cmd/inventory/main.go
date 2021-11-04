@@ -17,6 +17,7 @@ import (
 	transgrpc "github.com/go-kratos/kratos/v2/transport/grpc"
 	transhttp "github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/open-farms/inventory/ent/proto/entpb"
+	"github.com/open-farms/inventory/internal/logging"
 	"github.com/open-farms/inventory/internal/settings"
 	"go.uber.org/zap"
 )
@@ -68,21 +69,29 @@ func setup() (config.Config, error) {
 func grpcService(client *ent.Client, address string, timeout time.Duration) *transgrpc.Server {
 	equipmentSvc := entpb.NewEquipmentService(client)
 	vehicleSvc := entpb.NewVehicleService(client)
+	toolsSvc := entpb.NewToolService(client)
+	implementSvc := entpb.NewImplementService(client)
 
 	grpcServer := transgrpc.NewServer(transgrpc.Address(address), transgrpc.Timeout(timeout))
 	entpb.RegisterEquipmentServiceServer(grpcServer, equipmentSvc)
 	entpb.RegisterVehicleServiceServer(grpcServer, vehicleSvc)
+	entpb.RegisterToolServiceServer(grpcServer, toolsSvc)
+	entpb.RegisterImplementServiceServer(grpcServer, implementSvc)
 
 	return grpcServer
 }
 
 func httpService(c *ent.Client, address string, timeout time.Duration) *transhttp.Server {
 	r := chi.NewRouter()
-	r.Use(middleware.Logger)
+	r.Use(logging.Logger(logger))
 	r.Use(middleware.StripSlashes)
 	r.Route("/v1", func(r chi.Router) {
 		elk.NewEquipmentHandler(c, logger).MountRoutes(r)
 		elk.NewVehicleHandler(c, logger).MountRoutes(r)
+		elk.NewToolHandler(c, logger).MountRoutes(r)
+		elk.NewImplementHandler(c, logger).MountRoutes(r)
+		elk.NewLocationHandler(c, logger).MountRoutes(r)
+		elk.NewCategoryHandler(c, logger).MountRoutes(r)
 	})
 
 	httpServer := transhttp.NewServer(transhttp.Address(address))
@@ -120,6 +129,12 @@ func main() {
 		kratos.Name("inventory"),
 		kratos.Server(httpServer, grpcServer),
 		kratos.Version(Version),
+		kratos.Logger(
+			logging.NewZapLogger(
+				zap.NewProductionEncoderConfig(),
+				zap.NewProductionConfig().Level,
+			),
+		),
 	)
 
 	if err := app.Run(); err != nil {

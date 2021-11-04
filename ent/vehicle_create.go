@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/vehicle"
 )
 
@@ -60,44 +61,16 @@ func (vc *VehicleCreate) SetModel(s string) *VehicleCreate {
 	return vc
 }
 
-// SetMiles sets the "miles" field.
-func (vc *VehicleCreate) SetMiles(i int64) *VehicleCreate {
-	vc.mutation.SetMiles(i)
+// SetHours sets the "hours" field.
+func (vc *VehicleCreate) SetHours(i int64) *VehicleCreate {
+	vc.mutation.SetHours(i)
 	return vc
 }
 
-// SetNillableMiles sets the "miles" field if the given value is not nil.
-func (vc *VehicleCreate) SetNillableMiles(i *int64) *VehicleCreate {
+// SetNillableHours sets the "hours" field if the given value is not nil.
+func (vc *VehicleCreate) SetNillableHours(i *int64) *VehicleCreate {
 	if i != nil {
-		vc.SetMiles(*i)
-	}
-	return vc
-}
-
-// SetMpg sets the "mpg" field.
-func (vc *VehicleCreate) SetMpg(i int64) *VehicleCreate {
-	vc.mutation.SetMpg(i)
-	return vc
-}
-
-// SetNillableMpg sets the "mpg" field if the given value is not nil.
-func (vc *VehicleCreate) SetNillableMpg(i *int64) *VehicleCreate {
-	if i != nil {
-		vc.SetMpg(*i)
-	}
-	return vc
-}
-
-// SetOwner sets the "owner" field.
-func (vc *VehicleCreate) SetOwner(s string) *VehicleCreate {
-	vc.mutation.SetOwner(s)
-	return vc
-}
-
-// SetNillableOwner sets the "owner" field if the given value is not nil.
-func (vc *VehicleCreate) SetNillableOwner(s *string) *VehicleCreate {
-	if s != nil {
-		vc.SetOwner(*s)
+		vc.SetHours(*i)
 	}
 	return vc
 }
@@ -130,18 +103,29 @@ func (vc *VehicleCreate) SetNillableActive(b *bool) *VehicleCreate {
 	return vc
 }
 
-// SetCondition sets the "condition" field.
-func (vc *VehicleCreate) SetCondition(s string) *VehicleCreate {
-	vc.mutation.SetCondition(s)
+// SetPower sets the "power" field.
+func (vc *VehicleCreate) SetPower(s string) *VehicleCreate {
+	vc.mutation.SetPower(s)
 	return vc
 }
 
-// SetNillableCondition sets the "condition" field if the given value is not nil.
-func (vc *VehicleCreate) SetNillableCondition(s *string) *VehicleCreate {
+// SetNillablePower sets the "power" field if the given value is not nil.
+func (vc *VehicleCreate) SetNillablePower(s *string) *VehicleCreate {
 	if s != nil {
-		vc.SetCondition(*s)
+		vc.SetPower(*s)
 	}
 	return vc
+}
+
+// SetLocationID sets the "location" edge to the Location entity by ID.
+func (vc *VehicleCreate) SetLocationID(id int) *VehicleCreate {
+	vc.mutation.SetLocationID(id)
+	return vc
+}
+
+// SetLocation sets the "location" edge to the Location entity.
+func (vc *VehicleCreate) SetLocation(l *Location) *VehicleCreate {
+	return vc.SetLocationID(l.ID)
 }
 
 // Mutation returns the VehicleMutation object of the builder.
@@ -223,6 +207,18 @@ func (vc *VehicleCreate) defaults() {
 		v := vehicle.DefaultUpdateTime()
 		vc.mutation.SetUpdateTime(v)
 	}
+	if _, ok := vc.mutation.Hours(); !ok {
+		v := vehicle.DefaultHours
+		vc.mutation.SetHours(v)
+	}
+	if _, ok := vc.mutation.Active(); !ok {
+		v := vehicle.DefaultActive
+		vc.mutation.SetActive(v)
+	}
+	if _, ok := vc.mutation.Power(); !ok {
+		v := vehicle.DefaultPower
+		vc.mutation.SetPower(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -239,10 +235,24 @@ func (vc *VehicleCreate) check() error {
 	if _, ok := vc.mutation.Model(); !ok {
 		return &ValidationError{Name: "model", err: errors.New(`ent: missing required field "model"`)}
 	}
-	if v, ok := vc.mutation.Condition(); ok {
-		if err := vehicle.ConditionValidator(v); err != nil {
-			return &ValidationError{Name: "condition", err: fmt.Errorf(`ent: validator failed for field "condition": %w`, err)}
+	if _, ok := vc.mutation.Hours(); !ok {
+		return &ValidationError{Name: "hours", err: errors.New(`ent: missing required field "hours"`)}
+	}
+	if v, ok := vc.mutation.Hours(); ok {
+		if err := vehicle.HoursValidator(v); err != nil {
+			return &ValidationError{Name: "hours", err: fmt.Errorf(`ent: validator failed for field "hours": %w`, err)}
 		}
+	}
+	if _, ok := vc.mutation.Active(); !ok {
+		return &ValidationError{Name: "active", err: errors.New(`ent: missing required field "active"`)}
+	}
+	if v, ok := vc.mutation.Power(); ok {
+		if err := vehicle.PowerValidator(v); err != nil {
+			return &ValidationError{Name: "power", err: fmt.Errorf(`ent: validator failed for field "power": %w`, err)}
+		}
+	}
+	if _, ok := vc.mutation.LocationID(); !ok {
+		return &ValidationError{Name: "location", err: errors.New("ent: missing required edge \"location\"")}
 	}
 	return nil
 }
@@ -303,29 +313,13 @@ func (vc *VehicleCreate) createSpec() (*Vehicle, *sqlgraph.CreateSpec) {
 		})
 		_node.Model = value
 	}
-	if value, ok := vc.mutation.Miles(); ok {
+	if value, ok := vc.mutation.Hours(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeInt64,
 			Value:  value,
-			Column: vehicle.FieldMiles,
+			Column: vehicle.FieldHours,
 		})
-		_node.Miles = value
-	}
-	if value, ok := vc.mutation.Mpg(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeInt64,
-			Value:  value,
-			Column: vehicle.FieldMpg,
-		})
-		_node.Mpg = value
-	}
-	if value, ok := vc.mutation.Owner(); ok {
-		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
-			Value:  value,
-			Column: vehicle.FieldOwner,
-		})
-		_node.Owner = value
+		_node.Hours = value
 	}
 	if value, ok := vc.mutation.Year(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
@@ -343,13 +337,33 @@ func (vc *VehicleCreate) createSpec() (*Vehicle, *sqlgraph.CreateSpec) {
 		})
 		_node.Active = value
 	}
-	if value, ok := vc.mutation.Condition(); ok {
+	if value, ok := vc.mutation.Power(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
 			Value:  value,
-			Column: vehicle.FieldCondition,
+			Column: vehicle.FieldPower,
 		})
-		_node.Condition = value
+		_node.Power = value
+	}
+	if nodes := vc.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   vehicle.LocationTable,
+			Columns: []string{vehicle.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.location_vehicle = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

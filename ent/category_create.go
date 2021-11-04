@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -17,6 +18,34 @@ type CategoryCreate struct {
 	config
 	mutation *CategoryMutation
 	hooks    []Hook
+}
+
+// SetCreateTime sets the "create_time" field.
+func (cc *CategoryCreate) SetCreateTime(t time.Time) *CategoryCreate {
+	cc.mutation.SetCreateTime(t)
+	return cc
+}
+
+// SetNillableCreateTime sets the "create_time" field if the given value is not nil.
+func (cc *CategoryCreate) SetNillableCreateTime(t *time.Time) *CategoryCreate {
+	if t != nil {
+		cc.SetCreateTime(*t)
+	}
+	return cc
+}
+
+// SetUpdateTime sets the "update_time" field.
+func (cc *CategoryCreate) SetUpdateTime(t time.Time) *CategoryCreate {
+	cc.mutation.SetUpdateTime(t)
+	return cc
+}
+
+// SetNillableUpdateTime sets the "update_time" field if the given value is not nil.
+func (cc *CategoryCreate) SetNillableUpdateTime(t *time.Time) *CategoryCreate {
+	if t != nil {
+		cc.SetUpdateTime(*t)
+	}
+	return cc
 }
 
 // SetName sets the "name" field.
@@ -36,6 +65,7 @@ func (cc *CategoryCreate) Save(ctx context.Context) (*Category, error) {
 		err  error
 		node *Category
 	)
+	cc.defaults()
 	if len(cc.hooks) == 0 {
 		if err = cc.check(); err != nil {
 			return nil, err
@@ -93,8 +123,26 @@ func (cc *CategoryCreate) ExecX(ctx context.Context) {
 	}
 }
 
+// defaults sets the default values of the builder before save.
+func (cc *CategoryCreate) defaults() {
+	if _, ok := cc.mutation.CreateTime(); !ok {
+		v := category.DefaultCreateTime()
+		cc.mutation.SetCreateTime(v)
+	}
+	if _, ok := cc.mutation.UpdateTime(); !ok {
+		v := category.DefaultUpdateTime()
+		cc.mutation.SetUpdateTime(v)
+	}
+}
+
 // check runs all checks and user-defined validators on the builder.
 func (cc *CategoryCreate) check() error {
+	if _, ok := cc.mutation.CreateTime(); !ok {
+		return &ValidationError{Name: "create_time", err: errors.New(`ent: missing required field "create_time"`)}
+	}
+	if _, ok := cc.mutation.UpdateTime(); !ok {
+		return &ValidationError{Name: "update_time", err: errors.New(`ent: missing required field "update_time"`)}
+	}
 	if _, ok := cc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "name"`)}
 	}
@@ -125,6 +173,22 @@ func (cc *CategoryCreate) createSpec() (*Category, *sqlgraph.CreateSpec) {
 			},
 		}
 	)
+	if value, ok := cc.mutation.CreateTime(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: category.FieldCreateTime,
+		})
+		_node.CreateTime = value
+	}
+	if value, ok := cc.mutation.UpdateTime(); ok {
+		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
+			Type:   field.TypeTime,
+			Value:  value,
+			Column: category.FieldUpdateTime,
+		})
+		_node.UpdateTime = value
+	}
 	if value, ok := cc.mutation.Name(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
 			Type:   field.TypeString,
@@ -150,6 +214,7 @@ func (ccb *CategoryCreateBulk) Save(ctx context.Context) ([]*Category, error) {
 	for i := range ccb.builders {
 		func(i int, root context.Context) {
 			builder := ccb.builders[i]
+			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*CategoryMutation)
 				if !ok {

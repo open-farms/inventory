@@ -19,20 +19,25 @@ const (
 	FieldMake = "make"
 	// FieldModel holds the string denoting the model field in the database.
 	FieldModel = "model"
-	// FieldMiles holds the string denoting the miles field in the database.
-	FieldMiles = "miles"
-	// FieldMpg holds the string denoting the mpg field in the database.
-	FieldMpg = "mpg"
-	// FieldOwner holds the string denoting the owner field in the database.
-	FieldOwner = "owner"
+	// FieldHours holds the string denoting the hours field in the database.
+	FieldHours = "hours"
 	// FieldYear holds the string denoting the year field in the database.
 	FieldYear = "year"
 	// FieldActive holds the string denoting the active field in the database.
 	FieldActive = "active"
-	// FieldCondition holds the string denoting the condition field in the database.
-	FieldCondition = "condition"
+	// FieldPower holds the string denoting the power field in the database.
+	FieldPower = "power"
+	// EdgeLocation holds the string denoting the location edge name in mutations.
+	EdgeLocation = "location"
 	// Table holds the table name of the vehicle in the database.
 	Table = "vehicles"
+	// LocationTable is the table that holds the location relation/edge.
+	LocationTable = "vehicles"
+	// LocationInverseTable is the table name for the Location entity.
+	// It exists in this package in order to avoid circular dependency with the "location" package.
+	LocationInverseTable = "locations"
+	// LocationColumn is the table column denoting the location relation/edge.
+	LocationColumn = "location_vehicle"
 )
 
 // Columns holds all SQL columns for vehicle fields.
@@ -42,18 +47,27 @@ var Columns = []string{
 	FieldUpdateTime,
 	FieldMake,
 	FieldModel,
-	FieldMiles,
-	FieldMpg,
-	FieldOwner,
+	FieldHours,
 	FieldYear,
 	FieldActive,
-	FieldCondition,
+	FieldPower,
+}
+
+// ForeignKeys holds the SQL foreign-keys that are owned by the "vehicles"
+// table and are not defined as standalone fields in the schema.
+var ForeignKeys = []string{
+	"location_vehicle",
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
+			return true
+		}
+	}
+	for i := range ForeignKeys {
+		if column == ForeignKeys[i] {
 			return true
 		}
 	}
@@ -67,6 +81,14 @@ var (
 	DefaultUpdateTime func() time.Time
 	// UpdateDefaultUpdateTime holds the default value on update for the "update_time" field.
 	UpdateDefaultUpdateTime func() time.Time
-	// ConditionValidator is a validator for the "condition" field. It is called by the builders before save.
-	ConditionValidator func(string) error
+	// DefaultHours holds the default value on creation for the "hours" field.
+	DefaultHours int64
+	// HoursValidator is a validator for the "hours" field. It is called by the builders before save.
+	HoursValidator func(int64) error
+	// DefaultActive holds the default value on creation for the "active" field.
+	DefaultActive bool
+	// DefaultPower holds the default value on creation for the "power" field.
+	DefaultPower string
+	// PowerValidator is a validator for the "power" field. It is called by the builders before save.
+	PowerValidator func(string) error
 )

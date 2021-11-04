@@ -7,6 +7,12 @@ init:
 	go install entgo.io/ent/cmd/ent@latest
 	go install entgo.io/contrib/entproto/cmd/protoc-gen-entgrpc@latest
 
+.PHONY: install
+# Install server and cli
+install:
+	go install ./cmd/inventory
+	go install ./cmd/inventoryctl
+
 .PHONY: build
 # build binary
 build:

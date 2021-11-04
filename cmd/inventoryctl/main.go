@@ -1,21 +1,25 @@
 package main
 
 import (
+	"context"
+
 	"github.com/alecthomas/kong"
 	"github.com/open-farms/inventory/cmd/inventoryctl/commands"
 )
 
 type CLI struct {
 	commands.Globals
+
 	Vehicles  commands.VehiclesCmd  `cmd:"" help:"Interact with vehicles in your inventory"`
 	Equipment commands.EquipmentCmd `cmd:"" help:"Interact with equipment in your inventory"`
-	Migrate   commands.MigrateCmd   `cmd:"" help:"Perform database migrations."`
+	Migrate   commands.MigrateCmd   `cmd:"" help:"Perform database migrations"`
 }
 
 func main() {
-
 	cli := CLI{
-		Globals: commands.Globals{},
+		Globals: commands.Globals{
+			Context: context.Background(),
+		},
 	}
 
 	ctx := kong.Parse(

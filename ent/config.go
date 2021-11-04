@@ -26,6 +26,9 @@ type config struct {
 type hooks struct {
 	Category  []ent.Hook
 	Equipment []ent.Hook
+	Implement []ent.Hook
+	Location  []ent.Hook
+	Tool      []ent.Hook
 	Vehicle   []ent.Hook
 }
 

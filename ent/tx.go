@@ -16,6 +16,12 @@ type Tx struct {
 	Category *CategoryClient
 	// Equipment is the client for interacting with the Equipment builders.
 	Equipment *EquipmentClient
+	// Implement is the client for interacting with the Implement builders.
+	Implement *ImplementClient
+	// Location is the client for interacting with the Location builders.
+	Location *LocationClient
+	// Tool is the client for interacting with the Tool builders.
+	Tool *ToolClient
 	// Vehicle is the client for interacting with the Vehicle builders.
 	Vehicle *VehicleClient
 
@@ -155,6 +161,9 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Category = NewCategoryClient(tx.config)
 	tx.Equipment = NewEquipmentClient(tx.config)
+	tx.Implement = NewImplementClient(tx.config)
+	tx.Location = NewLocationClient(tx.config)
+	tx.Tool = NewToolClient(tx.config)
 	tx.Vehicle = NewVehicleClient(tx.config)
 }
 

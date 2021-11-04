@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/vehicle"
 )
 
@@ -24,18 +25,41 @@ type Vehicle struct {
 	Make string `json:"make,omitempty"`
 	// Model holds the value of the "model" field.
 	Model string `json:"model,omitempty"`
-	// Miles holds the value of the "miles" field.
-	Miles int64 `json:"miles,omitempty"`
-	// Mpg holds the value of the "mpg" field.
-	Mpg int64 `json:"mpg,omitempty"`
-	// Owner holds the value of the "owner" field.
-	Owner string `json:"owner,omitempty"`
+	// Hours holds the value of the "hours" field.
+	Hours int64 `json:"hours,omitempty"`
 	// Year holds the value of the "year" field.
 	Year string `json:"year,omitempty"`
 	// Active holds the value of the "active" field.
 	Active bool `json:"active,omitempty"`
-	// Condition holds the value of the "condition" field.
-	Condition string `json:"condition,omitempty"`
+	// Power holds the value of the "power" field.
+	Power string `json:"power,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the VehicleQuery when eager-loading is set.
+	Edges            VehicleEdges `json:"edges"`
+	location_vehicle *int
+}
+
+// VehicleEdges holds the relations/edges for other nodes in the graph.
+type VehicleEdges struct {
+	// Location holds the value of the location edge.
+	Location *Location `json:"location,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// LocationOrErr returns the Location value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e VehicleEdges) LocationOrErr() (*Location, error) {
+	if e.loadedTypes[0] {
+		if e.Location == nil {
+			// The edge location was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: location.Label}
+		}
+		return e.Location, nil
+	}
+	return nil, &NotLoadedError{edge: "location"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -45,12 +69,14 @@ func (*Vehicle) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case vehicle.FieldActive:
 			values[i] = new(sql.NullBool)
-		case vehicle.FieldID, vehicle.FieldMiles, vehicle.FieldMpg:
+		case vehicle.FieldID, vehicle.FieldHours:
 			values[i] = new(sql.NullInt64)
-		case vehicle.FieldMake, vehicle.FieldModel, vehicle.FieldOwner, vehicle.FieldYear, vehicle.FieldCondition:
+		case vehicle.FieldMake, vehicle.FieldModel, vehicle.FieldYear, vehicle.FieldPower:
 			values[i] = new(sql.NullString)
 		case vehicle.FieldCreateTime, vehicle.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
+		case vehicle.ForeignKeys[0]: // location_vehicle
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Vehicle", columns[i])
 		}
@@ -96,23 +122,11 @@ func (v *Vehicle) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				v.Model = value.String
 			}
-		case vehicle.FieldMiles:
+		case vehicle.FieldHours:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field miles", values[i])
+				return fmt.Errorf("unexpected type %T for field hours", values[i])
 			} else if value.Valid {
-				v.Miles = value.Int64
-			}
-		case vehicle.FieldMpg:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field mpg", values[i])
-			} else if value.Valid {
-				v.Mpg = value.Int64
-			}
-		case vehicle.FieldOwner:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field owner", values[i])
-			} else if value.Valid {
-				v.Owner = value.String
+				v.Hours = value.Int64
 			}
 		case vehicle.FieldYear:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -126,15 +140,27 @@ func (v *Vehicle) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				v.Active = value.Bool
 			}
-		case vehicle.FieldCondition:
+		case vehicle.FieldPower:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field condition", values[i])
+				return fmt.Errorf("unexpected type %T for field power", values[i])
 			} else if value.Valid {
-				v.Condition = value.String
+				v.Power = value.String
+			}
+		case vehicle.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field location_vehicle", value)
+			} else if value.Valid {
+				v.location_vehicle = new(int)
+				*v.location_vehicle = int(value.Int64)
 			}
 		}
 	}
 	return nil
+}
+
+// QueryLocation queries the "location" edge of the Vehicle entity.
+func (v *Vehicle) QueryLocation() *LocationQuery {
+	return (&VehicleClient{config: v.config}).QueryLocation(v)
 }
 
 // Update returns a builder for updating this Vehicle.
@@ -168,18 +194,14 @@ func (v *Vehicle) String() string {
 	builder.WriteString(v.Make)
 	builder.WriteString(", model=")
 	builder.WriteString(v.Model)
-	builder.WriteString(", miles=")
-	builder.WriteString(fmt.Sprintf("%v", v.Miles))
-	builder.WriteString(", mpg=")
-	builder.WriteString(fmt.Sprintf("%v", v.Mpg))
-	builder.WriteString(", owner=")
-	builder.WriteString(v.Owner)
+	builder.WriteString(", hours=")
+	builder.WriteString(fmt.Sprintf("%v", v.Hours))
 	builder.WriteString(", year=")
 	builder.WriteString(v.Year)
 	builder.WriteString(", active=")
 	builder.WriteString(fmt.Sprintf("%v", v.Active))
-	builder.WriteString(", condition=")
-	builder.WriteString(v.Condition)
+	builder.WriteString(", power=")
+	builder.WriteString(v.Power)
 	builder.WriteByte(')')
 	return builder.String()
 }

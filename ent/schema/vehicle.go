@@ -1,11 +1,20 @@
 package schema
 
 import (
+	"regexp"
+
 	"entgo.io/contrib/entproto"
 	"entgo.io/ent"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
+
+// TODO
+// vehicles
+// w/ 1:many implement
+// w/ 1:many part
+// w/ 1:1 location
 
 // Vehicle holds the schema definition for the Vehicle entity.
 type Vehicle struct {
@@ -25,31 +34,33 @@ func (Vehicle) Fields() []ent.Field {
 			Annotations(entproto.Field(4)),
 		field.String("model").
 			Annotations(entproto.Field(5)),
-		field.Int64("miles").
-			Optional().
+		field.Int64("hours").
+			Default(0).
+			Min(0).
 			Annotations(entproto.Field(6)),
-		field.Int64("mpg").
-			Optional().
-			Annotations(entproto.Field(7)),
-		field.String("owner").
-			Optional().
-			Annotations(entproto.Field(8)),
 		field.String("year").
 			Optional().
-			Annotations(entproto.Field(9)),
+			Annotations(entproto.Field(7)),
 		field.Bool("active").
+			Default(true).
+			Annotations(entproto.Field(8)),
+		field.String("power").
 			Optional().
-			Annotations(entproto.Field(10)),
-		field.String("condition").
-			Optional().
-			Match(conditionPattern).
-			Annotations(entproto.Field(11)),
+			Default("GAS").
+			Match(regexp.MustCompile("(GAS|DIESEL|ELECTRIC)")).
+			Annotations(entproto.Field(9)),
 	}
 }
 
 // Edges of the Vehicle.
 func (Vehicle) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("location", Location.Type).
+			Ref("vehicle").
+			Unique().
+			Required().
+			Annotations(entproto.Field(10)),
+	}
 }
 
 func (Vehicle) Annotations() []schema.Annotation {

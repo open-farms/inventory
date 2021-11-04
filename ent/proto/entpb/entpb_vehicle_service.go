@@ -5,7 +5,9 @@ import (
 	context "context"
 	runtime "entgo.io/contrib/entproto/runtime"
 	sqlgraph "entgo.io/ent/dialect/sql/sqlgraph"
+	empty "github.com/golang/protobuf/ptypes/empty"
 	ent "github.com/open-farms/inventory/ent"
+	location "github.com/open-farms/inventory/ent/location"
 	vehicle "github.com/open-farms/inventory/ent/vehicle"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -30,28 +32,30 @@ func NewVehicleService(client *ent.Client) *VehicleService {
 // toProtoVehicle transforms the ent type to the pb type
 func toProtoVehicle(e *ent.Vehicle) (*Vehicle, error) {
 	v := &Vehicle{}
-	active := wrapperspb.Bool(e.Active)
+	active := e.Active
 	v.Active = active
-	condition := wrapperspb.String(e.Condition)
-	v.Condition = condition
 	createtime := timestamppb.New(e.CreateTime)
 	v.CreateTime = createtime
+	hours := e.Hours
+	v.Hours = hours
 	id := int32(e.ID)
 	v.Id = id
 	make := e.Make
 	v.Make = make
-	miles := wrapperspb.Int64(e.Miles)
-	v.Miles = miles
 	model := e.Model
 	v.Model = model
-	mpg := wrapperspb.Int64(e.Mpg)
-	v.Mpg = mpg
-	owner := wrapperspb.String(e.Owner)
-	v.Owner = owner
+	power := wrapperspb.String(e.Power)
+	v.Power = power
 	updatetime := timestamppb.New(e.UpdateTime)
 	v.UpdateTime = updatetime
 	year := wrapperspb.String(e.Year)
 	v.Year = year
+	if edg := e.Edges.Location; edg != nil {
+		id := int32(edg.ID)
+		v.Location = &Location{
+			Id: id,
+		}
+	}
 	return v, nil
 }
 
@@ -59,31 +63,19 @@ func toProtoVehicle(e *ent.Vehicle) (*Vehicle, error) {
 func (svc *VehicleService) Create(ctx context.Context, req *CreateVehicleRequest) (*Vehicle, error) {
 	vehicle := req.GetVehicle()
 	m := svc.client.Vehicle.Create()
-	if vehicle.GetActive() != nil {
-		vehicleActive := vehicle.GetActive().GetValue()
-		m.SetActive(vehicleActive)
-	}
-	if vehicle.GetCondition() != nil {
-		vehicleCondition := vehicle.GetCondition().GetValue()
-		m.SetCondition(vehicleCondition)
-	}
+	vehicleActive := vehicle.GetActive()
+	m.SetActive(vehicleActive)
 	vehicleCreateTime := runtime.ExtractTime(vehicle.GetCreateTime())
 	m.SetCreateTime(vehicleCreateTime)
+	vehicleHours := int64(vehicle.GetHours())
+	m.SetHours(vehicleHours)
 	vehicleMake := vehicle.GetMake()
 	m.SetMake(vehicleMake)
-	if vehicle.GetMiles() != nil {
-		vehicleMiles := int64(vehicle.GetMiles().GetValue())
-		m.SetMiles(vehicleMiles)
-	}
 	vehicleModel := vehicle.GetModel()
 	m.SetModel(vehicleModel)
-	if vehicle.GetMpg() != nil {
-		vehicleMpg := int64(vehicle.GetMpg().GetValue())
-		m.SetMpg(vehicleMpg)
-	}
-	if vehicle.GetOwner() != nil {
-		vehicleOwner := vehicle.GetOwner().GetValue()
-		m.SetOwner(vehicleOwner)
+	if vehicle.GetPower() != nil {
+		vehiclePower := vehicle.GetPower().GetValue()
+		m.SetPower(vehiclePower)
 	}
 	vehicleUpdateTime := runtime.ExtractTime(vehicle.GetUpdateTime())
 	m.SetUpdateTime(vehicleUpdateTime)
@@ -91,6 +83,8 @@ func (svc *VehicleService) Create(ctx context.Context, req *CreateVehicleRequest
 		vehicleYear := vehicle.GetYear().GetValue()
 		m.SetYear(vehicleYear)
 	}
+	vehicleLocation := int(vehicle.GetLocation().GetId())
+	m.SetLocationID(vehicleLocation)
 	res, err := m.Save(ctx)
 	switch {
 	case err == nil:
@@ -122,6 +116,9 @@ func (svc *VehicleService) Get(ctx context.Context, req *GetVehicleRequest) (*Ve
 	case GetVehicleRequest_WITH_EDGE_IDS:
 		get, err = svc.client.Vehicle.Query().
 			Where(vehicle.ID(id)).
+			WithLocation(func(query *ent.LocationQuery) {
+				query.Select(location.FieldID)
+			}).
 			Only(ctx)
 	default:
 		return nil, status.Error(codes.InvalidArgument, "invalid argument: unknown view")
@@ -143,31 +140,19 @@ func (svc *VehicleService) Update(ctx context.Context, req *UpdateVehicleRequest
 	vehicle := req.GetVehicle()
 	vehicleID := int(vehicle.GetId())
 	m := svc.client.Vehicle.UpdateOneID(vehicleID)
-	if vehicle.GetActive() != nil {
-		vehicleActive := vehicle.GetActive().GetValue()
-		m.SetActive(vehicleActive)
-	}
-	if vehicle.GetCondition() != nil {
-		vehicleCondition := vehicle.GetCondition().GetValue()
-		m.SetCondition(vehicleCondition)
-	}
+	vehicleActive := vehicle.GetActive()
+	m.SetActive(vehicleActive)
 	vehicleCreateTime := runtime.ExtractTime(vehicle.GetCreateTime())
 	m.SetCreateTime(vehicleCreateTime)
+	vehicleHours := int64(vehicle.GetHours())
+	m.SetHours(vehicleHours)
 	vehicleMake := vehicle.GetMake()
 	m.SetMake(vehicleMake)
-	if vehicle.GetMiles() != nil {
-		vehicleMiles := int64(vehicle.GetMiles().GetValue())
-		m.SetMiles(vehicleMiles)
-	}
 	vehicleModel := vehicle.GetModel()
 	m.SetModel(vehicleModel)
-	if vehicle.GetMpg() != nil {
-		vehicleMpg := int64(vehicle.GetMpg().GetValue())
-		m.SetMpg(vehicleMpg)
-	}
-	if vehicle.GetOwner() != nil {
-		vehicleOwner := vehicle.GetOwner().GetValue()
-		m.SetOwner(vehicleOwner)
+	if vehicle.GetPower() != nil {
+		vehiclePower := vehicle.GetPower().GetValue()
+		m.SetPower(vehiclePower)
 	}
 	vehicleUpdateTime := runtime.ExtractTime(vehicle.GetUpdateTime())
 	m.SetUpdateTime(vehicleUpdateTime)
@@ -175,6 +160,8 @@ func (svc *VehicleService) Update(ctx context.Context, req *UpdateVehicleRequest
 		vehicleYear := vehicle.GetYear().GetValue()
 		m.SetYear(vehicleYear)
 	}
+	vehicleLocation := int(vehicle.GetLocation().GetId())
+	m.SetLocationID(vehicleLocation)
 	res, err := m.Save(ctx)
 	switch {
 	case err == nil:
@@ -194,7 +181,7 @@ func (svc *VehicleService) Update(ctx context.Context, req *UpdateVehicleRequest
 }
 
 // Delete implements VehicleServiceServer.Delete
-func (svc *VehicleService) Delete(ctx context.Context, req *DeleteVehicleRequest) (*emptypb.Empty, error) {
+func (svc *VehicleService) Delete(ctx context.Context, req *DeleteVehicleRequest) (*empty.Empty, error) {
 	var err error
 	id := int(req.GetId())
 	err = svc.client.Vehicle.DeleteOneID(id).Exec(ctx)

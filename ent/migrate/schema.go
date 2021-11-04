@@ -11,6 +11,8 @@ var (
 	// CategoriesColumns holds the columns for the "categories" table.
 	CategoriesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString, Unique: true},
 	}
 	// CategoriesTable holds the schema information for the "categories" table.
@@ -33,6 +35,47 @@ var (
 		Columns:    EquipmentColumns,
 		PrimaryKey: []*schema.Column{EquipmentColumns[0]},
 	}
+	// ImplementsColumns holds the columns for the "implements" table.
+	ImplementsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
+		{Name: "name", Type: field.TypeString},
+	}
+	// ImplementsTable holds the schema information for the "implements" table.
+	ImplementsTable = &schema.Table{
+		Name:       "implements",
+		Columns:    ImplementsColumns,
+		PrimaryKey: []*schema.Column{ImplementsColumns[0]},
+	}
+	// LocationsColumns holds the columns for the "locations" table.
+	LocationsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
+		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "zone", Type: field.TypeInt32, Unique: true},
+	}
+	// LocationsTable holds the schema information for the "locations" table.
+	LocationsTable = &schema.Table{
+		Name:       "locations",
+		Columns:    LocationsColumns,
+		PrimaryKey: []*schema.Column{LocationsColumns[0]},
+	}
+	// ToolsColumns holds the columns for the "tools" table.
+	ToolsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "create_time", Type: field.TypeTime},
+		{Name: "update_time", Type: field.TypeTime},
+		{Name: "name", Type: field.TypeString, Unique: true},
+		{Name: "powered", Type: field.TypeBool, Default: false},
+	}
+	// ToolsTable holds the schema information for the "tools" table.
+	ToolsTable = &schema.Table{
+		Name:       "tools",
+		Columns:    ToolsColumns,
+		PrimaryKey: []*schema.Column{ToolsColumns[0]},
+	}
 	// VehiclesColumns holds the columns for the "vehicles" table.
 	VehiclesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -40,26 +83,37 @@ var (
 		{Name: "update_time", Type: field.TypeTime},
 		{Name: "make", Type: field.TypeString},
 		{Name: "model", Type: field.TypeString},
-		{Name: "miles", Type: field.TypeInt64, Nullable: true},
-		{Name: "mpg", Type: field.TypeInt64, Nullable: true},
-		{Name: "owner", Type: field.TypeString, Nullable: true},
+		{Name: "hours", Type: field.TypeInt64, Default: 0},
 		{Name: "year", Type: field.TypeString, Nullable: true},
-		{Name: "active", Type: field.TypeBool, Nullable: true},
-		{Name: "condition", Type: field.TypeString, Nullable: true},
+		{Name: "active", Type: field.TypeBool, Default: true},
+		{Name: "power", Type: field.TypeString, Nullable: true, Default: "GAS"},
+		{Name: "location_vehicle", Type: field.TypeInt, Nullable: true},
 	}
 	// VehiclesTable holds the schema information for the "vehicles" table.
 	VehiclesTable = &schema.Table{
 		Name:       "vehicles",
 		Columns:    VehiclesColumns,
 		PrimaryKey: []*schema.Column{VehiclesColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "vehicles_locations_vehicle",
+				Columns:    []*schema.Column{VehiclesColumns[9]},
+				RefColumns: []*schema.Column{LocationsColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		CategoriesTable,
 		EquipmentTable,
+		ImplementsTable,
+		LocationsTable,
+		ToolsTable,
 		VehiclesTable,
 	}
 )
 
 func init() {
+	VehiclesTable.ForeignKeys[0].RefTable = LocationsTable
 }

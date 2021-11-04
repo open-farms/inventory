@@ -11,10 +11,14 @@ import (
 
 	"github.com/open-farms/inventory/ent/category"
 	"github.com/open-farms/inventory/ent/equipment"
+	"github.com/open-farms/inventory/ent/implement"
+	"github.com/open-farms/inventory/ent/location"
+	"github.com/open-farms/inventory/ent/tool"
 	"github.com/open-farms/inventory/ent/vehicle"
 
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 // Client is the client that holds all ent builders.
@@ -26,6 +30,12 @@ type Client struct {
 	Category *CategoryClient
 	// Equipment is the client for interacting with the Equipment builders.
 	Equipment *EquipmentClient
+	// Implement is the client for interacting with the Implement builders.
+	Implement *ImplementClient
+	// Location is the client for interacting with the Location builders.
+	Location *LocationClient
+	// Tool is the client for interacting with the Tool builders.
+	Tool *ToolClient
 	// Vehicle is the client for interacting with the Vehicle builders.
 	Vehicle *VehicleClient
 }
@@ -43,6 +53,9 @@ func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Category = NewCategoryClient(c.config)
 	c.Equipment = NewEquipmentClient(c.config)
+	c.Implement = NewImplementClient(c.config)
+	c.Location = NewLocationClient(c.config)
+	c.Tool = NewToolClient(c.config)
 	c.Vehicle = NewVehicleClient(c.config)
 }
 
@@ -79,6 +92,9 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 		config:    cfg,
 		Category:  NewCategoryClient(cfg),
 		Equipment: NewEquipmentClient(cfg),
+		Implement: NewImplementClient(cfg),
+		Location:  NewLocationClient(cfg),
+		Tool:      NewToolClient(cfg),
 		Vehicle:   NewVehicleClient(cfg),
 	}, nil
 }
@@ -100,6 +116,9 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 		config:    cfg,
 		Category:  NewCategoryClient(cfg),
 		Equipment: NewEquipmentClient(cfg),
+		Implement: NewImplementClient(cfg),
+		Location:  NewLocationClient(cfg),
+		Tool:      NewToolClient(cfg),
 		Vehicle:   NewVehicleClient(cfg),
 	}, nil
 }
@@ -132,6 +151,9 @@ func (c *Client) Close() error {
 func (c *Client) Use(hooks ...Hook) {
 	c.Category.Use(hooks...)
 	c.Equipment.Use(hooks...)
+	c.Implement.Use(hooks...)
+	c.Location.Use(hooks...)
+	c.Tool.Use(hooks...)
 	c.Vehicle.Use(hooks...)
 }
 
@@ -315,6 +337,292 @@ func (c *EquipmentClient) Hooks() []Hook {
 	return c.hooks.Equipment
 }
 
+// ImplementClient is a client for the Implement schema.
+type ImplementClient struct {
+	config
+}
+
+// NewImplementClient returns a client for the Implement from the given config.
+func NewImplementClient(c config) *ImplementClient {
+	return &ImplementClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `implement.Hooks(f(g(h())))`.
+func (c *ImplementClient) Use(hooks ...Hook) {
+	c.hooks.Implement = append(c.hooks.Implement, hooks...)
+}
+
+// Create returns a create builder for Implement.
+func (c *ImplementClient) Create() *ImplementCreate {
+	mutation := newImplementMutation(c.config, OpCreate)
+	return &ImplementCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Implement entities.
+func (c *ImplementClient) CreateBulk(builders ...*ImplementCreate) *ImplementCreateBulk {
+	return &ImplementCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Implement.
+func (c *ImplementClient) Update() *ImplementUpdate {
+	mutation := newImplementMutation(c.config, OpUpdate)
+	return &ImplementUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ImplementClient) UpdateOne(i *Implement) *ImplementUpdateOne {
+	mutation := newImplementMutation(c.config, OpUpdateOne, withImplement(i))
+	return &ImplementUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ImplementClient) UpdateOneID(id int) *ImplementUpdateOne {
+	mutation := newImplementMutation(c.config, OpUpdateOne, withImplementID(id))
+	return &ImplementUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Implement.
+func (c *ImplementClient) Delete() *ImplementDelete {
+	mutation := newImplementMutation(c.config, OpDelete)
+	return &ImplementDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *ImplementClient) DeleteOne(i *Implement) *ImplementDeleteOne {
+	return c.DeleteOneID(i.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *ImplementClient) DeleteOneID(id int) *ImplementDeleteOne {
+	builder := c.Delete().Where(implement.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ImplementDeleteOne{builder}
+}
+
+// Query returns a query builder for Implement.
+func (c *ImplementClient) Query() *ImplementQuery {
+	return &ImplementQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Implement entity by its id.
+func (c *ImplementClient) Get(ctx context.Context, id int) (*Implement, error) {
+	return c.Query().Where(implement.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ImplementClient) GetX(ctx context.Context, id int) *Implement {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ImplementClient) Hooks() []Hook {
+	return c.hooks.Implement
+}
+
+// LocationClient is a client for the Location schema.
+type LocationClient struct {
+	config
+}
+
+// NewLocationClient returns a client for the Location from the given config.
+func NewLocationClient(c config) *LocationClient {
+	return &LocationClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `location.Hooks(f(g(h())))`.
+func (c *LocationClient) Use(hooks ...Hook) {
+	c.hooks.Location = append(c.hooks.Location, hooks...)
+}
+
+// Create returns a create builder for Location.
+func (c *LocationClient) Create() *LocationCreate {
+	mutation := newLocationMutation(c.config, OpCreate)
+	return &LocationCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Location entities.
+func (c *LocationClient) CreateBulk(builders ...*LocationCreate) *LocationCreateBulk {
+	return &LocationCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Location.
+func (c *LocationClient) Update() *LocationUpdate {
+	mutation := newLocationMutation(c.config, OpUpdate)
+	return &LocationUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *LocationClient) UpdateOne(l *Location) *LocationUpdateOne {
+	mutation := newLocationMutation(c.config, OpUpdateOne, withLocation(l))
+	return &LocationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *LocationClient) UpdateOneID(id int) *LocationUpdateOne {
+	mutation := newLocationMutation(c.config, OpUpdateOne, withLocationID(id))
+	return &LocationUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Location.
+func (c *LocationClient) Delete() *LocationDelete {
+	mutation := newLocationMutation(c.config, OpDelete)
+	return &LocationDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *LocationClient) DeleteOne(l *Location) *LocationDeleteOne {
+	return c.DeleteOneID(l.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *LocationClient) DeleteOneID(id int) *LocationDeleteOne {
+	builder := c.Delete().Where(location.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &LocationDeleteOne{builder}
+}
+
+// Query returns a query builder for Location.
+func (c *LocationClient) Query() *LocationQuery {
+	return &LocationQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Location entity by its id.
+func (c *LocationClient) Get(ctx context.Context, id int) (*Location, error) {
+	return c.Query().Where(location.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *LocationClient) GetX(ctx context.Context, id int) *Location {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryVehicle queries the vehicle edge of a Location.
+func (c *LocationClient) QueryVehicle(l *Location) *VehicleQuery {
+	query := &VehicleQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := l.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(location.Table, location.FieldID, id),
+			sqlgraph.To(vehicle.Table, vehicle.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, location.VehicleTable, location.VehicleColumn),
+		)
+		fromV = sqlgraph.Neighbors(l.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *LocationClient) Hooks() []Hook {
+	return c.hooks.Location
+}
+
+// ToolClient is a client for the Tool schema.
+type ToolClient struct {
+	config
+}
+
+// NewToolClient returns a client for the Tool from the given config.
+func NewToolClient(c config) *ToolClient {
+	return &ToolClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `tool.Hooks(f(g(h())))`.
+func (c *ToolClient) Use(hooks ...Hook) {
+	c.hooks.Tool = append(c.hooks.Tool, hooks...)
+}
+
+// Create returns a create builder for Tool.
+func (c *ToolClient) Create() *ToolCreate {
+	mutation := newToolMutation(c.config, OpCreate)
+	return &ToolCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of Tool entities.
+func (c *ToolClient) CreateBulk(builders ...*ToolCreate) *ToolCreateBulk {
+	return &ToolCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for Tool.
+func (c *ToolClient) Update() *ToolUpdate {
+	mutation := newToolMutation(c.config, OpUpdate)
+	return &ToolUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *ToolClient) UpdateOne(t *Tool) *ToolUpdateOne {
+	mutation := newToolMutation(c.config, OpUpdateOne, withTool(t))
+	return &ToolUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *ToolClient) UpdateOneID(id int) *ToolUpdateOne {
+	mutation := newToolMutation(c.config, OpUpdateOne, withToolID(id))
+	return &ToolUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for Tool.
+func (c *ToolClient) Delete() *ToolDelete {
+	mutation := newToolMutation(c.config, OpDelete)
+	return &ToolDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a delete builder for the given entity.
+func (c *ToolClient) DeleteOne(t *Tool) *ToolDeleteOne {
+	return c.DeleteOneID(t.ID)
+}
+
+// DeleteOneID returns a delete builder for the given id.
+func (c *ToolClient) DeleteOneID(id int) *ToolDeleteOne {
+	builder := c.Delete().Where(tool.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &ToolDeleteOne{builder}
+}
+
+// Query returns a query builder for Tool.
+func (c *ToolClient) Query() *ToolQuery {
+	return &ToolQuery{
+		config: c.config,
+	}
+}
+
+// Get returns a Tool entity by its id.
+func (c *ToolClient) Get(ctx context.Context, id int) (*Tool, error) {
+	return c.Query().Where(tool.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *ToolClient) GetX(ctx context.Context, id int) *Tool {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *ToolClient) Hooks() []Hook {
+	return c.hooks.Tool
+}
+
 // VehicleClient is a client for the Vehicle schema.
 type VehicleClient struct {
 	config
@@ -398,6 +706,22 @@ func (c *VehicleClient) GetX(ctx context.Context, id int) *Vehicle {
 		panic(err)
 	}
 	return obj
+}
+
+// QueryLocation queries the location edge of a Vehicle.
+func (c *VehicleClient) QueryLocation(v *Vehicle) *LocationQuery {
+	query := &LocationQuery{config: c.config}
+	query.path = func(ctx context.Context) (fromV *sql.Selector, _ error) {
+		id := v.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(vehicle.Table, vehicle.FieldID, id),
+			sqlgraph.To(location.Table, location.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, vehicle.LocationTable, vehicle.LocationColumn),
+		)
+		fromV = sqlgraph.Neighbors(v.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
 }
 
 // Hooks returns the client hooks.
