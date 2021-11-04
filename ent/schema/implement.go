@@ -4,6 +4,7 @@ import (
 	"entgo.io/contrib/entproto"
 	"entgo.io/ent"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -27,7 +28,17 @@ func (Implement) Fields() []ent.Field {
 
 // Edges of the Implement.
 func (Implement) Edges() []ent.Edge {
-	return nil
+	return []ent.Edge{
+		edge.From("location", Location.Type).
+			Ref("implement").
+			Unique().
+			Required().
+			Annotations(entproto.Field(5)),
+		edge.From("category", Category.Type).
+			Ref("implement").
+			Unique().
+			Annotations(entproto.Field(7)),
+	}
 }
 
 func (Implement) Annotations() []schema.Annotation {

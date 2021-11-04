@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"errors"
 	"fmt"
 	"math"
@@ -12,7 +13,12 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/open-farms/inventory/ent/category"
+	"github.com/open-farms/inventory/ent/equipment"
+	"github.com/open-farms/inventory/ent/implement"
+	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/predicate"
+	"github.com/open-farms/inventory/ent/tool"
+	"github.com/open-farms/inventory/ent/vehicle"
 )
 
 // CategoryQuery is the builder for querying Category entities.
@@ -24,6 +30,12 @@ type CategoryQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.Category
+	// eager-loading edges.
+	withVehicle   *VehicleQuery
+	withTool      *ToolQuery
+	withImplement *ImplementQuery
+	withEquipment *EquipmentQuery
+	withLocation  *LocationQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -58,6 +70,116 @@ func (cq *CategoryQuery) Unique(unique bool) *CategoryQuery {
 func (cq *CategoryQuery) Order(o ...OrderFunc) *CategoryQuery {
 	cq.order = append(cq.order, o...)
 	return cq
+}
+
+// QueryVehicle chains the current query on the "vehicle" edge.
+func (cq *CategoryQuery) QueryVehicle() *VehicleQuery {
+	query := &VehicleQuery{config: cq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := cq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := cq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(category.Table, category.FieldID, selector),
+			sqlgraph.To(vehicle.Table, vehicle.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, category.VehicleTable, category.VehicleColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryTool chains the current query on the "tool" edge.
+func (cq *CategoryQuery) QueryTool() *ToolQuery {
+	query := &ToolQuery{config: cq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := cq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := cq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(category.Table, category.FieldID, selector),
+			sqlgraph.To(tool.Table, tool.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, category.ToolTable, category.ToolColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryImplement chains the current query on the "implement" edge.
+func (cq *CategoryQuery) QueryImplement() *ImplementQuery {
+	query := &ImplementQuery{config: cq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := cq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := cq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(category.Table, category.FieldID, selector),
+			sqlgraph.To(implement.Table, implement.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, category.ImplementTable, category.ImplementColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryEquipment chains the current query on the "equipment" edge.
+func (cq *CategoryQuery) QueryEquipment() *EquipmentQuery {
+	query := &EquipmentQuery{config: cq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := cq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := cq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(category.Table, category.FieldID, selector),
+			sqlgraph.To(equipment.Table, equipment.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, category.EquipmentTable, category.EquipmentColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryLocation chains the current query on the "location" edge.
+func (cq *CategoryQuery) QueryLocation() *LocationQuery {
+	query := &LocationQuery{config: cq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := cq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := cq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(category.Table, category.FieldID, selector),
+			sqlgraph.To(location.Table, location.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, category.LocationTable, category.LocationColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(cq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Category entity from the query.
@@ -236,15 +358,75 @@ func (cq *CategoryQuery) Clone() *CategoryQuery {
 		return nil
 	}
 	return &CategoryQuery{
-		config:     cq.config,
-		limit:      cq.limit,
-		offset:     cq.offset,
-		order:      append([]OrderFunc{}, cq.order...),
-		predicates: append([]predicate.Category{}, cq.predicates...),
+		config:        cq.config,
+		limit:         cq.limit,
+		offset:        cq.offset,
+		order:         append([]OrderFunc{}, cq.order...),
+		predicates:    append([]predicate.Category{}, cq.predicates...),
+		withVehicle:   cq.withVehicle.Clone(),
+		withTool:      cq.withTool.Clone(),
+		withImplement: cq.withImplement.Clone(),
+		withEquipment: cq.withEquipment.Clone(),
+		withLocation:  cq.withLocation.Clone(),
 		// clone intermediate query.
 		sql:  cq.sql.Clone(),
 		path: cq.path,
 	}
+}
+
+// WithVehicle tells the query-builder to eager-load the nodes that are connected to
+// the "vehicle" edge. The optional arguments are used to configure the query builder of the edge.
+func (cq *CategoryQuery) WithVehicle(opts ...func(*VehicleQuery)) *CategoryQuery {
+	query := &VehicleQuery{config: cq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	cq.withVehicle = query
+	return cq
+}
+
+// WithTool tells the query-builder to eager-load the nodes that are connected to
+// the "tool" edge. The optional arguments are used to configure the query builder of the edge.
+func (cq *CategoryQuery) WithTool(opts ...func(*ToolQuery)) *CategoryQuery {
+	query := &ToolQuery{config: cq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	cq.withTool = query
+	return cq
+}
+
+// WithImplement tells the query-builder to eager-load the nodes that are connected to
+// the "implement" edge. The optional arguments are used to configure the query builder of the edge.
+func (cq *CategoryQuery) WithImplement(opts ...func(*ImplementQuery)) *CategoryQuery {
+	query := &ImplementQuery{config: cq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	cq.withImplement = query
+	return cq
+}
+
+// WithEquipment tells the query-builder to eager-load the nodes that are connected to
+// the "equipment" edge. The optional arguments are used to configure the query builder of the edge.
+func (cq *CategoryQuery) WithEquipment(opts ...func(*EquipmentQuery)) *CategoryQuery {
+	query := &EquipmentQuery{config: cq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	cq.withEquipment = query
+	return cq
+}
+
+// WithLocation tells the query-builder to eager-load the nodes that are connected to
+// the "location" edge. The optional arguments are used to configure the query builder of the edge.
+func (cq *CategoryQuery) WithLocation(opts ...func(*LocationQuery)) *CategoryQuery {
+	query := &LocationQuery{config: cq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	cq.withLocation = query
+	return cq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -310,8 +492,15 @@ func (cq *CategoryQuery) prepareQuery(ctx context.Context) error {
 
 func (cq *CategoryQuery) sqlAll(ctx context.Context) ([]*Category, error) {
 	var (
-		nodes = []*Category{}
-		_spec = cq.querySpec()
+		nodes       = []*Category{}
+		_spec       = cq.querySpec()
+		loadedTypes = [5]bool{
+			cq.withVehicle != nil,
+			cq.withTool != nil,
+			cq.withImplement != nil,
+			cq.withEquipment != nil,
+			cq.withLocation != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &Category{config: cq.config}
@@ -323,6 +512,7 @@ func (cq *CategoryQuery) sqlAll(ctx context.Context) ([]*Category, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if err := sqlgraph.QueryNodes(ctx, cq.driver, _spec); err != nil {
@@ -331,6 +521,152 @@ func (cq *CategoryQuery) sqlAll(ctx context.Context) ([]*Category, error) {
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+
+	if query := cq.withVehicle; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Category)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Vehicle = []*Vehicle{}
+		}
+		query.withFKs = true
+		query.Where(predicate.Vehicle(func(s *sql.Selector) {
+			s.Where(sql.InValues(category.VehicleColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.category_vehicle
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "category_vehicle" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "category_vehicle" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Vehicle = append(node.Edges.Vehicle, n)
+		}
+	}
+
+	if query := cq.withTool; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Category)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Tool = []*Tool{}
+		}
+		query.withFKs = true
+		query.Where(predicate.Tool(func(s *sql.Selector) {
+			s.Where(sql.InValues(category.ToolColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.category_tool
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "category_tool" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "category_tool" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Tool = append(node.Edges.Tool, n)
+		}
+	}
+
+	if query := cq.withImplement; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Category)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Implement = []*Implement{}
+		}
+		query.withFKs = true
+		query.Where(predicate.Implement(func(s *sql.Selector) {
+			s.Where(sql.InValues(category.ImplementColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.category_implement
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "category_implement" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "category_implement" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Implement = append(node.Edges.Implement, n)
+		}
+	}
+
+	if query := cq.withEquipment; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Category)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Equipment = []*Equipment{}
+		}
+		query.withFKs = true
+		query.Where(predicate.Equipment(func(s *sql.Selector) {
+			s.Where(sql.InValues(category.EquipmentColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.category_equipment
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "category_equipment" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "category_equipment" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Equipment = append(node.Edges.Equipment, n)
+		}
+	}
+
+	if query := cq.withLocation; query != nil {
+		fks := make([]driver.Value, 0, len(nodes))
+		nodeids := make(map[int]*Category)
+		for i := range nodes {
+			fks = append(fks, nodes[i].ID)
+			nodeids[nodes[i].ID] = nodes[i]
+			nodes[i].Edges.Location = []*Location{}
+		}
+		query.withFKs = true
+		query.Where(predicate.Location(func(s *sql.Selector) {
+			s.Where(sql.InValues(category.LocationColumn, fks...))
+		}))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			fk := n.category_location
+			if fk == nil {
+				return nil, fmt.Errorf(`foreign-key "category_location" is nil for node %v`, n.ID)
+			}
+			node, ok := nodeids[*fk]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "category_location" returned %v for node %v`, *fk, n.ID)
+			}
+			node.Edges.Location = append(node.Edges.Location, n)
+		}
+	}
+
 	return nodes, nil
 }
 

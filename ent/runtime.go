@@ -122,6 +122,10 @@ func init() {
 	vehicle.DefaultHours = vehicleDescHours.Default.(int64)
 	// vehicle.HoursValidator is a validator for the "hours" field. It is called by the builders before save.
 	vehicle.HoursValidator = vehicleDescHours.Validators[0].(func(int64) error)
+	// vehicleDescYear is the schema descriptor for year field.
+	vehicleDescYear := vehicleFields[3].Descriptor()
+	// vehicle.YearValidator is a validator for the "year" field. It is called by the builders before save.
+	vehicle.YearValidator = vehicleDescYear.Validators[0].(func(int64) error)
 	// vehicleDescActive is the schema descriptor for active field.
 	vehicleDescActive := vehicleFields[4].Descriptor()
 	// vehicle.DefaultActive holds the default value on creation for the active field.

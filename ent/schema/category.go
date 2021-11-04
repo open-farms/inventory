@@ -4,6 +4,7 @@ import (
 	"entgo.io/contrib/entproto"
 	"entgo.io/ent"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -28,10 +29,16 @@ func (Category) Fields() []ent.Field {
 // Edges of the Category.
 func (Category) Edges() []ent.Edge {
 	return []ent.Edge{
-		// edge.To("vehicles", Vehicle.Type).Annotations(entproto.Field(5)),
-		// edge.To("tools", Tool.Type).Annotations(entproto.Field(6)),
-		// edge.To("implements", Implement.Type).Annotations(entproto.Field(7)),
-		// edge.To("equipment", Equipment.Type).Annotations(entproto.Field(8)),
+		edge.To("vehicle", Vehicle.Type).
+			Annotations(entproto.Field(5)),
+		edge.To("tool", Tool.Type).
+			Annotations(entproto.Field(6)),
+		edge.To("implement", Implement.Type).
+			Annotations(entproto.Field(7)),
+		edge.To("equipment", Equipment.Type).
+			Annotations(entproto.Field(8)),
+		edge.To("location", Location.Type).
+			Annotations(entproto.Field(9)),
 	}
 }
 

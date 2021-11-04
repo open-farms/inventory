@@ -38,8 +38,9 @@ func (Vehicle) Fields() []ent.Field {
 			Default(0).
 			Min(0).
 			Annotations(entproto.Field(6)),
-		field.String("year").
+		field.Int64("year").
 			Optional().
+			Min(1900).
 			Annotations(entproto.Field(7)),
 		field.Bool("active").
 			Default(true).

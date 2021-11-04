@@ -4,12 +4,15 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/open-farms/inventory/ent/category"
+	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/predicate"
 	"github.com/open-farms/inventory/ent/tool"
 )
@@ -67,9 +70,51 @@ func (tu *ToolUpdate) SetNillablePowered(b *bool) *ToolUpdate {
 	return tu
 }
 
+// SetLocationID sets the "location" edge to the Location entity by ID.
+func (tu *ToolUpdate) SetLocationID(id int) *ToolUpdate {
+	tu.mutation.SetLocationID(id)
+	return tu
+}
+
+// SetLocation sets the "location" edge to the Location entity.
+func (tu *ToolUpdate) SetLocation(l *Location) *ToolUpdate {
+	return tu.SetLocationID(l.ID)
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (tu *ToolUpdate) SetCategoryID(id int) *ToolUpdate {
+	tu.mutation.SetCategoryID(id)
+	return tu
+}
+
+// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
+func (tu *ToolUpdate) SetNillableCategoryID(id *int) *ToolUpdate {
+	if id != nil {
+		tu = tu.SetCategoryID(*id)
+	}
+	return tu
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (tu *ToolUpdate) SetCategory(c *Category) *ToolUpdate {
+	return tu.SetCategoryID(c.ID)
+}
+
 // Mutation returns the ToolMutation object of the builder.
 func (tu *ToolUpdate) Mutation() *ToolMutation {
 	return tu.mutation
+}
+
+// ClearLocation clears the "location" edge to the Location entity.
+func (tu *ToolUpdate) ClearLocation() *ToolUpdate {
+	tu.mutation.ClearLocation()
+	return tu
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (tu *ToolUpdate) ClearCategory() *ToolUpdate {
+	tu.mutation.ClearCategory()
+	return tu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -80,12 +125,18 @@ func (tu *ToolUpdate) Save(ctx context.Context) (int, error) {
 	)
 	tu.defaults()
 	if len(tu.hooks) == 0 {
+		if err = tu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = tu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*ToolMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = tu.check(); err != nil {
+				return 0, err
 			}
 			tu.mutation = mutation
 			affected, err = tu.sqlSave(ctx)
@@ -135,6 +186,14 @@ func (tu *ToolUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (tu *ToolUpdate) check() error {
+	if _, ok := tu.mutation.LocationID(); tu.mutation.LocationCleared() && !ok {
+		return errors.New("ent: clearing a required unique edge \"location\"")
+	}
+	return nil
+}
+
 func (tu *ToolUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -180,6 +239,76 @@ func (tu *ToolUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Value:  value,
 			Column: tool.FieldPowered,
 		})
+	}
+	if tu.mutation.LocationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   tool.LocationTable,
+			Columns: []string{tool.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   tool.LocationTable,
+			Columns: []string{tool.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if tu.mutation.CategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   tool.CategoryTable,
+			Columns: []string{tool.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   tool.CategoryTable,
+			Columns: []string{tool.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, tu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -240,9 +369,51 @@ func (tuo *ToolUpdateOne) SetNillablePowered(b *bool) *ToolUpdateOne {
 	return tuo
 }
 
+// SetLocationID sets the "location" edge to the Location entity by ID.
+func (tuo *ToolUpdateOne) SetLocationID(id int) *ToolUpdateOne {
+	tuo.mutation.SetLocationID(id)
+	return tuo
+}
+
+// SetLocation sets the "location" edge to the Location entity.
+func (tuo *ToolUpdateOne) SetLocation(l *Location) *ToolUpdateOne {
+	return tuo.SetLocationID(l.ID)
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (tuo *ToolUpdateOne) SetCategoryID(id int) *ToolUpdateOne {
+	tuo.mutation.SetCategoryID(id)
+	return tuo
+}
+
+// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
+func (tuo *ToolUpdateOne) SetNillableCategoryID(id *int) *ToolUpdateOne {
+	if id != nil {
+		tuo = tuo.SetCategoryID(*id)
+	}
+	return tuo
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (tuo *ToolUpdateOne) SetCategory(c *Category) *ToolUpdateOne {
+	return tuo.SetCategoryID(c.ID)
+}
+
 // Mutation returns the ToolMutation object of the builder.
 func (tuo *ToolUpdateOne) Mutation() *ToolMutation {
 	return tuo.mutation
+}
+
+// ClearLocation clears the "location" edge to the Location entity.
+func (tuo *ToolUpdateOne) ClearLocation() *ToolUpdateOne {
+	tuo.mutation.ClearLocation()
+	return tuo
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (tuo *ToolUpdateOne) ClearCategory() *ToolUpdateOne {
+	tuo.mutation.ClearCategory()
+	return tuo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -260,12 +431,18 @@ func (tuo *ToolUpdateOne) Save(ctx context.Context) (*Tool, error) {
 	)
 	tuo.defaults()
 	if len(tuo.hooks) == 0 {
+		if err = tuo.check(); err != nil {
+			return nil, err
+		}
 		node, err = tuo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*ToolMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = tuo.check(); err != nil {
+				return nil, err
 			}
 			tuo.mutation = mutation
 			node, err = tuo.sqlSave(ctx)
@@ -313,6 +490,14 @@ func (tuo *ToolUpdateOne) defaults() {
 		v := tool.UpdateDefaultUpdateTime()
 		tuo.mutation.SetUpdateTime(v)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (tuo *ToolUpdateOne) check() error {
+	if _, ok := tuo.mutation.LocationID(); tuo.mutation.LocationCleared() && !ok {
+		return errors.New("ent: clearing a required unique edge \"location\"")
+	}
+	return nil
 }
 
 func (tuo *ToolUpdateOne) sqlSave(ctx context.Context) (_node *Tool, err error) {
@@ -377,6 +562,76 @@ func (tuo *ToolUpdateOne) sqlSave(ctx context.Context) (_node *Tool, err error) 
 			Value:  value,
 			Column: tool.FieldPowered,
 		})
+	}
+	if tuo.mutation.LocationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   tool.LocationTable,
+			Columns: []string{tool.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   tool.LocationTable,
+			Columns: []string{tool.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if tuo.mutation.CategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   tool.CategoryTable,
+			Columns: []string{tool.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   tool.CategoryTable,
+			Columns: []string{tool.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Tool{config: tuo.config}
 	_spec.Assign = _node.assignValues

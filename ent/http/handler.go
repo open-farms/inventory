@@ -59,8 +59,28 @@ func (h *CategoryHandler) MountListRoute(r chi.Router) *CategoryHandler {
 	r.Get("/categories", h.List)
 	return h
 }
+func (h *CategoryHandler) MountVehicleRoute(r chi.Router) *CategoryHandler {
+	r.Get("/categories/{id}/vehicle", h.Vehicle)
+	return h
+}
+func (h *CategoryHandler) MountToolRoute(r chi.Router) *CategoryHandler {
+	r.Get("/categories/{id}/tool", h.Tool)
+	return h
+}
+func (h *CategoryHandler) MountImplementRoute(r chi.Router) *CategoryHandler {
+	r.Get("/categories/{id}/implement", h.Implement)
+	return h
+}
+func (h *CategoryHandler) MountEquipmentRoute(r chi.Router) *CategoryHandler {
+	r.Get("/categories/{id}/equipment", h.Equipment)
+	return h
+}
+func (h *CategoryHandler) MountLocationRoute(r chi.Router) *CategoryHandler {
+	r.Get("/categories/{id}/location", h.Location)
+	return h
+}
 func (h *CategoryHandler) MountRoutes(r chi.Router) {
-	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r)
+	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r).MountVehicleRoute(r).MountToolRoute(r).MountImplementRoute(r).MountEquipmentRoute(r).MountLocationRoute(r)
 }
 
 // EquipmentHandler handles http crud operations on ent.Equipment.
@@ -95,8 +115,16 @@ func (h *EquipmentHandler) MountListRoute(r chi.Router) *EquipmentHandler {
 	r.Get("/equipment", h.List)
 	return h
 }
+func (h *EquipmentHandler) MountLocationRoute(r chi.Router) *EquipmentHandler {
+	r.Get("/equipment/{id}/location", h.Location)
+	return h
+}
+func (h *EquipmentHandler) MountCategoryRoute(r chi.Router) *EquipmentHandler {
+	r.Get("/equipment/{id}/category", h.Category)
+	return h
+}
 func (h *EquipmentHandler) MountRoutes(r chi.Router) {
-	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r)
+	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r).MountLocationRoute(r).MountCategoryRoute(r)
 }
 
 // ImplementHandler handles http crud operations on ent.Implement.
@@ -131,8 +159,16 @@ func (h *ImplementHandler) MountListRoute(r chi.Router) *ImplementHandler {
 	r.Get("/implements", h.List)
 	return h
 }
+func (h *ImplementHandler) MountLocationRoute(r chi.Router) *ImplementHandler {
+	r.Get("/implements/{id}/location", h.Location)
+	return h
+}
+func (h *ImplementHandler) MountCategoryRoute(r chi.Router) *ImplementHandler {
+	r.Get("/implements/{id}/category", h.Category)
+	return h
+}
 func (h *ImplementHandler) MountRoutes(r chi.Router) {
-	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r)
+	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r).MountLocationRoute(r).MountCategoryRoute(r)
 }
 
 // LocationHandler handles http crud operations on ent.Location.
@@ -171,8 +207,24 @@ func (h *LocationHandler) MountVehicleRoute(r chi.Router) *LocationHandler {
 	r.Get("/locations/{id}/vehicle", h.Vehicle)
 	return h
 }
+func (h *LocationHandler) MountToolRoute(r chi.Router) *LocationHandler {
+	r.Get("/locations/{id}/tool", h.Tool)
+	return h
+}
+func (h *LocationHandler) MountImplementRoute(r chi.Router) *LocationHandler {
+	r.Get("/locations/{id}/implement", h.Implement)
+	return h
+}
+func (h *LocationHandler) MountEquipmentRoute(r chi.Router) *LocationHandler {
+	r.Get("/locations/{id}/equipment", h.Equipment)
+	return h
+}
+func (h *LocationHandler) MountCategoryRoute(r chi.Router) *LocationHandler {
+	r.Get("/locations/{id}/category", h.Category)
+	return h
+}
 func (h *LocationHandler) MountRoutes(r chi.Router) {
-	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r).MountVehicleRoute(r)
+	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r).MountVehicleRoute(r).MountToolRoute(r).MountImplementRoute(r).MountEquipmentRoute(r).MountCategoryRoute(r)
 }
 
 // ToolHandler handles http crud operations on ent.Tool.
@@ -207,8 +259,16 @@ func (h *ToolHandler) MountListRoute(r chi.Router) *ToolHandler {
 	r.Get("/tools", h.List)
 	return h
 }
+func (h *ToolHandler) MountLocationRoute(r chi.Router) *ToolHandler {
+	r.Get("/tools/{id}/location", h.Location)
+	return h
+}
+func (h *ToolHandler) MountCategoryRoute(r chi.Router) *ToolHandler {
+	r.Get("/tools/{id}/category", h.Category)
+	return h
+}
 func (h *ToolHandler) MountRoutes(r chi.Router) {
-	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r)
+	h.MountCreateRoute(r).MountReadRoute(r).MountUpdateRoute(r).MountDeleteRoute(r).MountListRoute(r).MountLocationRoute(r).MountCategoryRoute(r)
 }
 
 // VehicleHandler handles http crud operations on ent.Vehicle.

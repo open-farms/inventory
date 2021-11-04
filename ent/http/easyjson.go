@@ -97,9 +97,9 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp(in *jlexer.Lexer, 
 				out.Year = nil
 			} else {
 				if out.Year == nil {
-					out.Year = new(string)
+					out.Year = new(int64)
 				}
-				*out.Year = string(in.String())
+				*out.Year = int64(in.Int64())
 			}
 		case "active":
 			if in.IsNull() {
@@ -200,7 +200,7 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp(out *jwriter.Write
 		if in.Year == nil {
 			out.RawString("null")
 		} else {
-			out.String(string(*in.Year))
+			out.Int64(int64(*in.Year))
 		}
 	}
 	{
@@ -321,9 +321,9 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp1(in *jlexer.Lexer,
 				out.Year = nil
 			} else {
 				if out.Year == nil {
-					out.Year = new(string)
+					out.Year = new(int64)
 				}
-				*out.Year = string(in.String())
+				*out.Year = int64(in.Int64())
 			}
 		case "active":
 			if in.IsNull() {
@@ -424,7 +424,7 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp1(out *jwriter.Writ
 		if in.Year == nil {
 			out.RawString("null")
 		} else {
-			out.String(string(*in.Year))
+			out.Int64(int64(*in.Year))
 		}
 	}
 	{
@@ -566,7 +566,7 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp3(in *jlexer.Lexer,
 		case "hours":
 			out.Hours = int64(in.Int64())
 		case "year":
-			out.Year = string(in.String())
+			out.Year = int64(in.Int64())
 		case "active":
 			out.Active = bool(in.Bool())
 		case "power":
@@ -645,7 +645,7 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp3(out *jwriter.Writ
 		}
 		out.Int64(int64(in.Hours))
 	}
-	if in.Year != "" {
+	if in.Year != 0 {
 		const prefix string = ",\"year\":"
 		if first {
 			first = false
@@ -653,7 +653,7 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp3(out *jwriter.Writ
 		} else {
 			out.RawString(prefix)
 		}
-		out.String(string(in.Year))
+		out.Int64(int64(in.Year))
 	}
 	if in.Active {
 		const prefix string = ",\"active\":"
@@ -750,6 +750,26 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp4(in *jlexer.Lexer,
 				}
 				*out.Powered = bool(in.Bool())
 			}
+		case "location":
+			if in.IsNull() {
+				in.Skip()
+				out.Location = nil
+			} else {
+				if out.Location == nil {
+					out.Location = new(int)
+				}
+				*out.Location = int(in.Int())
+			}
+		case "category":
+			if in.IsNull() {
+				in.Skip()
+				out.Category = nil
+			} else {
+				if out.Category == nil {
+					out.Category = new(int)
+				}
+				*out.Category = int(in.Int())
+			}
 		default:
 			in.AddError(&jlexer.LexerError{
 				Offset: in.GetPos(),
@@ -802,6 +822,24 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp4(out *jwriter.Writ
 			out.RawString("null")
 		} else {
 			out.Bool(bool(*in.Powered))
+		}
+	}
+	{
+		const prefix string = ",\"location\":"
+		out.RawString(prefix)
+		if in.Location == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Location))
+		}
+	}
+	{
+		const prefix string = ",\"category\":"
+		out.RawString(prefix)
+		if in.Category == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Category))
 		}
 	}
 	out.RawByte('}')
@@ -879,6 +917,26 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp5(in *jlexer.Lexer,
 				}
 				*out.Powered = bool(in.Bool())
 			}
+		case "location":
+			if in.IsNull() {
+				in.Skip()
+				out.Location = nil
+			} else {
+				if out.Location == nil {
+					out.Location = new(int)
+				}
+				*out.Location = int(in.Int())
+			}
+		case "category":
+			if in.IsNull() {
+				in.Skip()
+				out.Category = nil
+			} else {
+				if out.Category == nil {
+					out.Category = new(int)
+				}
+				*out.Category = int(in.Int())
+			}
 		default:
 			in.AddError(&jlexer.LexerError{
 				Offset: in.GetPos(),
@@ -931,6 +989,24 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp5(out *jwriter.Writ
 			out.RawString("null")
 		} else {
 			out.Bool(bool(*in.Powered))
+		}
+	}
+	{
+		const prefix string = ",\"location\":"
+		out.RawString(prefix)
+		if in.Location == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Location))
+		}
+	}
+	{
+		const prefix string = ",\"category\":"
+		out.RawString(prefix)
+		if in.Category == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Category))
 		}
 	}
 	out.RawByte('}')
@@ -1204,6 +1280,85 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp8(in *jlexer.Lexer,
 				}
 				in.Delim(']')
 			}
+		case "tool":
+			if in.IsNull() {
+				in.Skip()
+				out.Tool = nil
+			} else {
+				in.Delim('[')
+				if out.Tool == nil {
+					if !in.IsDelim(']') {
+						out.Tool = make([]int, 0, 8)
+					} else {
+						out.Tool = []int{}
+					}
+				} else {
+					out.Tool = (out.Tool)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v8 int
+					v8 = int(in.Int())
+					out.Tool = append(out.Tool, v8)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "implement":
+			if in.IsNull() {
+				in.Skip()
+				out.Implement = nil
+			} else {
+				in.Delim('[')
+				if out.Implement == nil {
+					if !in.IsDelim(']') {
+						out.Implement = make([]int, 0, 8)
+					} else {
+						out.Implement = []int{}
+					}
+				} else {
+					out.Implement = (out.Implement)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v9 int
+					v9 = int(in.Int())
+					out.Implement = append(out.Implement, v9)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "equipment":
+			if in.IsNull() {
+				in.Skip()
+				out.Equipment = nil
+			} else {
+				in.Delim('[')
+				if out.Equipment == nil {
+					if !in.IsDelim(']') {
+						out.Equipment = make([]int, 0, 8)
+					} else {
+						out.Equipment = []int{}
+					}
+				} else {
+					out.Equipment = (out.Equipment)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v10 int
+					v10 = int(in.Int())
+					out.Equipment = append(out.Equipment, v10)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "category":
+			if in.IsNull() {
+				in.Skip()
+				out.Category = nil
+			} else {
+				if out.Category == nil {
+					out.Category = new(int)
+				}
+				*out.Category = int(in.Int())
+			}
 		default:
 			in.AddError(&jlexer.LexerError{
 				Offset: in.GetPos(),
@@ -1265,13 +1420,70 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp8(out *jwriter.Writ
 			out.RawString("null")
 		} else {
 			out.RawByte('[')
-			for v8, v9 := range in.Vehicle {
-				if v8 > 0 {
+			for v11, v12 := range in.Vehicle {
+				if v11 > 0 {
 					out.RawByte(',')
 				}
-				out.Int(int(v9))
+				out.Int(int(v12))
 			}
 			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"tool\":"
+		out.RawString(prefix)
+		if in.Tool == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v13, v14 := range in.Tool {
+				if v13 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v14))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"implement\":"
+		out.RawString(prefix)
+		if in.Implement == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v15, v16 := range in.Implement {
+				if v15 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v16))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"equipment\":"
+		out.RawString(prefix)
+		if in.Equipment == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v17, v18 := range in.Equipment {
+				if v17 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v18))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"category\":"
+		out.RawString(prefix)
+		if in.Category == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Category))
 		}
 	}
 	out.RawByte('}')
@@ -1365,12 +1577,91 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp9(in *jlexer.Lexer,
 					out.Vehicle = (out.Vehicle)[:0]
 				}
 				for !in.IsDelim(']') {
-					var v10 int
-					v10 = int(in.Int())
-					out.Vehicle = append(out.Vehicle, v10)
+					var v19 int
+					v19 = int(in.Int())
+					out.Vehicle = append(out.Vehicle, v19)
 					in.WantComma()
 				}
 				in.Delim(']')
+			}
+		case "tool":
+			if in.IsNull() {
+				in.Skip()
+				out.Tool = nil
+			} else {
+				in.Delim('[')
+				if out.Tool == nil {
+					if !in.IsDelim(']') {
+						out.Tool = make([]int, 0, 8)
+					} else {
+						out.Tool = []int{}
+					}
+				} else {
+					out.Tool = (out.Tool)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v20 int
+					v20 = int(in.Int())
+					out.Tool = append(out.Tool, v20)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "implement":
+			if in.IsNull() {
+				in.Skip()
+				out.Implement = nil
+			} else {
+				in.Delim('[')
+				if out.Implement == nil {
+					if !in.IsDelim(']') {
+						out.Implement = make([]int, 0, 8)
+					} else {
+						out.Implement = []int{}
+					}
+				} else {
+					out.Implement = (out.Implement)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v21 int
+					v21 = int(in.Int())
+					out.Implement = append(out.Implement, v21)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "equipment":
+			if in.IsNull() {
+				in.Skip()
+				out.Equipment = nil
+			} else {
+				in.Delim('[')
+				if out.Equipment == nil {
+					if !in.IsDelim(']') {
+						out.Equipment = make([]int, 0, 8)
+					} else {
+						out.Equipment = []int{}
+					}
+				} else {
+					out.Equipment = (out.Equipment)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v22 int
+					v22 = int(in.Int())
+					out.Equipment = append(out.Equipment, v22)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "category":
+			if in.IsNull() {
+				in.Skip()
+				out.Category = nil
+			} else {
+				if out.Category == nil {
+					out.Category = new(int)
+				}
+				*out.Category = int(in.Int())
 			}
 		default:
 			in.AddError(&jlexer.LexerError{
@@ -1433,13 +1724,70 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp9(out *jwriter.Writ
 			out.RawString("null")
 		} else {
 			out.RawByte('[')
-			for v11, v12 := range in.Vehicle {
-				if v11 > 0 {
+			for v23, v24 := range in.Vehicle {
+				if v23 > 0 {
 					out.RawByte(',')
 				}
-				out.Int(int(v12))
+				out.Int(int(v24))
 			}
 			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"tool\":"
+		out.RawString(prefix)
+		if in.Tool == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v25, v26 := range in.Tool {
+				if v25 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v26))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"implement\":"
+		out.RawString(prefix)
+		if in.Implement == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v27, v28 := range in.Implement {
+				if v27 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v28))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"equipment\":"
+		out.RawString(prefix)
+		if in.Equipment == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v29, v30 := range in.Equipment {
+				if v29 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v30))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"category\":"
+		out.RawString(prefix)
+		if in.Category == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Category))
 		}
 	}
 	out.RawByte('}')
@@ -1471,17 +1819,17 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp10(in *jlexer.Lexer
 			*out = (*out)[:0]
 		}
 		for !in.IsDelim(']') {
-			var v13 *Location948740745View
+			var v31 *Location948740745View
 			if in.IsNull() {
 				in.Skip()
-				v13 = nil
+				v31 = nil
 			} else {
-				if v13 == nil {
-					v13 = new(Location948740745View)
+				if v31 == nil {
+					v31 = new(Location948740745View)
 				}
-				(*v13).UnmarshalEasyJSON(in)
+				(*v31).UnmarshalEasyJSON(in)
 			}
-			*out = append(*out, v13)
+			*out = append(*out, v31)
 			in.WantComma()
 		}
 		in.Delim(']')
@@ -1495,14 +1843,14 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp10(out *jwriter.Wri
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v14, v15 := range in {
-			if v14 > 0 {
+		for v32, v33 := range in {
+			if v32 > 0 {
 				out.RawByte(',')
 			}
-			if v15 == nil {
+			if v33 == nil {
 				out.RawString("null")
 			} else {
-				(*v15).MarshalEasyJSON(out)
+				(*v33).MarshalEasyJSON(out)
 			}
 		}
 		out.RawByte(']')
@@ -1680,6 +2028,26 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp12(in *jlexer.Lexer
 				}
 				*out.Name = string(in.String())
 			}
+		case "location":
+			if in.IsNull() {
+				in.Skip()
+				out.Location = nil
+			} else {
+				if out.Location == nil {
+					out.Location = new(int)
+				}
+				*out.Location = int(in.Int())
+			}
+		case "category":
+			if in.IsNull() {
+				in.Skip()
+				out.Category = nil
+			} else {
+				if out.Category == nil {
+					out.Category = new(int)
+				}
+				*out.Category = int(in.Int())
+			}
 		default:
 			in.AddError(&jlexer.LexerError{
 				Offset: in.GetPos(),
@@ -1723,6 +2091,24 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp12(out *jwriter.Wri
 			out.RawString("null")
 		} else {
 			out.String(string(*in.Name))
+		}
+	}
+	{
+		const prefix string = ",\"location\":"
+		out.RawString(prefix)
+		if in.Location == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Location))
+		}
+	}
+	{
+		const prefix string = ",\"category\":"
+		out.RawString(prefix)
+		if in.Category == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Category))
 		}
 	}
 	out.RawByte('}')
@@ -1790,6 +2176,26 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp13(in *jlexer.Lexer
 				}
 				*out.Name = string(in.String())
 			}
+		case "location":
+			if in.IsNull() {
+				in.Skip()
+				out.Location = nil
+			} else {
+				if out.Location == nil {
+					out.Location = new(int)
+				}
+				*out.Location = int(in.Int())
+			}
+		case "category":
+			if in.IsNull() {
+				in.Skip()
+				out.Category = nil
+			} else {
+				if out.Category == nil {
+					out.Category = new(int)
+				}
+				*out.Category = int(in.Int())
+			}
 		default:
 			in.AddError(&jlexer.LexerError{
 				Offset: in.GetPos(),
@@ -1835,6 +2241,24 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp13(out *jwriter.Wri
 			out.String(string(*in.Name))
 		}
 	}
+	{
+		const prefix string = ",\"location\":"
+		out.RawString(prefix)
+		if in.Location == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Location))
+		}
+	}
+	{
+		const prefix string = ",\"category\":"
+		out.RawString(prefix)
+		if in.Category == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Category))
+		}
+	}
 	out.RawByte('}')
 }
 
@@ -1864,17 +2288,17 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp14(in *jlexer.Lexer
 			*out = (*out)[:0]
 		}
 		for !in.IsDelim(']') {
-			var v16 *Implement1296325875View
+			var v34 *Implement1296325875View
 			if in.IsNull() {
 				in.Skip()
-				v16 = nil
+				v34 = nil
 			} else {
-				if v16 == nil {
-					v16 = new(Implement1296325875View)
+				if v34 == nil {
+					v34 = new(Implement1296325875View)
 				}
-				(*v16).UnmarshalEasyJSON(in)
+				(*v34).UnmarshalEasyJSON(in)
 			}
-			*out = append(*out, v16)
+			*out = append(*out, v34)
 			in.WantComma()
 		}
 		in.Delim(']')
@@ -1888,14 +2312,14 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp14(out *jwriter.Wri
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v17, v18 := range in {
-			if v17 > 0 {
+		for v35, v36 := range in {
+			if v35 > 0 {
 				out.RawByte(',')
 			}
-			if v18 == nil {
+			if v36 == nil {
 				out.RawString("null")
 			} else {
-				(*v18).MarshalEasyJSON(out)
+				(*v36).MarshalEasyJSON(out)
 			}
 		}
 		out.RawByte(']')
@@ -2153,6 +2577,26 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp17(in *jlexer.Lexer
 				}
 				*out.Condition = string(in.String())
 			}
+		case "location":
+			if in.IsNull() {
+				in.Skip()
+				out.Location = nil
+			} else {
+				if out.Location == nil {
+					out.Location = new(int)
+				}
+				*out.Location = int(in.Int())
+			}
+		case "category":
+			if in.IsNull() {
+				in.Skip()
+				out.Category = nil
+			} else {
+				if out.Category == nil {
+					out.Category = new(int)
+				}
+				*out.Category = int(in.Int())
+			}
 		default:
 			in.AddError(&jlexer.LexerError{
 				Offset: in.GetPos(),
@@ -2205,6 +2649,24 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp17(out *jwriter.Wri
 			out.RawString("null")
 		} else {
 			out.String(string(*in.Condition))
+		}
+	}
+	{
+		const prefix string = ",\"location\":"
+		out.RawString(prefix)
+		if in.Location == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Location))
+		}
+	}
+	{
+		const prefix string = ",\"category\":"
+		out.RawString(prefix)
+		if in.Category == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Category))
 		}
 	}
 	out.RawByte('}')
@@ -2282,6 +2744,26 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp18(in *jlexer.Lexer
 				}
 				*out.Condition = string(in.String())
 			}
+		case "location":
+			if in.IsNull() {
+				in.Skip()
+				out.Location = nil
+			} else {
+				if out.Location == nil {
+					out.Location = new(int)
+				}
+				*out.Location = int(in.Int())
+			}
+		case "category":
+			if in.IsNull() {
+				in.Skip()
+				out.Category = nil
+			} else {
+				if out.Category == nil {
+					out.Category = new(int)
+				}
+				*out.Category = int(in.Int())
+			}
 		default:
 			in.AddError(&jlexer.LexerError{
 				Offset: in.GetPos(),
@@ -2336,6 +2818,24 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp18(out *jwriter.Wri
 			out.String(string(*in.Condition))
 		}
 	}
+	{
+		const prefix string = ",\"location\":"
+		out.RawString(prefix)
+		if in.Location == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Location))
+		}
+	}
+	{
+		const prefix string = ",\"category\":"
+		out.RawString(prefix)
+		if in.Category == nil {
+			out.RawString("null")
+		} else {
+			out.Int(int(*in.Category))
+		}
+	}
 	out.RawByte('}')
 }
 
@@ -2365,17 +2865,17 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp19(in *jlexer.Lexer
 			*out = (*out)[:0]
 		}
 		for !in.IsDelim(']') {
-			var v19 *Equipment3958372643View
+			var v37 *Equipment3958372643View
 			if in.IsNull() {
 				in.Skip()
-				v19 = nil
+				v37 = nil
 			} else {
-				if v19 == nil {
-					v19 = new(Equipment3958372643View)
+				if v37 == nil {
+					v37 = new(Equipment3958372643View)
 				}
-				(*v19).UnmarshalEasyJSON(in)
+				(*v37).UnmarshalEasyJSON(in)
 			}
-			*out = append(*out, v19)
+			*out = append(*out, v37)
 			in.WantComma()
 		}
 		in.Delim(']')
@@ -2389,14 +2889,14 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp19(out *jwriter.Wri
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v20, v21 := range in {
-			if v20 > 0 {
+		for v38, v39 := range in {
+			if v38 > 0 {
 				out.RawByte(',')
 			}
-			if v21 == nil {
+			if v39 == nil {
 				out.RawString("null")
 			} else {
-				(*v21).MarshalEasyJSON(out)
+				(*v39).MarshalEasyJSON(out)
 			}
 		}
 		out.RawByte(']')
@@ -2574,6 +3074,121 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp21(in *jlexer.Lexer
 				}
 				*out.Name = string(in.String())
 			}
+		case "vehicle":
+			if in.IsNull() {
+				in.Skip()
+				out.Vehicle = nil
+			} else {
+				in.Delim('[')
+				if out.Vehicle == nil {
+					if !in.IsDelim(']') {
+						out.Vehicle = make([]int, 0, 8)
+					} else {
+						out.Vehicle = []int{}
+					}
+				} else {
+					out.Vehicle = (out.Vehicle)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v40 int
+					v40 = int(in.Int())
+					out.Vehicle = append(out.Vehicle, v40)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "tool":
+			if in.IsNull() {
+				in.Skip()
+				out.Tool = nil
+			} else {
+				in.Delim('[')
+				if out.Tool == nil {
+					if !in.IsDelim(']') {
+						out.Tool = make([]int, 0, 8)
+					} else {
+						out.Tool = []int{}
+					}
+				} else {
+					out.Tool = (out.Tool)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v41 int
+					v41 = int(in.Int())
+					out.Tool = append(out.Tool, v41)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "implement":
+			if in.IsNull() {
+				in.Skip()
+				out.Implement = nil
+			} else {
+				in.Delim('[')
+				if out.Implement == nil {
+					if !in.IsDelim(']') {
+						out.Implement = make([]int, 0, 8)
+					} else {
+						out.Implement = []int{}
+					}
+				} else {
+					out.Implement = (out.Implement)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v42 int
+					v42 = int(in.Int())
+					out.Implement = append(out.Implement, v42)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "equipment":
+			if in.IsNull() {
+				in.Skip()
+				out.Equipment = nil
+			} else {
+				in.Delim('[')
+				if out.Equipment == nil {
+					if !in.IsDelim(']') {
+						out.Equipment = make([]int, 0, 8)
+					} else {
+						out.Equipment = []int{}
+					}
+				} else {
+					out.Equipment = (out.Equipment)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v43 int
+					v43 = int(in.Int())
+					out.Equipment = append(out.Equipment, v43)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "location":
+			if in.IsNull() {
+				in.Skip()
+				out.Location = nil
+			} else {
+				in.Delim('[')
+				if out.Location == nil {
+					if !in.IsDelim(']') {
+						out.Location = make([]int, 0, 8)
+					} else {
+						out.Location = []int{}
+					}
+				} else {
+					out.Location = (out.Location)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v44 int
+					v44 = int(in.Int())
+					out.Location = append(out.Location, v44)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
 		default:
 			in.AddError(&jlexer.LexerError{
 				Offset: in.GetPos(),
@@ -2617,6 +3232,86 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp21(out *jwriter.Wri
 			out.RawString("null")
 		} else {
 			out.String(string(*in.Name))
+		}
+	}
+	{
+		const prefix string = ",\"vehicle\":"
+		out.RawString(prefix)
+		if in.Vehicle == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v45, v46 := range in.Vehicle {
+				if v45 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v46))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"tool\":"
+		out.RawString(prefix)
+		if in.Tool == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v47, v48 := range in.Tool {
+				if v47 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v48))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"implement\":"
+		out.RawString(prefix)
+		if in.Implement == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v49, v50 := range in.Implement {
+				if v49 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v50))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"equipment\":"
+		out.RawString(prefix)
+		if in.Equipment == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v51, v52 := range in.Equipment {
+				if v51 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v52))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"location\":"
+		out.RawString(prefix)
+		if in.Location == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v53, v54 := range in.Location {
+				if v53 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v54))
+			}
+			out.RawByte(']')
 		}
 	}
 	out.RawByte('}')
@@ -2684,6 +3379,121 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp22(in *jlexer.Lexer
 				}
 				*out.Name = string(in.String())
 			}
+		case "vehicle":
+			if in.IsNull() {
+				in.Skip()
+				out.Vehicle = nil
+			} else {
+				in.Delim('[')
+				if out.Vehicle == nil {
+					if !in.IsDelim(']') {
+						out.Vehicle = make([]int, 0, 8)
+					} else {
+						out.Vehicle = []int{}
+					}
+				} else {
+					out.Vehicle = (out.Vehicle)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v55 int
+					v55 = int(in.Int())
+					out.Vehicle = append(out.Vehicle, v55)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "tool":
+			if in.IsNull() {
+				in.Skip()
+				out.Tool = nil
+			} else {
+				in.Delim('[')
+				if out.Tool == nil {
+					if !in.IsDelim(']') {
+						out.Tool = make([]int, 0, 8)
+					} else {
+						out.Tool = []int{}
+					}
+				} else {
+					out.Tool = (out.Tool)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v56 int
+					v56 = int(in.Int())
+					out.Tool = append(out.Tool, v56)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "implement":
+			if in.IsNull() {
+				in.Skip()
+				out.Implement = nil
+			} else {
+				in.Delim('[')
+				if out.Implement == nil {
+					if !in.IsDelim(']') {
+						out.Implement = make([]int, 0, 8)
+					} else {
+						out.Implement = []int{}
+					}
+				} else {
+					out.Implement = (out.Implement)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v57 int
+					v57 = int(in.Int())
+					out.Implement = append(out.Implement, v57)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "equipment":
+			if in.IsNull() {
+				in.Skip()
+				out.Equipment = nil
+			} else {
+				in.Delim('[')
+				if out.Equipment == nil {
+					if !in.IsDelim(']') {
+						out.Equipment = make([]int, 0, 8)
+					} else {
+						out.Equipment = []int{}
+					}
+				} else {
+					out.Equipment = (out.Equipment)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v58 int
+					v58 = int(in.Int())
+					out.Equipment = append(out.Equipment, v58)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
+		case "location":
+			if in.IsNull() {
+				in.Skip()
+				out.Location = nil
+			} else {
+				in.Delim('[')
+				if out.Location == nil {
+					if !in.IsDelim(']') {
+						out.Location = make([]int, 0, 8)
+					} else {
+						out.Location = []int{}
+					}
+				} else {
+					out.Location = (out.Location)[:0]
+				}
+				for !in.IsDelim(']') {
+					var v59 int
+					v59 = int(in.Int())
+					out.Location = append(out.Location, v59)
+					in.WantComma()
+				}
+				in.Delim(']')
+			}
 		default:
 			in.AddError(&jlexer.LexerError{
 				Offset: in.GetPos(),
@@ -2729,6 +3539,86 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp22(out *jwriter.Wri
 			out.String(string(*in.Name))
 		}
 	}
+	{
+		const prefix string = ",\"vehicle\":"
+		out.RawString(prefix)
+		if in.Vehicle == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v60, v61 := range in.Vehicle {
+				if v60 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v61))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"tool\":"
+		out.RawString(prefix)
+		if in.Tool == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v62, v63 := range in.Tool {
+				if v62 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v63))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"implement\":"
+		out.RawString(prefix)
+		if in.Implement == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v64, v65 := range in.Implement {
+				if v64 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v65))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"equipment\":"
+		out.RawString(prefix)
+		if in.Equipment == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v66, v67 := range in.Equipment {
+				if v66 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v67))
+			}
+			out.RawByte(']')
+		}
+	}
+	{
+		const prefix string = ",\"location\":"
+		out.RawString(prefix)
+		if in.Location == nil && (out.Flags&jwriter.NilSliceAsEmpty) == 0 {
+			out.RawString("null")
+		} else {
+			out.RawByte('[')
+			for v68, v69 := range in.Location {
+				if v68 > 0 {
+					out.RawByte(',')
+				}
+				out.Int(int(v69))
+			}
+			out.RawByte(']')
+		}
+	}
 	out.RawByte('}')
 }
 
@@ -2758,17 +3648,17 @@ func easyjsonC5a4559bDecodeGithubComOpenFarmsInventoryEntHttp23(in *jlexer.Lexer
 			*out = (*out)[:0]
 		}
 		for !in.IsDelim(']') {
-			var v22 *Category1462705340View
+			var v70 *Category1462705340View
 			if in.IsNull() {
 				in.Skip()
-				v22 = nil
+				v70 = nil
 			} else {
-				if v22 == nil {
-					v22 = new(Category1462705340View)
+				if v70 == nil {
+					v70 = new(Category1462705340View)
 				}
-				(*v22).UnmarshalEasyJSON(in)
+				(*v70).UnmarshalEasyJSON(in)
 			}
-			*out = append(*out, v22)
+			*out = append(*out, v70)
 			in.WantComma()
 		}
 		in.Delim(']')
@@ -2782,14 +3672,14 @@ func easyjsonC5a4559bEncodeGithubComOpenFarmsInventoryEntHttp23(out *jwriter.Wri
 		out.RawString("null")
 	} else {
 		out.RawByte('[')
-		for v23, v24 := range in {
-			if v23 > 0 {
+		for v71, v72 := range in {
+			if v71 > 0 {
 				out.RawByte(',')
 			}
-			if v24 == nil {
+			if v72 == nil {
 				out.RawString("null")
 			} else {
-				(*v24).MarshalEasyJSON(out)
+				(*v72).MarshalEasyJSON(out)
 			}
 		}
 		out.RawByte(']')

@@ -83,16 +83,23 @@ func (vu *VehicleUpdate) AddHours(i int64) *VehicleUpdate {
 }
 
 // SetYear sets the "year" field.
-func (vu *VehicleUpdate) SetYear(s string) *VehicleUpdate {
-	vu.mutation.SetYear(s)
+func (vu *VehicleUpdate) SetYear(i int64) *VehicleUpdate {
+	vu.mutation.ResetYear()
+	vu.mutation.SetYear(i)
 	return vu
 }
 
 // SetNillableYear sets the "year" field if the given value is not nil.
-func (vu *VehicleUpdate) SetNillableYear(s *string) *VehicleUpdate {
-	if s != nil {
-		vu.SetYear(*s)
+func (vu *VehicleUpdate) SetNillableYear(i *int64) *VehicleUpdate {
+	if i != nil {
+		vu.SetYear(*i)
 	}
+	return vu
+}
+
+// AddYear adds i to the "year" field.
+func (vu *VehicleUpdate) AddYear(i int64) *VehicleUpdate {
+	vu.mutation.AddYear(i)
 	return vu
 }
 
@@ -234,6 +241,11 @@ func (vu *VehicleUpdate) check() error {
 			return &ValidationError{Name: "hours", err: fmt.Errorf("ent: validator failed for field \"hours\": %w", err)}
 		}
 	}
+	if v, ok := vu.mutation.Year(); ok {
+		if err := vehicle.YearValidator(v); err != nil {
+			return &ValidationError{Name: "year", err: fmt.Errorf("ent: validator failed for field \"year\": %w", err)}
+		}
+	}
 	if v, ok := vu.mutation.Power(); ok {
 		if err := vehicle.PowerValidator(v); err != nil {
 			return &ValidationError{Name: "power", err: fmt.Errorf("ent: validator failed for field \"power\": %w", err)}
@@ -307,14 +319,21 @@ func (vu *VehicleUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := vu.mutation.Year(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: vehicle.FieldYear,
+		})
+	}
+	if value, ok := vu.mutation.AddedYear(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
 			Value:  value,
 			Column: vehicle.FieldYear,
 		})
 	}
 	if vu.mutation.YearCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt64,
 			Column: vehicle.FieldYear,
 		})
 	}
@@ -446,16 +465,23 @@ func (vuo *VehicleUpdateOne) AddHours(i int64) *VehicleUpdateOne {
 }
 
 // SetYear sets the "year" field.
-func (vuo *VehicleUpdateOne) SetYear(s string) *VehicleUpdateOne {
-	vuo.mutation.SetYear(s)
+func (vuo *VehicleUpdateOne) SetYear(i int64) *VehicleUpdateOne {
+	vuo.mutation.ResetYear()
+	vuo.mutation.SetYear(i)
 	return vuo
 }
 
 // SetNillableYear sets the "year" field if the given value is not nil.
-func (vuo *VehicleUpdateOne) SetNillableYear(s *string) *VehicleUpdateOne {
-	if s != nil {
-		vuo.SetYear(*s)
+func (vuo *VehicleUpdateOne) SetNillableYear(i *int64) *VehicleUpdateOne {
+	if i != nil {
+		vuo.SetYear(*i)
 	}
+	return vuo
+}
+
+// AddYear adds i to the "year" field.
+func (vuo *VehicleUpdateOne) AddYear(i int64) *VehicleUpdateOne {
+	vuo.mutation.AddYear(i)
 	return vuo
 }
 
@@ -604,6 +630,11 @@ func (vuo *VehicleUpdateOne) check() error {
 			return &ValidationError{Name: "hours", err: fmt.Errorf("ent: validator failed for field \"hours\": %w", err)}
 		}
 	}
+	if v, ok := vuo.mutation.Year(); ok {
+		if err := vehicle.YearValidator(v); err != nil {
+			return &ValidationError{Name: "year", err: fmt.Errorf("ent: validator failed for field \"year\": %w", err)}
+		}
+	}
 	if v, ok := vuo.mutation.Power(); ok {
 		if err := vehicle.PowerValidator(v); err != nil {
 			return &ValidationError{Name: "power", err: fmt.Errorf("ent: validator failed for field \"power\": %w", err)}
@@ -694,14 +725,21 @@ func (vuo *VehicleUpdateOne) sqlSave(ctx context.Context) (_node *Vehicle, err e
 	}
 	if value, ok := vuo.mutation.Year(); ok {
 		_spec.Fields.Set = append(_spec.Fields.Set, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt64,
+			Value:  value,
+			Column: vehicle.FieldYear,
+		})
+	}
+	if value, ok := vuo.mutation.AddedYear(); ok {
+		_spec.Fields.Add = append(_spec.Fields.Add, &sqlgraph.FieldSpec{
+			Type:   field.TypeInt64,
 			Value:  value,
 			Column: vehicle.FieldYear,
 		})
 	}
 	if vuo.mutation.YearCleared() {
 		_spec.Fields.Clear = append(_spec.Fields.Clear, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt64,
 			Column: vehicle.FieldYear,
 		})
 	}

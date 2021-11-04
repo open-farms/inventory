@@ -10,8 +10,12 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/open-farms/inventory/ent/category"
+	"github.com/open-farms/inventory/ent/equipment"
+	"github.com/open-farms/inventory/ent/implement"
 	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/predicate"
+	"github.com/open-farms/inventory/ent/tool"
 	"github.com/open-farms/inventory/ent/vehicle"
 )
 
@@ -82,6 +86,70 @@ func (lu *LocationUpdate) AddVehicle(v ...*Vehicle) *LocationUpdate {
 	return lu.AddVehicleIDs(ids...)
 }
 
+// AddToolIDs adds the "tool" edge to the Tool entity by IDs.
+func (lu *LocationUpdate) AddToolIDs(ids ...int) *LocationUpdate {
+	lu.mutation.AddToolIDs(ids...)
+	return lu
+}
+
+// AddTool adds the "tool" edges to the Tool entity.
+func (lu *LocationUpdate) AddTool(t ...*Tool) *LocationUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return lu.AddToolIDs(ids...)
+}
+
+// AddImplementIDs adds the "implement" edge to the Implement entity by IDs.
+func (lu *LocationUpdate) AddImplementIDs(ids ...int) *LocationUpdate {
+	lu.mutation.AddImplementIDs(ids...)
+	return lu
+}
+
+// AddImplement adds the "implement" edges to the Implement entity.
+func (lu *LocationUpdate) AddImplement(i ...*Implement) *LocationUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return lu.AddImplementIDs(ids...)
+}
+
+// AddEquipmentIDs adds the "equipment" edge to the Equipment entity by IDs.
+func (lu *LocationUpdate) AddEquipmentIDs(ids ...int) *LocationUpdate {
+	lu.mutation.AddEquipmentIDs(ids...)
+	return lu
+}
+
+// AddEquipment adds the "equipment" edges to the Equipment entity.
+func (lu *LocationUpdate) AddEquipment(e ...*Equipment) *LocationUpdate {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return lu.AddEquipmentIDs(ids...)
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (lu *LocationUpdate) SetCategoryID(id int) *LocationUpdate {
+	lu.mutation.SetCategoryID(id)
+	return lu
+}
+
+// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
+func (lu *LocationUpdate) SetNillableCategoryID(id *int) *LocationUpdate {
+	if id != nil {
+		lu = lu.SetCategoryID(*id)
+	}
+	return lu
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (lu *LocationUpdate) SetCategory(c *Category) *LocationUpdate {
+	return lu.SetCategoryID(c.ID)
+}
+
 // Mutation returns the LocationMutation object of the builder.
 func (lu *LocationUpdate) Mutation() *LocationMutation {
 	return lu.mutation
@@ -106,6 +174,75 @@ func (lu *LocationUpdate) RemoveVehicle(v ...*Vehicle) *LocationUpdate {
 		ids[i] = v[i].ID
 	}
 	return lu.RemoveVehicleIDs(ids...)
+}
+
+// ClearTool clears all "tool" edges to the Tool entity.
+func (lu *LocationUpdate) ClearTool() *LocationUpdate {
+	lu.mutation.ClearTool()
+	return lu
+}
+
+// RemoveToolIDs removes the "tool" edge to Tool entities by IDs.
+func (lu *LocationUpdate) RemoveToolIDs(ids ...int) *LocationUpdate {
+	lu.mutation.RemoveToolIDs(ids...)
+	return lu
+}
+
+// RemoveTool removes "tool" edges to Tool entities.
+func (lu *LocationUpdate) RemoveTool(t ...*Tool) *LocationUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return lu.RemoveToolIDs(ids...)
+}
+
+// ClearImplement clears all "implement" edges to the Implement entity.
+func (lu *LocationUpdate) ClearImplement() *LocationUpdate {
+	lu.mutation.ClearImplement()
+	return lu
+}
+
+// RemoveImplementIDs removes the "implement" edge to Implement entities by IDs.
+func (lu *LocationUpdate) RemoveImplementIDs(ids ...int) *LocationUpdate {
+	lu.mutation.RemoveImplementIDs(ids...)
+	return lu
+}
+
+// RemoveImplement removes "implement" edges to Implement entities.
+func (lu *LocationUpdate) RemoveImplement(i ...*Implement) *LocationUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return lu.RemoveImplementIDs(ids...)
+}
+
+// ClearEquipment clears all "equipment" edges to the Equipment entity.
+func (lu *LocationUpdate) ClearEquipment() *LocationUpdate {
+	lu.mutation.ClearEquipment()
+	return lu
+}
+
+// RemoveEquipmentIDs removes the "equipment" edge to Equipment entities by IDs.
+func (lu *LocationUpdate) RemoveEquipmentIDs(ids ...int) *LocationUpdate {
+	lu.mutation.RemoveEquipmentIDs(ids...)
+	return lu
+}
+
+// RemoveEquipment removes "equipment" edges to Equipment entities.
+func (lu *LocationUpdate) RemoveEquipment(e ...*Equipment) *LocationUpdate {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return lu.RemoveEquipmentIDs(ids...)
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (lu *LocationUpdate) ClearCategory() *LocationUpdate {
+	lu.mutation.ClearCategory()
+	return lu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -278,6 +415,203 @@ func (lu *LocationUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if lu.mutation.ToolCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.ToolTable,
+			Columns: []string{location.ToolColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: tool.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := lu.mutation.RemovedToolIDs(); len(nodes) > 0 && !lu.mutation.ToolCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.ToolTable,
+			Columns: []string{location.ToolColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: tool.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := lu.mutation.ToolIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.ToolTable,
+			Columns: []string{location.ToolColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: tool.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if lu.mutation.ImplementCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.ImplementTable,
+			Columns: []string{location.ImplementColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: implement.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := lu.mutation.RemovedImplementIDs(); len(nodes) > 0 && !lu.mutation.ImplementCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.ImplementTable,
+			Columns: []string{location.ImplementColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: implement.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := lu.mutation.ImplementIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.ImplementTable,
+			Columns: []string{location.ImplementColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: implement.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if lu.mutation.EquipmentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.EquipmentTable,
+			Columns: []string{location.EquipmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipment.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := lu.mutation.RemovedEquipmentIDs(); len(nodes) > 0 && !lu.mutation.EquipmentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.EquipmentTable,
+			Columns: []string{location.EquipmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := lu.mutation.EquipmentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.EquipmentTable,
+			Columns: []string{location.EquipmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if lu.mutation.CategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   location.CategoryTable,
+			Columns: []string{location.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := lu.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   location.CategoryTable,
+			Columns: []string{location.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, lu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{location.Label}
@@ -351,6 +685,70 @@ func (luo *LocationUpdateOne) AddVehicle(v ...*Vehicle) *LocationUpdateOne {
 	return luo.AddVehicleIDs(ids...)
 }
 
+// AddToolIDs adds the "tool" edge to the Tool entity by IDs.
+func (luo *LocationUpdateOne) AddToolIDs(ids ...int) *LocationUpdateOne {
+	luo.mutation.AddToolIDs(ids...)
+	return luo
+}
+
+// AddTool adds the "tool" edges to the Tool entity.
+func (luo *LocationUpdateOne) AddTool(t ...*Tool) *LocationUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return luo.AddToolIDs(ids...)
+}
+
+// AddImplementIDs adds the "implement" edge to the Implement entity by IDs.
+func (luo *LocationUpdateOne) AddImplementIDs(ids ...int) *LocationUpdateOne {
+	luo.mutation.AddImplementIDs(ids...)
+	return luo
+}
+
+// AddImplement adds the "implement" edges to the Implement entity.
+func (luo *LocationUpdateOne) AddImplement(i ...*Implement) *LocationUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return luo.AddImplementIDs(ids...)
+}
+
+// AddEquipmentIDs adds the "equipment" edge to the Equipment entity by IDs.
+func (luo *LocationUpdateOne) AddEquipmentIDs(ids ...int) *LocationUpdateOne {
+	luo.mutation.AddEquipmentIDs(ids...)
+	return luo
+}
+
+// AddEquipment adds the "equipment" edges to the Equipment entity.
+func (luo *LocationUpdateOne) AddEquipment(e ...*Equipment) *LocationUpdateOne {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return luo.AddEquipmentIDs(ids...)
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (luo *LocationUpdateOne) SetCategoryID(id int) *LocationUpdateOne {
+	luo.mutation.SetCategoryID(id)
+	return luo
+}
+
+// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
+func (luo *LocationUpdateOne) SetNillableCategoryID(id *int) *LocationUpdateOne {
+	if id != nil {
+		luo = luo.SetCategoryID(*id)
+	}
+	return luo
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (luo *LocationUpdateOne) SetCategory(c *Category) *LocationUpdateOne {
+	return luo.SetCategoryID(c.ID)
+}
+
 // Mutation returns the LocationMutation object of the builder.
 func (luo *LocationUpdateOne) Mutation() *LocationMutation {
 	return luo.mutation
@@ -375,6 +773,75 @@ func (luo *LocationUpdateOne) RemoveVehicle(v ...*Vehicle) *LocationUpdateOne {
 		ids[i] = v[i].ID
 	}
 	return luo.RemoveVehicleIDs(ids...)
+}
+
+// ClearTool clears all "tool" edges to the Tool entity.
+func (luo *LocationUpdateOne) ClearTool() *LocationUpdateOne {
+	luo.mutation.ClearTool()
+	return luo
+}
+
+// RemoveToolIDs removes the "tool" edge to Tool entities by IDs.
+func (luo *LocationUpdateOne) RemoveToolIDs(ids ...int) *LocationUpdateOne {
+	luo.mutation.RemoveToolIDs(ids...)
+	return luo
+}
+
+// RemoveTool removes "tool" edges to Tool entities.
+func (luo *LocationUpdateOne) RemoveTool(t ...*Tool) *LocationUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return luo.RemoveToolIDs(ids...)
+}
+
+// ClearImplement clears all "implement" edges to the Implement entity.
+func (luo *LocationUpdateOne) ClearImplement() *LocationUpdateOne {
+	luo.mutation.ClearImplement()
+	return luo
+}
+
+// RemoveImplementIDs removes the "implement" edge to Implement entities by IDs.
+func (luo *LocationUpdateOne) RemoveImplementIDs(ids ...int) *LocationUpdateOne {
+	luo.mutation.RemoveImplementIDs(ids...)
+	return luo
+}
+
+// RemoveImplement removes "implement" edges to Implement entities.
+func (luo *LocationUpdateOne) RemoveImplement(i ...*Implement) *LocationUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return luo.RemoveImplementIDs(ids...)
+}
+
+// ClearEquipment clears all "equipment" edges to the Equipment entity.
+func (luo *LocationUpdateOne) ClearEquipment() *LocationUpdateOne {
+	luo.mutation.ClearEquipment()
+	return luo
+}
+
+// RemoveEquipmentIDs removes the "equipment" edge to Equipment entities by IDs.
+func (luo *LocationUpdateOne) RemoveEquipmentIDs(ids ...int) *LocationUpdateOne {
+	luo.mutation.RemoveEquipmentIDs(ids...)
+	return luo
+}
+
+// RemoveEquipment removes "equipment" edges to Equipment entities.
+func (luo *LocationUpdateOne) RemoveEquipment(e ...*Equipment) *LocationUpdateOne {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return luo.RemoveEquipmentIDs(ids...)
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (luo *LocationUpdateOne) ClearCategory() *LocationUpdateOne {
+	luo.mutation.ClearCategory()
+	return luo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -563,6 +1030,203 @@ func (luo *LocationUpdateOne) sqlSave(ctx context.Context) (_node *Location, err
 				IDSpec: &sqlgraph.FieldSpec{
 					Type:   field.TypeInt,
 					Column: vehicle.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if luo.mutation.ToolCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.ToolTable,
+			Columns: []string{location.ToolColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: tool.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := luo.mutation.RemovedToolIDs(); len(nodes) > 0 && !luo.mutation.ToolCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.ToolTable,
+			Columns: []string{location.ToolColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: tool.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := luo.mutation.ToolIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.ToolTable,
+			Columns: []string{location.ToolColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: tool.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if luo.mutation.ImplementCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.ImplementTable,
+			Columns: []string{location.ImplementColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: implement.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := luo.mutation.RemovedImplementIDs(); len(nodes) > 0 && !luo.mutation.ImplementCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.ImplementTable,
+			Columns: []string{location.ImplementColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: implement.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := luo.mutation.ImplementIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.ImplementTable,
+			Columns: []string{location.ImplementColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: implement.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if luo.mutation.EquipmentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.EquipmentTable,
+			Columns: []string{location.EquipmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipment.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := luo.mutation.RemovedEquipmentIDs(); len(nodes) > 0 && !luo.mutation.EquipmentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.EquipmentTable,
+			Columns: []string{location.EquipmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := luo.mutation.EquipmentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   location.EquipmentTable,
+			Columns: []string{location.EquipmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if luo.mutation.CategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   location.CategoryTable,
+			Columns: []string{location.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := luo.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   location.CategoryTable,
+			Columns: []string{location.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
 				},
 			},
 		}

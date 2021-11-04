@@ -8,7 +8,9 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/open-farms/inventory/ent/category"
 	"github.com/open-farms/inventory/ent/equipment"
+	"github.com/open-farms/inventory/ent/location"
 )
 
 // Equipment is the model entity for the Equipment schema.
@@ -24,6 +26,50 @@ type Equipment struct {
 	Name string `json:"name,omitempty"`
 	// Condition holds the value of the "condition" field.
 	Condition string `json:"condition,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the EquipmentQuery when eager-loading is set.
+	Edges              EquipmentEdges `json:"edges"`
+	category_equipment *int
+	location_equipment *int
+}
+
+// EquipmentEdges holds the relations/edges for other nodes in the graph.
+type EquipmentEdges struct {
+	// Location holds the value of the location edge.
+	Location *Location `json:"location,omitempty"`
+	// Category holds the value of the category edge.
+	Category *Category `json:"category,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// LocationOrErr returns the Location value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e EquipmentEdges) LocationOrErr() (*Location, error) {
+	if e.loadedTypes[0] {
+		if e.Location == nil {
+			// The edge location was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: location.Label}
+		}
+		return e.Location, nil
+	}
+	return nil, &NotLoadedError{edge: "location"}
+}
+
+// CategoryOrErr returns the Category value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e EquipmentEdges) CategoryOrErr() (*Category, error) {
+	if e.loadedTypes[1] {
+		if e.Category == nil {
+			// The edge category was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: category.Label}
+		}
+		return e.Category, nil
+	}
+	return nil, &NotLoadedError{edge: "category"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -37,6 +83,10 @@ func (*Equipment) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullString)
 		case equipment.FieldCreateTime, equipment.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
+		case equipment.ForeignKeys[0]: // category_equipment
+			values[i] = new(sql.NullInt64)
+		case equipment.ForeignKeys[1]: // location_equipment
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Equipment", columns[i])
 		}
@@ -82,9 +132,33 @@ func (e *Equipment) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				e.Condition = value.String
 			}
+		case equipment.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field category_equipment", value)
+			} else if value.Valid {
+				e.category_equipment = new(int)
+				*e.category_equipment = int(value.Int64)
+			}
+		case equipment.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field location_equipment", value)
+			} else if value.Valid {
+				e.location_equipment = new(int)
+				*e.location_equipment = int(value.Int64)
+			}
 		}
 	}
 	return nil
+}
+
+// QueryLocation queries the "location" edge of the Equipment entity.
+func (e *Equipment) QueryLocation() *LocationQuery {
+	return (&EquipmentClient{config: e.config}).QueryLocation(e)
+}
+
+// QueryCategory queries the "category" edge of the Equipment entity.
+func (e *Equipment) QueryCategory() *CategoryQuery {
+	return (&EquipmentClient{config: e.config}).QueryCategory(e)
 }
 
 // Update returns a builder for updating this Equipment.

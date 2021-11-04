@@ -7,7 +7,9 @@ import (
 	sqlgraph "entgo.io/ent/dialect/sql/sqlgraph"
 	empty "github.com/golang/protobuf/ptypes/empty"
 	ent "github.com/open-farms/inventory/ent"
+	category "github.com/open-farms/inventory/ent/category"
 	implement "github.com/open-farms/inventory/ent/implement"
+	location "github.com/open-farms/inventory/ent/location"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -38,6 +40,18 @@ func toProtoImplement(e *ent.Implement) (*Implement, error) {
 	v.Name = name
 	updatetime := timestamppb.New(e.UpdateTime)
 	v.UpdateTime = updatetime
+	if edg := e.Edges.Category; edg != nil {
+		id := int32(edg.ID)
+		v.Category = &Category{
+			Id: id,
+		}
+	}
+	if edg := e.Edges.Location; edg != nil {
+		id := int32(edg.ID)
+		v.Location = &Location{
+			Id: id,
+		}
+	}
 	return v, nil
 }
 
@@ -51,6 +65,10 @@ func (svc *ImplementService) Create(ctx context.Context, req *CreateImplementReq
 	m.SetName(implementName)
 	implementUpdateTime := runtime.ExtractTime(implement.GetUpdateTime())
 	m.SetUpdateTime(implementUpdateTime)
+	implementCategory := int(implement.GetCategory().GetId())
+	m.SetCategoryID(implementCategory)
+	implementLocation := int(implement.GetLocation().GetId())
+	m.SetLocationID(implementLocation)
 	res, err := m.Save(ctx)
 	switch {
 	case err == nil:
@@ -82,6 +100,12 @@ func (svc *ImplementService) Get(ctx context.Context, req *GetImplementRequest) 
 	case GetImplementRequest_WITH_EDGE_IDS:
 		get, err = svc.client.Implement.Query().
 			Where(implement.ID(id)).
+			WithCategory(func(query *ent.CategoryQuery) {
+				query.Select(category.FieldID)
+			}).
+			WithLocation(func(query *ent.LocationQuery) {
+				query.Select(location.FieldID)
+			}).
 			Only(ctx)
 	default:
 		return nil, status.Error(codes.InvalidArgument, "invalid argument: unknown view")
@@ -109,6 +133,10 @@ func (svc *ImplementService) Update(ctx context.Context, req *UpdateImplementReq
 	m.SetName(implementName)
 	implementUpdateTime := runtime.ExtractTime(implement.GetUpdateTime())
 	m.SetUpdateTime(implementUpdateTime)
+	implementCategory := int(implement.GetCategory().GetId())
+	m.SetCategoryID(implementCategory)
+	implementLocation := int(implement.GetLocation().GetId())
+	m.SetLocationID(implementLocation)
 	res, err := m.Save(ctx)
 	switch {
 	case err == nil:

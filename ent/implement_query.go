@@ -11,7 +11,9 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/open-farms/inventory/ent/category"
 	"github.com/open-farms/inventory/ent/implement"
+	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/predicate"
 )
 
@@ -24,6 +26,10 @@ type ImplementQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.Implement
+	// eager-loading edges.
+	withLocation *LocationQuery
+	withCategory *CategoryQuery
+	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -58,6 +64,50 @@ func (iq *ImplementQuery) Unique(unique bool) *ImplementQuery {
 func (iq *ImplementQuery) Order(o ...OrderFunc) *ImplementQuery {
 	iq.order = append(iq.order, o...)
 	return iq
+}
+
+// QueryLocation chains the current query on the "location" edge.
+func (iq *ImplementQuery) QueryLocation() *LocationQuery {
+	query := &LocationQuery{config: iq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := iq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := iq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(implement.Table, implement.FieldID, selector),
+			sqlgraph.To(location.Table, location.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, implement.LocationTable, implement.LocationColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryCategory chains the current query on the "category" edge.
+func (iq *ImplementQuery) QueryCategory() *CategoryQuery {
+	query := &CategoryQuery{config: iq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := iq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := iq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(implement.Table, implement.FieldID, selector),
+			sqlgraph.To(category.Table, category.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, implement.CategoryTable, implement.CategoryColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(iq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Implement entity from the query.
@@ -236,15 +286,39 @@ func (iq *ImplementQuery) Clone() *ImplementQuery {
 		return nil
 	}
 	return &ImplementQuery{
-		config:     iq.config,
-		limit:      iq.limit,
-		offset:     iq.offset,
-		order:      append([]OrderFunc{}, iq.order...),
-		predicates: append([]predicate.Implement{}, iq.predicates...),
+		config:       iq.config,
+		limit:        iq.limit,
+		offset:       iq.offset,
+		order:        append([]OrderFunc{}, iq.order...),
+		predicates:   append([]predicate.Implement{}, iq.predicates...),
+		withLocation: iq.withLocation.Clone(),
+		withCategory: iq.withCategory.Clone(),
 		// clone intermediate query.
 		sql:  iq.sql.Clone(),
 		path: iq.path,
 	}
+}
+
+// WithLocation tells the query-builder to eager-load the nodes that are connected to
+// the "location" edge. The optional arguments are used to configure the query builder of the edge.
+func (iq *ImplementQuery) WithLocation(opts ...func(*LocationQuery)) *ImplementQuery {
+	query := &LocationQuery{config: iq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	iq.withLocation = query
+	return iq
+}
+
+// WithCategory tells the query-builder to eager-load the nodes that are connected to
+// the "category" edge. The optional arguments are used to configure the query builder of the edge.
+func (iq *ImplementQuery) WithCategory(opts ...func(*CategoryQuery)) *ImplementQuery {
+	query := &CategoryQuery{config: iq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	iq.withCategory = query
+	return iq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -310,9 +384,20 @@ func (iq *ImplementQuery) prepareQuery(ctx context.Context) error {
 
 func (iq *ImplementQuery) sqlAll(ctx context.Context) ([]*Implement, error) {
 	var (
-		nodes = []*Implement{}
-		_spec = iq.querySpec()
+		nodes       = []*Implement{}
+		withFKs     = iq.withFKs
+		_spec       = iq.querySpec()
+		loadedTypes = [2]bool{
+			iq.withLocation != nil,
+			iq.withCategory != nil,
+		}
 	)
+	if iq.withLocation != nil || iq.withCategory != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, implement.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &Implement{config: iq.config}
 		nodes = append(nodes, node)
@@ -323,6 +408,7 @@ func (iq *ImplementQuery) sqlAll(ctx context.Context) ([]*Implement, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if err := sqlgraph.QueryNodes(ctx, iq.driver, _spec); err != nil {
@@ -331,6 +417,65 @@ func (iq *ImplementQuery) sqlAll(ctx context.Context) ([]*Implement, error) {
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+
+	if query := iq.withLocation; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Implement)
+		for i := range nodes {
+			if nodes[i].location_implement == nil {
+				continue
+			}
+			fk := *nodes[i].location_implement
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(location.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "location_implement" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Location = n
+			}
+		}
+	}
+
+	if query := iq.withCategory; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Implement)
+		for i := range nodes {
+			if nodes[i].category_implement == nil {
+				continue
+			}
+			fk := *nodes[i].category_implement
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(category.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "category_implement" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Category = n
+			}
+		}
+	}
+
 	return nodes, nil
 }
 

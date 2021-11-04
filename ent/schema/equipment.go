@@ -4,6 +4,7 @@ import (
 	"entgo.io/contrib/entproto"
 	"entgo.io/ent"
 	"entgo.io/ent/schema"
+	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
 
@@ -39,5 +40,15 @@ func (Equipment) Annotations() []schema.Annotation {
 
 // Edges of the Equipment.
 func (Equipment) Edges() []ent.Edge {
-	return []ent.Edge{}
+	return []ent.Edge{
+		edge.From("location", Location.Type).
+			Ref("equipment").
+			Unique().
+			Required().
+			Annotations(entproto.Field(6)),
+		edge.From("category", Category.Type).
+			Ref("equipment").
+			Unique().
+			Annotations(entproto.Field(7)),
+	}
 }

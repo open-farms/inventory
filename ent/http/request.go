@@ -11,6 +11,11 @@ type CategoryCreateRequest struct {
 	CreateTime *time.Time `json:"create_time"`
 	UpdateTime *time.Time `json:"update_time"`
 	Name       *string    `json:"name"`
+	Vehicle    []int      `json:"vehicle"`
+	Tool       []int      `json:"tool"`
+	Implement  []int      `json:"implement"`
+	Equipment  []int      `json:"equipment"`
+	Location   []int      `json:"location"`
 }
 
 // Payload of a ent.Category update request.
@@ -18,6 +23,11 @@ type CategoryUpdateRequest struct {
 	CreateTime *time.Time `json:"create_time"`
 	UpdateTime *time.Time `json:"update_time"`
 	Name       *string    `json:"name"`
+	Vehicle    []int      `json:"vehicle"`
+	Tool       []int      `json:"tool"`
+	Implement  []int      `json:"implement"`
+	Equipment  []int      `json:"equipment"`
+	Location   []int      `json:"location"`
 }
 
 // Payload of a ent.Equipment create request.
@@ -26,6 +36,8 @@ type EquipmentCreateRequest struct {
 	UpdateTime *time.Time `json:"update_time"`
 	Name       *string    `json:"name"`
 	Condition  *string    `json:"condition"`
+	Location   *int       `json:"location"`
+	Category   *int       `json:"category"`
 }
 
 // Payload of a ent.Equipment update request.
@@ -34,6 +46,8 @@ type EquipmentUpdateRequest struct {
 	UpdateTime *time.Time `json:"update_time"`
 	Name       *string    `json:"name"`
 	Condition  *string    `json:"condition"`
+	Location   *int       `json:"location"`
+	Category   *int       `json:"category"`
 }
 
 // Payload of a ent.Implement create request.
@@ -41,6 +55,8 @@ type ImplementCreateRequest struct {
 	CreateTime *time.Time `json:"create_time"`
 	UpdateTime *time.Time `json:"update_time"`
 	Name       *string    `json:"name"`
+	Location   *int       `json:"location"`
+	Category   *int       `json:"category"`
 }
 
 // Payload of a ent.Implement update request.
@@ -48,6 +64,8 @@ type ImplementUpdateRequest struct {
 	CreateTime *time.Time `json:"create_time"`
 	UpdateTime *time.Time `json:"update_time"`
 	Name       *string    `json:"name"`
+	Location   *int       `json:"location"`
+	Category   *int       `json:"category"`
 }
 
 // Payload of a ent.Location create request.
@@ -57,6 +75,10 @@ type LocationCreateRequest struct {
 	Name       *string    `json:"name"`
 	Zone       *int32     `json:"zone"`
 	Vehicle    []int      `json:"vehicle"`
+	Tool       []int      `json:"tool"`
+	Implement  []int      `json:"implement"`
+	Equipment  []int      `json:"equipment"`
+	Category   *int       `json:"category"`
 }
 
 // Payload of a ent.Location update request.
@@ -66,6 +88,10 @@ type LocationUpdateRequest struct {
 	Name       *string    `json:"name"`
 	Zone       *int32     `json:"zone"`
 	Vehicle    []int      `json:"vehicle"`
+	Tool       []int      `json:"tool"`
+	Implement  []int      `json:"implement"`
+	Equipment  []int      `json:"equipment"`
+	Category   *int       `json:"category"`
 }
 
 // Payload of a ent.Tool create request.
@@ -74,6 +100,8 @@ type ToolCreateRequest struct {
 	UpdateTime *time.Time `json:"update_time"`
 	Name       *string    `json:"name"`
 	Powered    *bool      `json:"powered"`
+	Location   *int       `json:"location"`
+	Category   *int       `json:"category"`
 }
 
 // Payload of a ent.Tool update request.
@@ -82,6 +110,8 @@ type ToolUpdateRequest struct {
 	UpdateTime *time.Time `json:"update_time"`
 	Name       *string    `json:"name"`
 	Powered    *bool      `json:"powered"`
+	Location   *int       `json:"location"`
+	Category   *int       `json:"category"`
 }
 
 // Payload of a ent.Vehicle create request.
@@ -91,7 +121,7 @@ type VehicleCreateRequest struct {
 	Make       *string    `json:"make"`
 	Model      *string    `json:"model"`
 	Hours      *int64     `json:"hours"`
-	Year       *string    `json:"year"`
+	Year       *int64     `json:"year"`
 	Active     *bool      `json:"active"`
 	Power      *string    `json:"power"`
 	Location   *int       `json:"location"`
@@ -104,7 +134,7 @@ type VehicleUpdateRequest struct {
 	Make       *string    `json:"make"`
 	Model      *string    `json:"model"`
 	Hours      *int64     `json:"hours"`
-	Year       *string    `json:"year"`
+	Year       *int64     `json:"year"`
 	Active     *bool      `json:"active"`
 	Power      *string    `json:"power"`
 	Location   *int       `json:"location"`

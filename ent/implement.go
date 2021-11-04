@@ -8,7 +8,9 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/open-farms/inventory/ent/category"
 	"github.com/open-farms/inventory/ent/implement"
+	"github.com/open-farms/inventory/ent/location"
 )
 
 // Implement is the model entity for the Implement schema.
@@ -22,6 +24,50 @@ type Implement struct {
 	UpdateTime time.Time `json:"update_time,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the ImplementQuery when eager-loading is set.
+	Edges              ImplementEdges `json:"edges"`
+	category_implement *int
+	location_implement *int
+}
+
+// ImplementEdges holds the relations/edges for other nodes in the graph.
+type ImplementEdges struct {
+	// Location holds the value of the location edge.
+	Location *Location `json:"location,omitempty"`
+	// Category holds the value of the category edge.
+	Category *Category `json:"category,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// LocationOrErr returns the Location value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ImplementEdges) LocationOrErr() (*Location, error) {
+	if e.loadedTypes[0] {
+		if e.Location == nil {
+			// The edge location was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: location.Label}
+		}
+		return e.Location, nil
+	}
+	return nil, &NotLoadedError{edge: "location"}
+}
+
+// CategoryOrErr returns the Category value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ImplementEdges) CategoryOrErr() (*Category, error) {
+	if e.loadedTypes[1] {
+		if e.Category == nil {
+			// The edge category was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: category.Label}
+		}
+		return e.Category, nil
+	}
+	return nil, &NotLoadedError{edge: "category"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -35,6 +81,10 @@ func (*Implement) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullString)
 		case implement.FieldCreateTime, implement.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
+		case implement.ForeignKeys[0]: // category_implement
+			values[i] = new(sql.NullInt64)
+		case implement.ForeignKeys[1]: // location_implement
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Implement", columns[i])
 		}
@@ -74,9 +124,33 @@ func (i *Implement) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				i.Name = value.String
 			}
+		case implement.ForeignKeys[0]:
+			if value, ok := values[j].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field category_implement", value)
+			} else if value.Valid {
+				i.category_implement = new(int)
+				*i.category_implement = int(value.Int64)
+			}
+		case implement.ForeignKeys[1]:
+			if value, ok := values[j].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field location_implement", value)
+			} else if value.Valid {
+				i.location_implement = new(int)
+				*i.location_implement = int(value.Int64)
+			}
 		}
 	}
 	return nil
+}
+
+// QueryLocation queries the "location" edge of the Implement entity.
+func (i *Implement) QueryLocation() *LocationQuery {
+	return (&ImplementClient{config: i.config}).QueryLocation(i)
+}
+
+// QueryCategory queries the "category" edge of the Implement entity.
+func (i *Implement) QueryCategory() *CategoryQuery {
+	return (&ImplementClient{config: i.config}).QueryCategory(i)
 }
 
 // Update returns a builder for updating this Implement.

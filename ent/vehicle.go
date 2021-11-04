@@ -28,7 +28,7 @@ type Vehicle struct {
 	// Hours holds the value of the "hours" field.
 	Hours int64 `json:"hours,omitempty"`
 	// Year holds the value of the "year" field.
-	Year string `json:"year,omitempty"`
+	Year int64 `json:"year,omitempty"`
 	// Active holds the value of the "active" field.
 	Active bool `json:"active,omitempty"`
 	// Power holds the value of the "power" field.
@@ -36,6 +36,7 @@ type Vehicle struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the VehicleQuery when eager-loading is set.
 	Edges            VehicleEdges `json:"edges"`
+	category_vehicle *int
 	location_vehicle *int
 }
 
@@ -69,13 +70,15 @@ func (*Vehicle) scanValues(columns []string) ([]interface{}, error) {
 		switch columns[i] {
 		case vehicle.FieldActive:
 			values[i] = new(sql.NullBool)
-		case vehicle.FieldID, vehicle.FieldHours:
+		case vehicle.FieldID, vehicle.FieldHours, vehicle.FieldYear:
 			values[i] = new(sql.NullInt64)
-		case vehicle.FieldMake, vehicle.FieldModel, vehicle.FieldYear, vehicle.FieldPower:
+		case vehicle.FieldMake, vehicle.FieldModel, vehicle.FieldPower:
 			values[i] = new(sql.NullString)
 		case vehicle.FieldCreateTime, vehicle.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
-		case vehicle.ForeignKeys[0]: // location_vehicle
+		case vehicle.ForeignKeys[0]: // category_vehicle
+			values[i] = new(sql.NullInt64)
+		case vehicle.ForeignKeys[1]: // location_vehicle
 			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Vehicle", columns[i])
@@ -129,10 +132,10 @@ func (v *Vehicle) assignValues(columns []string, values []interface{}) error {
 				v.Hours = value.Int64
 			}
 		case vehicle.FieldYear:
-			if value, ok := values[i].(*sql.NullString); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field year", values[i])
 			} else if value.Valid {
-				v.Year = value.String
+				v.Year = value.Int64
 			}
 		case vehicle.FieldActive:
 			if value, ok := values[i].(*sql.NullBool); !ok {
@@ -147,6 +150,13 @@ func (v *Vehicle) assignValues(columns []string, values []interface{}) error {
 				v.Power = value.String
 			}
 		case vehicle.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field category_vehicle", value)
+			} else if value.Valid {
+				v.category_vehicle = new(int)
+				*v.category_vehicle = int(value.Int64)
+			}
+		case vehicle.ForeignKeys[1]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field location_vehicle", value)
 			} else if value.Valid {
@@ -197,7 +207,7 @@ func (v *Vehicle) String() string {
 	builder.WriteString(", hours=")
 	builder.WriteString(fmt.Sprintf("%v", v.Hours))
 	builder.WriteString(", year=")
-	builder.WriteString(v.Year)
+	builder.WriteString(fmt.Sprintf("%v", v.Year))
 	builder.WriteString(", active=")
 	builder.WriteString(fmt.Sprintf("%v", v.Active))
 	builder.WriteString(", power=")

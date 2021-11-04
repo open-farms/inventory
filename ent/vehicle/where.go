@@ -129,7 +129,7 @@ func Hours(v int64) predicate.Vehicle {
 }
 
 // Year applies equality check predicate on the "year" field. It's identical to YearEQ.
-func Year(v string) predicate.Vehicle {
+func Year(v int64) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldYear), v))
 	})
@@ -600,21 +600,21 @@ func HoursLTE(v int64) predicate.Vehicle {
 }
 
 // YearEQ applies the EQ predicate on the "year" field.
-func YearEQ(v string) predicate.Vehicle {
+func YearEQ(v int64) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.EQ(s.C(FieldYear), v))
 	})
 }
 
 // YearNEQ applies the NEQ predicate on the "year" field.
-func YearNEQ(v string) predicate.Vehicle {
+func YearNEQ(v int64) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.NEQ(s.C(FieldYear), v))
 	})
 }
 
 // YearIn applies the In predicate on the "year" field.
-func YearIn(vs ...string) predicate.Vehicle {
+func YearIn(vs ...int64) predicate.Vehicle {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -631,7 +631,7 @@ func YearIn(vs ...string) predicate.Vehicle {
 }
 
 // YearNotIn applies the NotIn predicate on the "year" field.
-func YearNotIn(vs ...string) predicate.Vehicle {
+func YearNotIn(vs ...int64) predicate.Vehicle {
 	v := make([]interface{}, len(vs))
 	for i := range v {
 		v[i] = vs[i]
@@ -648,51 +648,30 @@ func YearNotIn(vs ...string) predicate.Vehicle {
 }
 
 // YearGT applies the GT predicate on the "year" field.
-func YearGT(v string) predicate.Vehicle {
+func YearGT(v int64) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.GT(s.C(FieldYear), v))
 	})
 }
 
 // YearGTE applies the GTE predicate on the "year" field.
-func YearGTE(v string) predicate.Vehicle {
+func YearGTE(v int64) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.GTE(s.C(FieldYear), v))
 	})
 }
 
 // YearLT applies the LT predicate on the "year" field.
-func YearLT(v string) predicate.Vehicle {
+func YearLT(v int64) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.LT(s.C(FieldYear), v))
 	})
 }
 
 // YearLTE applies the LTE predicate on the "year" field.
-func YearLTE(v string) predicate.Vehicle {
+func YearLTE(v int64) predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.LTE(s.C(FieldYear), v))
-	})
-}
-
-// YearContains applies the Contains predicate on the "year" field.
-func YearContains(v string) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.Contains(s.C(FieldYear), v))
-	})
-}
-
-// YearHasPrefix applies the HasPrefix predicate on the "year" field.
-func YearHasPrefix(v string) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.HasPrefix(s.C(FieldYear), v))
-	})
-}
-
-// YearHasSuffix applies the HasSuffix predicate on the "year" field.
-func YearHasSuffix(v string) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.HasSuffix(s.C(FieldYear), v))
 	})
 }
 
@@ -707,20 +686,6 @@ func YearIsNil() predicate.Vehicle {
 func YearNotNil() predicate.Vehicle {
 	return predicate.Vehicle(func(s *sql.Selector) {
 		s.Where(sql.NotNull(s.C(FieldYear)))
-	})
-}
-
-// YearEqualFold applies the EqualFold predicate on the "year" field.
-func YearEqualFold(v string) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.EqualFold(s.C(FieldYear), v))
-	})
-}
-
-// YearContainsFold applies the ContainsFold predicate on the "year" field.
-func YearContainsFold(v string) predicate.Vehicle {
-	return predicate.Vehicle(func(s *sql.Selector) {
-		s.Where(sql.ContainsFold(s.C(FieldYear), v))
 	})
 }
 

@@ -4,13 +4,16 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/open-farms/inventory/ent/category"
 	"github.com/open-farms/inventory/ent/implement"
+	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/predicate"
 )
 
@@ -53,9 +56,51 @@ func (iu *ImplementUpdate) SetName(s string) *ImplementUpdate {
 	return iu
 }
 
+// SetLocationID sets the "location" edge to the Location entity by ID.
+func (iu *ImplementUpdate) SetLocationID(id int) *ImplementUpdate {
+	iu.mutation.SetLocationID(id)
+	return iu
+}
+
+// SetLocation sets the "location" edge to the Location entity.
+func (iu *ImplementUpdate) SetLocation(l *Location) *ImplementUpdate {
+	return iu.SetLocationID(l.ID)
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (iu *ImplementUpdate) SetCategoryID(id int) *ImplementUpdate {
+	iu.mutation.SetCategoryID(id)
+	return iu
+}
+
+// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
+func (iu *ImplementUpdate) SetNillableCategoryID(id *int) *ImplementUpdate {
+	if id != nil {
+		iu = iu.SetCategoryID(*id)
+	}
+	return iu
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (iu *ImplementUpdate) SetCategory(c *Category) *ImplementUpdate {
+	return iu.SetCategoryID(c.ID)
+}
+
 // Mutation returns the ImplementMutation object of the builder.
 func (iu *ImplementUpdate) Mutation() *ImplementMutation {
 	return iu.mutation
+}
+
+// ClearLocation clears the "location" edge to the Location entity.
+func (iu *ImplementUpdate) ClearLocation() *ImplementUpdate {
+	iu.mutation.ClearLocation()
+	return iu
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (iu *ImplementUpdate) ClearCategory() *ImplementUpdate {
+	iu.mutation.ClearCategory()
+	return iu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -66,12 +111,18 @@ func (iu *ImplementUpdate) Save(ctx context.Context) (int, error) {
 	)
 	iu.defaults()
 	if len(iu.hooks) == 0 {
+		if err = iu.check(); err != nil {
+			return 0, err
+		}
 		affected, err = iu.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*ImplementMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = iu.check(); err != nil {
+				return 0, err
 			}
 			iu.mutation = mutation
 			affected, err = iu.sqlSave(ctx)
@@ -121,6 +172,14 @@ func (iu *ImplementUpdate) defaults() {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (iu *ImplementUpdate) check() error {
+	if _, ok := iu.mutation.LocationID(); iu.mutation.LocationCleared() && !ok {
+		return errors.New("ent: clearing a required unique edge \"location\"")
+	}
+	return nil
+}
+
 func (iu *ImplementUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	_spec := &sqlgraph.UpdateSpec{
 		Node: &sqlgraph.NodeSpec{
@@ -159,6 +218,76 @@ func (iu *ImplementUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Value:  value,
 			Column: implement.FieldName,
 		})
+	}
+	if iu.mutation.LocationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   implement.LocationTable,
+			Columns: []string{implement.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   implement.LocationTable,
+			Columns: []string{implement.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iu.mutation.CategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   implement.CategoryTable,
+			Columns: []string{implement.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iu.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   implement.CategoryTable,
+			Columns: []string{implement.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, iu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -205,9 +334,51 @@ func (iuo *ImplementUpdateOne) SetName(s string) *ImplementUpdateOne {
 	return iuo
 }
 
+// SetLocationID sets the "location" edge to the Location entity by ID.
+func (iuo *ImplementUpdateOne) SetLocationID(id int) *ImplementUpdateOne {
+	iuo.mutation.SetLocationID(id)
+	return iuo
+}
+
+// SetLocation sets the "location" edge to the Location entity.
+func (iuo *ImplementUpdateOne) SetLocation(l *Location) *ImplementUpdateOne {
+	return iuo.SetLocationID(l.ID)
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (iuo *ImplementUpdateOne) SetCategoryID(id int) *ImplementUpdateOne {
+	iuo.mutation.SetCategoryID(id)
+	return iuo
+}
+
+// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
+func (iuo *ImplementUpdateOne) SetNillableCategoryID(id *int) *ImplementUpdateOne {
+	if id != nil {
+		iuo = iuo.SetCategoryID(*id)
+	}
+	return iuo
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (iuo *ImplementUpdateOne) SetCategory(c *Category) *ImplementUpdateOne {
+	return iuo.SetCategoryID(c.ID)
+}
+
 // Mutation returns the ImplementMutation object of the builder.
 func (iuo *ImplementUpdateOne) Mutation() *ImplementMutation {
 	return iuo.mutation
+}
+
+// ClearLocation clears the "location" edge to the Location entity.
+func (iuo *ImplementUpdateOne) ClearLocation() *ImplementUpdateOne {
+	iuo.mutation.ClearLocation()
+	return iuo
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (iuo *ImplementUpdateOne) ClearCategory() *ImplementUpdateOne {
+	iuo.mutation.ClearCategory()
+	return iuo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -225,12 +396,18 @@ func (iuo *ImplementUpdateOne) Save(ctx context.Context) (*Implement, error) {
 	)
 	iuo.defaults()
 	if len(iuo.hooks) == 0 {
+		if err = iuo.check(); err != nil {
+			return nil, err
+		}
 		node, err = iuo.sqlSave(ctx)
 	} else {
 		var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 			mutation, ok := m.(*ImplementMutation)
 			if !ok {
 				return nil, fmt.Errorf("unexpected mutation type %T", m)
+			}
+			if err = iuo.check(); err != nil {
+				return nil, err
 			}
 			iuo.mutation = mutation
 			node, err = iuo.sqlSave(ctx)
@@ -278,6 +455,14 @@ func (iuo *ImplementUpdateOne) defaults() {
 		v := implement.UpdateDefaultUpdateTime()
 		iuo.mutation.SetUpdateTime(v)
 	}
+}
+
+// check runs all checks and user-defined validators on the builder.
+func (iuo *ImplementUpdateOne) check() error {
+	if _, ok := iuo.mutation.LocationID(); iuo.mutation.LocationCleared() && !ok {
+		return errors.New("ent: clearing a required unique edge \"location\"")
+	}
+	return nil
 }
 
 func (iuo *ImplementUpdateOne) sqlSave(ctx context.Context) (_node *Implement, err error) {
@@ -335,6 +520,76 @@ func (iuo *ImplementUpdateOne) sqlSave(ctx context.Context) (_node *Implement, e
 			Value:  value,
 			Column: implement.FieldName,
 		})
+	}
+	if iuo.mutation.LocationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   implement.LocationTable,
+			Columns: []string{implement.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   implement.LocationTable,
+			Columns: []string{implement.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if iuo.mutation.CategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   implement.CategoryTable,
+			Columns: []string{implement.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := iuo.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   implement.CategoryTable,
+			Columns: []string{implement.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Implement{config: iuo.config}
 	_spec.Assign = _node.assignValues

@@ -11,7 +11,12 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/open-farms/inventory/ent/category"
+	"github.com/open-farms/inventory/ent/equipment"
+	"github.com/open-farms/inventory/ent/implement"
+	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/predicate"
+	"github.com/open-farms/inventory/ent/tool"
+	"github.com/open-farms/inventory/ent/vehicle"
 )
 
 // CategoryUpdate is the builder for updating Category entities.
@@ -53,9 +58,189 @@ func (cu *CategoryUpdate) SetName(s string) *CategoryUpdate {
 	return cu
 }
 
+// AddVehicleIDs adds the "vehicle" edge to the Vehicle entity by IDs.
+func (cu *CategoryUpdate) AddVehicleIDs(ids ...int) *CategoryUpdate {
+	cu.mutation.AddVehicleIDs(ids...)
+	return cu
+}
+
+// AddVehicle adds the "vehicle" edges to the Vehicle entity.
+func (cu *CategoryUpdate) AddVehicle(v ...*Vehicle) *CategoryUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return cu.AddVehicleIDs(ids...)
+}
+
+// AddToolIDs adds the "tool" edge to the Tool entity by IDs.
+func (cu *CategoryUpdate) AddToolIDs(ids ...int) *CategoryUpdate {
+	cu.mutation.AddToolIDs(ids...)
+	return cu
+}
+
+// AddTool adds the "tool" edges to the Tool entity.
+func (cu *CategoryUpdate) AddTool(t ...*Tool) *CategoryUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return cu.AddToolIDs(ids...)
+}
+
+// AddImplementIDs adds the "implement" edge to the Implement entity by IDs.
+func (cu *CategoryUpdate) AddImplementIDs(ids ...int) *CategoryUpdate {
+	cu.mutation.AddImplementIDs(ids...)
+	return cu
+}
+
+// AddImplement adds the "implement" edges to the Implement entity.
+func (cu *CategoryUpdate) AddImplement(i ...*Implement) *CategoryUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return cu.AddImplementIDs(ids...)
+}
+
+// AddEquipmentIDs adds the "equipment" edge to the Equipment entity by IDs.
+func (cu *CategoryUpdate) AddEquipmentIDs(ids ...int) *CategoryUpdate {
+	cu.mutation.AddEquipmentIDs(ids...)
+	return cu
+}
+
+// AddEquipment adds the "equipment" edges to the Equipment entity.
+func (cu *CategoryUpdate) AddEquipment(e ...*Equipment) *CategoryUpdate {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return cu.AddEquipmentIDs(ids...)
+}
+
+// AddLocationIDs adds the "location" edge to the Location entity by IDs.
+func (cu *CategoryUpdate) AddLocationIDs(ids ...int) *CategoryUpdate {
+	cu.mutation.AddLocationIDs(ids...)
+	return cu
+}
+
+// AddLocation adds the "location" edges to the Location entity.
+func (cu *CategoryUpdate) AddLocation(l ...*Location) *CategoryUpdate {
+	ids := make([]int, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return cu.AddLocationIDs(ids...)
+}
+
 // Mutation returns the CategoryMutation object of the builder.
 func (cu *CategoryUpdate) Mutation() *CategoryMutation {
 	return cu.mutation
+}
+
+// ClearVehicle clears all "vehicle" edges to the Vehicle entity.
+func (cu *CategoryUpdate) ClearVehicle() *CategoryUpdate {
+	cu.mutation.ClearVehicle()
+	return cu
+}
+
+// RemoveVehicleIDs removes the "vehicle" edge to Vehicle entities by IDs.
+func (cu *CategoryUpdate) RemoveVehicleIDs(ids ...int) *CategoryUpdate {
+	cu.mutation.RemoveVehicleIDs(ids...)
+	return cu
+}
+
+// RemoveVehicle removes "vehicle" edges to Vehicle entities.
+func (cu *CategoryUpdate) RemoveVehicle(v ...*Vehicle) *CategoryUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return cu.RemoveVehicleIDs(ids...)
+}
+
+// ClearTool clears all "tool" edges to the Tool entity.
+func (cu *CategoryUpdate) ClearTool() *CategoryUpdate {
+	cu.mutation.ClearTool()
+	return cu
+}
+
+// RemoveToolIDs removes the "tool" edge to Tool entities by IDs.
+func (cu *CategoryUpdate) RemoveToolIDs(ids ...int) *CategoryUpdate {
+	cu.mutation.RemoveToolIDs(ids...)
+	return cu
+}
+
+// RemoveTool removes "tool" edges to Tool entities.
+func (cu *CategoryUpdate) RemoveTool(t ...*Tool) *CategoryUpdate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return cu.RemoveToolIDs(ids...)
+}
+
+// ClearImplement clears all "implement" edges to the Implement entity.
+func (cu *CategoryUpdate) ClearImplement() *CategoryUpdate {
+	cu.mutation.ClearImplement()
+	return cu
+}
+
+// RemoveImplementIDs removes the "implement" edge to Implement entities by IDs.
+func (cu *CategoryUpdate) RemoveImplementIDs(ids ...int) *CategoryUpdate {
+	cu.mutation.RemoveImplementIDs(ids...)
+	return cu
+}
+
+// RemoveImplement removes "implement" edges to Implement entities.
+func (cu *CategoryUpdate) RemoveImplement(i ...*Implement) *CategoryUpdate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return cu.RemoveImplementIDs(ids...)
+}
+
+// ClearEquipment clears all "equipment" edges to the Equipment entity.
+func (cu *CategoryUpdate) ClearEquipment() *CategoryUpdate {
+	cu.mutation.ClearEquipment()
+	return cu
+}
+
+// RemoveEquipmentIDs removes the "equipment" edge to Equipment entities by IDs.
+func (cu *CategoryUpdate) RemoveEquipmentIDs(ids ...int) *CategoryUpdate {
+	cu.mutation.RemoveEquipmentIDs(ids...)
+	return cu
+}
+
+// RemoveEquipment removes "equipment" edges to Equipment entities.
+func (cu *CategoryUpdate) RemoveEquipment(e ...*Equipment) *CategoryUpdate {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return cu.RemoveEquipmentIDs(ids...)
+}
+
+// ClearLocation clears all "location" edges to the Location entity.
+func (cu *CategoryUpdate) ClearLocation() *CategoryUpdate {
+	cu.mutation.ClearLocation()
+	return cu
+}
+
+// RemoveLocationIDs removes the "location" edge to Location entities by IDs.
+func (cu *CategoryUpdate) RemoveLocationIDs(ids ...int) *CategoryUpdate {
+	cu.mutation.RemoveLocationIDs(ids...)
+	return cu
+}
+
+// RemoveLocation removes "location" edges to Location entities.
+func (cu *CategoryUpdate) RemoveLocation(l ...*Location) *CategoryUpdate {
+	ids := make([]int, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return cu.RemoveLocationIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -160,6 +345,276 @@ func (cu *CategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Column: category.FieldName,
 		})
 	}
+	if cu.mutation.VehicleCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.VehicleTable,
+			Columns: []string{category.VehicleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: vehicle.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.RemovedVehicleIDs(); len(nodes) > 0 && !cu.mutation.VehicleCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.VehicleTable,
+			Columns: []string{category.VehicleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: vehicle.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.VehicleIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.VehicleTable,
+			Columns: []string{category.VehicleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: vehicle.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cu.mutation.ToolCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ToolTable,
+			Columns: []string{category.ToolColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: tool.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.RemovedToolIDs(); len(nodes) > 0 && !cu.mutation.ToolCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ToolTable,
+			Columns: []string{category.ToolColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: tool.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.ToolIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ToolTable,
+			Columns: []string{category.ToolColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: tool.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cu.mutation.ImplementCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ImplementTable,
+			Columns: []string{category.ImplementColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: implement.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.RemovedImplementIDs(); len(nodes) > 0 && !cu.mutation.ImplementCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ImplementTable,
+			Columns: []string{category.ImplementColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: implement.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.ImplementIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ImplementTable,
+			Columns: []string{category.ImplementColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: implement.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cu.mutation.EquipmentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.EquipmentTable,
+			Columns: []string{category.EquipmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipment.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.RemovedEquipmentIDs(); len(nodes) > 0 && !cu.mutation.EquipmentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.EquipmentTable,
+			Columns: []string{category.EquipmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.EquipmentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.EquipmentTable,
+			Columns: []string{category.EquipmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cu.mutation.LocationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.LocationTable,
+			Columns: []string{category.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.RemovedLocationIDs(); len(nodes) > 0 && !cu.mutation.LocationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.LocationTable,
+			Columns: []string{category.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cu.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.LocationTable,
+			Columns: []string{category.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{category.Label}
@@ -205,9 +660,189 @@ func (cuo *CategoryUpdateOne) SetName(s string) *CategoryUpdateOne {
 	return cuo
 }
 
+// AddVehicleIDs adds the "vehicle" edge to the Vehicle entity by IDs.
+func (cuo *CategoryUpdateOne) AddVehicleIDs(ids ...int) *CategoryUpdateOne {
+	cuo.mutation.AddVehicleIDs(ids...)
+	return cuo
+}
+
+// AddVehicle adds the "vehicle" edges to the Vehicle entity.
+func (cuo *CategoryUpdateOne) AddVehicle(v ...*Vehicle) *CategoryUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return cuo.AddVehicleIDs(ids...)
+}
+
+// AddToolIDs adds the "tool" edge to the Tool entity by IDs.
+func (cuo *CategoryUpdateOne) AddToolIDs(ids ...int) *CategoryUpdateOne {
+	cuo.mutation.AddToolIDs(ids...)
+	return cuo
+}
+
+// AddTool adds the "tool" edges to the Tool entity.
+func (cuo *CategoryUpdateOne) AddTool(t ...*Tool) *CategoryUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return cuo.AddToolIDs(ids...)
+}
+
+// AddImplementIDs adds the "implement" edge to the Implement entity by IDs.
+func (cuo *CategoryUpdateOne) AddImplementIDs(ids ...int) *CategoryUpdateOne {
+	cuo.mutation.AddImplementIDs(ids...)
+	return cuo
+}
+
+// AddImplement adds the "implement" edges to the Implement entity.
+func (cuo *CategoryUpdateOne) AddImplement(i ...*Implement) *CategoryUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return cuo.AddImplementIDs(ids...)
+}
+
+// AddEquipmentIDs adds the "equipment" edge to the Equipment entity by IDs.
+func (cuo *CategoryUpdateOne) AddEquipmentIDs(ids ...int) *CategoryUpdateOne {
+	cuo.mutation.AddEquipmentIDs(ids...)
+	return cuo
+}
+
+// AddEquipment adds the "equipment" edges to the Equipment entity.
+func (cuo *CategoryUpdateOne) AddEquipment(e ...*Equipment) *CategoryUpdateOne {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return cuo.AddEquipmentIDs(ids...)
+}
+
+// AddLocationIDs adds the "location" edge to the Location entity by IDs.
+func (cuo *CategoryUpdateOne) AddLocationIDs(ids ...int) *CategoryUpdateOne {
+	cuo.mutation.AddLocationIDs(ids...)
+	return cuo
+}
+
+// AddLocation adds the "location" edges to the Location entity.
+func (cuo *CategoryUpdateOne) AddLocation(l ...*Location) *CategoryUpdateOne {
+	ids := make([]int, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return cuo.AddLocationIDs(ids...)
+}
+
 // Mutation returns the CategoryMutation object of the builder.
 func (cuo *CategoryUpdateOne) Mutation() *CategoryMutation {
 	return cuo.mutation
+}
+
+// ClearVehicle clears all "vehicle" edges to the Vehicle entity.
+func (cuo *CategoryUpdateOne) ClearVehicle() *CategoryUpdateOne {
+	cuo.mutation.ClearVehicle()
+	return cuo
+}
+
+// RemoveVehicleIDs removes the "vehicle" edge to Vehicle entities by IDs.
+func (cuo *CategoryUpdateOne) RemoveVehicleIDs(ids ...int) *CategoryUpdateOne {
+	cuo.mutation.RemoveVehicleIDs(ids...)
+	return cuo
+}
+
+// RemoveVehicle removes "vehicle" edges to Vehicle entities.
+func (cuo *CategoryUpdateOne) RemoveVehicle(v ...*Vehicle) *CategoryUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return cuo.RemoveVehicleIDs(ids...)
+}
+
+// ClearTool clears all "tool" edges to the Tool entity.
+func (cuo *CategoryUpdateOne) ClearTool() *CategoryUpdateOne {
+	cuo.mutation.ClearTool()
+	return cuo
+}
+
+// RemoveToolIDs removes the "tool" edge to Tool entities by IDs.
+func (cuo *CategoryUpdateOne) RemoveToolIDs(ids ...int) *CategoryUpdateOne {
+	cuo.mutation.RemoveToolIDs(ids...)
+	return cuo
+}
+
+// RemoveTool removes "tool" edges to Tool entities.
+func (cuo *CategoryUpdateOne) RemoveTool(t ...*Tool) *CategoryUpdateOne {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return cuo.RemoveToolIDs(ids...)
+}
+
+// ClearImplement clears all "implement" edges to the Implement entity.
+func (cuo *CategoryUpdateOne) ClearImplement() *CategoryUpdateOne {
+	cuo.mutation.ClearImplement()
+	return cuo
+}
+
+// RemoveImplementIDs removes the "implement" edge to Implement entities by IDs.
+func (cuo *CategoryUpdateOne) RemoveImplementIDs(ids ...int) *CategoryUpdateOne {
+	cuo.mutation.RemoveImplementIDs(ids...)
+	return cuo
+}
+
+// RemoveImplement removes "implement" edges to Implement entities.
+func (cuo *CategoryUpdateOne) RemoveImplement(i ...*Implement) *CategoryUpdateOne {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return cuo.RemoveImplementIDs(ids...)
+}
+
+// ClearEquipment clears all "equipment" edges to the Equipment entity.
+func (cuo *CategoryUpdateOne) ClearEquipment() *CategoryUpdateOne {
+	cuo.mutation.ClearEquipment()
+	return cuo
+}
+
+// RemoveEquipmentIDs removes the "equipment" edge to Equipment entities by IDs.
+func (cuo *CategoryUpdateOne) RemoveEquipmentIDs(ids ...int) *CategoryUpdateOne {
+	cuo.mutation.RemoveEquipmentIDs(ids...)
+	return cuo
+}
+
+// RemoveEquipment removes "equipment" edges to Equipment entities.
+func (cuo *CategoryUpdateOne) RemoveEquipment(e ...*Equipment) *CategoryUpdateOne {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return cuo.RemoveEquipmentIDs(ids...)
+}
+
+// ClearLocation clears all "location" edges to the Location entity.
+func (cuo *CategoryUpdateOne) ClearLocation() *CategoryUpdateOne {
+	cuo.mutation.ClearLocation()
+	return cuo
+}
+
+// RemoveLocationIDs removes the "location" edge to Location entities by IDs.
+func (cuo *CategoryUpdateOne) RemoveLocationIDs(ids ...int) *CategoryUpdateOne {
+	cuo.mutation.RemoveLocationIDs(ids...)
+	return cuo
+}
+
+// RemoveLocation removes "location" edges to Location entities.
+func (cuo *CategoryUpdateOne) RemoveLocation(l ...*Location) *CategoryUpdateOne {
+	ids := make([]int, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return cuo.RemoveLocationIDs(ids...)
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -335,6 +970,276 @@ func (cuo *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err
 			Value:  value,
 			Column: category.FieldName,
 		})
+	}
+	if cuo.mutation.VehicleCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.VehicleTable,
+			Columns: []string{category.VehicleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: vehicle.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.RemovedVehicleIDs(); len(nodes) > 0 && !cuo.mutation.VehicleCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.VehicleTable,
+			Columns: []string{category.VehicleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: vehicle.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.VehicleIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.VehicleTable,
+			Columns: []string{category.VehicleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: vehicle.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cuo.mutation.ToolCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ToolTable,
+			Columns: []string{category.ToolColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: tool.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.RemovedToolIDs(); len(nodes) > 0 && !cuo.mutation.ToolCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ToolTable,
+			Columns: []string{category.ToolColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: tool.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.ToolIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ToolTable,
+			Columns: []string{category.ToolColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: tool.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cuo.mutation.ImplementCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ImplementTable,
+			Columns: []string{category.ImplementColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: implement.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.RemovedImplementIDs(); len(nodes) > 0 && !cuo.mutation.ImplementCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ImplementTable,
+			Columns: []string{category.ImplementColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: implement.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.ImplementIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ImplementTable,
+			Columns: []string{category.ImplementColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: implement.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cuo.mutation.EquipmentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.EquipmentTable,
+			Columns: []string{category.EquipmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipment.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.RemovedEquipmentIDs(); len(nodes) > 0 && !cuo.mutation.EquipmentCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.EquipmentTable,
+			Columns: []string{category.EquipmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.EquipmentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.EquipmentTable,
+			Columns: []string{category.EquipmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if cuo.mutation.LocationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.LocationTable,
+			Columns: []string{category.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.RemovedLocationIDs(); len(nodes) > 0 && !cuo.mutation.LocationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.LocationTable,
+			Columns: []string{category.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := cuo.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.LocationTable,
+			Columns: []string{category.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Category{config: cuo.config}
 	_spec.Assign = _node.assignValues

@@ -11,6 +11,11 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/open-farms/inventory/ent/category"
+	"github.com/open-farms/inventory/ent/equipment"
+	"github.com/open-farms/inventory/ent/implement"
+	"github.com/open-farms/inventory/ent/location"
+	"github.com/open-farms/inventory/ent/tool"
+	"github.com/open-farms/inventory/ent/vehicle"
 )
 
 // CategoryCreate is the builder for creating a Category entity.
@@ -52,6 +57,81 @@ func (cc *CategoryCreate) SetNillableUpdateTime(t *time.Time) *CategoryCreate {
 func (cc *CategoryCreate) SetName(s string) *CategoryCreate {
 	cc.mutation.SetName(s)
 	return cc
+}
+
+// AddVehicleIDs adds the "vehicle" edge to the Vehicle entity by IDs.
+func (cc *CategoryCreate) AddVehicleIDs(ids ...int) *CategoryCreate {
+	cc.mutation.AddVehicleIDs(ids...)
+	return cc
+}
+
+// AddVehicle adds the "vehicle" edges to the Vehicle entity.
+func (cc *CategoryCreate) AddVehicle(v ...*Vehicle) *CategoryCreate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return cc.AddVehicleIDs(ids...)
+}
+
+// AddToolIDs adds the "tool" edge to the Tool entity by IDs.
+func (cc *CategoryCreate) AddToolIDs(ids ...int) *CategoryCreate {
+	cc.mutation.AddToolIDs(ids...)
+	return cc
+}
+
+// AddTool adds the "tool" edges to the Tool entity.
+func (cc *CategoryCreate) AddTool(t ...*Tool) *CategoryCreate {
+	ids := make([]int, len(t))
+	for i := range t {
+		ids[i] = t[i].ID
+	}
+	return cc.AddToolIDs(ids...)
+}
+
+// AddImplementIDs adds the "implement" edge to the Implement entity by IDs.
+func (cc *CategoryCreate) AddImplementIDs(ids ...int) *CategoryCreate {
+	cc.mutation.AddImplementIDs(ids...)
+	return cc
+}
+
+// AddImplement adds the "implement" edges to the Implement entity.
+func (cc *CategoryCreate) AddImplement(i ...*Implement) *CategoryCreate {
+	ids := make([]int, len(i))
+	for j := range i {
+		ids[j] = i[j].ID
+	}
+	return cc.AddImplementIDs(ids...)
+}
+
+// AddEquipmentIDs adds the "equipment" edge to the Equipment entity by IDs.
+func (cc *CategoryCreate) AddEquipmentIDs(ids ...int) *CategoryCreate {
+	cc.mutation.AddEquipmentIDs(ids...)
+	return cc
+}
+
+// AddEquipment adds the "equipment" edges to the Equipment entity.
+func (cc *CategoryCreate) AddEquipment(e ...*Equipment) *CategoryCreate {
+	ids := make([]int, len(e))
+	for i := range e {
+		ids[i] = e[i].ID
+	}
+	return cc.AddEquipmentIDs(ids...)
+}
+
+// AddLocationIDs adds the "location" edge to the Location entity by IDs.
+func (cc *CategoryCreate) AddLocationIDs(ids ...int) *CategoryCreate {
+	cc.mutation.AddLocationIDs(ids...)
+	return cc
+}
+
+// AddLocation adds the "location" edges to the Location entity.
+func (cc *CategoryCreate) AddLocation(l ...*Location) *CategoryCreate {
+	ids := make([]int, len(l))
+	for i := range l {
+		ids[i] = l[i].ID
+	}
+	return cc.AddLocationIDs(ids...)
 }
 
 // Mutation returns the CategoryMutation object of the builder.
@@ -196,6 +276,101 @@ func (cc *CategoryCreate) createSpec() (*Category, *sqlgraph.CreateSpec) {
 			Column: category.FieldName,
 		})
 		_node.Name = value
+	}
+	if nodes := cc.mutation.VehicleIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.VehicleTable,
+			Columns: []string{category.VehicleColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: vehicle.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cc.mutation.ToolIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ToolTable,
+			Columns: []string{category.ToolColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: tool.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cc.mutation.ImplementIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.ImplementTable,
+			Columns: []string{category.ImplementColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: implement.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cc.mutation.EquipmentIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.EquipmentTable,
+			Columns: []string{category.EquipmentColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: equipment.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := cc.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   category.LocationTable,
+			Columns: []string{category.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

@@ -76,15 +76,15 @@ func (vc *VehicleCreate) SetNillableHours(i *int64) *VehicleCreate {
 }
 
 // SetYear sets the "year" field.
-func (vc *VehicleCreate) SetYear(s string) *VehicleCreate {
-	vc.mutation.SetYear(s)
+func (vc *VehicleCreate) SetYear(i int64) *VehicleCreate {
+	vc.mutation.SetYear(i)
 	return vc
 }
 
 // SetNillableYear sets the "year" field if the given value is not nil.
-func (vc *VehicleCreate) SetNillableYear(s *string) *VehicleCreate {
-	if s != nil {
-		vc.SetYear(*s)
+func (vc *VehicleCreate) SetNillableYear(i *int64) *VehicleCreate {
+	if i != nil {
+		vc.SetYear(*i)
 	}
 	return vc
 }
@@ -243,6 +243,11 @@ func (vc *VehicleCreate) check() error {
 			return &ValidationError{Name: "hours", err: fmt.Errorf(`ent: validator failed for field "hours": %w`, err)}
 		}
 	}
+	if v, ok := vc.mutation.Year(); ok {
+		if err := vehicle.YearValidator(v); err != nil {
+			return &ValidationError{Name: "year", err: fmt.Errorf(`ent: validator failed for field "year": %w`, err)}
+		}
+	}
 	if _, ok := vc.mutation.Active(); !ok {
 		return &ValidationError{Name: "active", err: errors.New(`ent: missing required field "active"`)}
 	}
@@ -323,7 +328,7 @@ func (vc *VehicleCreate) createSpec() (*Vehicle, *sqlgraph.CreateSpec) {
 	}
 	if value, ok := vc.mutation.Year(); ok {
 		_spec.Fields = append(_spec.Fields, &sqlgraph.FieldSpec{
-			Type:   field.TypeString,
+			Type:   field.TypeInt64,
 			Value:  value,
 			Column: vehicle.FieldYear,
 		})

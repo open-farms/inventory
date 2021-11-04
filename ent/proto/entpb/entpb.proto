@@ -19,6 +19,16 @@ message Category {
   google.protobuf.Timestamp update_time = 3;
 
   string name = 4;
+
+  repeated Vehicle vehicle = 5;
+
+  repeated Tool tool = 6;
+
+  repeated Implement implement = 7;
+
+  repeated Equipment equipment = 8;
+
+  repeated Location location = 9;
 }
 
 message Equipment {
@@ -31,6 +41,10 @@ message Equipment {
   string name = 4;
 
   string condition = 5;
+
+  Location location = 6;
+
+  Category category = 7;
 }
 
 message CreateEquipmentRequest {
@@ -67,6 +81,10 @@ message Implement {
   google.protobuf.Timestamp update_time = 3;
 
   string name = 4;
+
+  Location location = 5;
+
+  Category category = 7;
 }
 
 message CreateImplementRequest {
@@ -107,6 +125,14 @@ message Location {
   int32 zone = 5;
 
   repeated Vehicle vehicle = 6;
+
+  repeated Tool tool = 7;
+
+  repeated Implement implement = 8;
+
+  repeated Equipment equipment = 9;
+
+  Category category = 10;
 }
 
 message Tool {
@@ -119,6 +145,10 @@ message Tool {
   string name = 4;
 
   bool powered = 5;
+
+  Location location = 6;
+
+  Category category = 7;
 }
 
 message CreateToolRequest {
@@ -160,7 +190,7 @@ message Vehicle {
 
   int64 hours = 6;
 
-  google.protobuf.StringValue year = 7;
+  google.protobuf.Int64Value year = 7;
 
   bool active = 8;
 

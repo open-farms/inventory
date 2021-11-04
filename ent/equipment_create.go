@@ -10,7 +10,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/open-farms/inventory/ent/category"
 	"github.com/open-farms/inventory/ent/equipment"
+	"github.com/open-farms/inventory/ent/location"
 )
 
 // EquipmentCreate is the builder for creating a Equipment entity.
@@ -58,6 +60,36 @@ func (ec *EquipmentCreate) SetName(s string) *EquipmentCreate {
 func (ec *EquipmentCreate) SetCondition(s string) *EquipmentCreate {
 	ec.mutation.SetCondition(s)
 	return ec
+}
+
+// SetLocationID sets the "location" edge to the Location entity by ID.
+func (ec *EquipmentCreate) SetLocationID(id int) *EquipmentCreate {
+	ec.mutation.SetLocationID(id)
+	return ec
+}
+
+// SetLocation sets the "location" edge to the Location entity.
+func (ec *EquipmentCreate) SetLocation(l *Location) *EquipmentCreate {
+	return ec.SetLocationID(l.ID)
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (ec *EquipmentCreate) SetCategoryID(id int) *EquipmentCreate {
+	ec.mutation.SetCategoryID(id)
+	return ec
+}
+
+// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
+func (ec *EquipmentCreate) SetNillableCategoryID(id *int) *EquipmentCreate {
+	if id != nil {
+		ec = ec.SetCategoryID(*id)
+	}
+	return ec
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (ec *EquipmentCreate) SetCategory(c *Category) *EquipmentCreate {
+	return ec.SetCategoryID(c.ID)
 }
 
 // Mutation returns the EquipmentMutation object of the builder.
@@ -160,6 +192,9 @@ func (ec *EquipmentCreate) check() error {
 			return &ValidationError{Name: "condition", err: fmt.Errorf(`ent: validator failed for field "condition": %w`, err)}
 		}
 	}
+	if _, ok := ec.mutation.LocationID(); !ok {
+		return &ValidationError{Name: "location", err: errors.New("ent: missing required edge \"location\"")}
+	}
 	return nil
 }
 
@@ -218,6 +253,46 @@ func (ec *EquipmentCreate) createSpec() (*Equipment, *sqlgraph.CreateSpec) {
 			Column: equipment.FieldCondition,
 		})
 		_node.Condition = value
+	}
+	if nodes := ec.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   equipment.LocationTable,
+			Columns: []string{equipment.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.location_equipment = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ec.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   equipment.CategoryTable,
+			Columns: []string{equipment.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.category_equipment = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

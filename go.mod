@@ -17,7 +17,6 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.9
 	github.com/mitchellh/mapstructure v1.4.2 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
-	github.com/treastech/logger v0.0.0-20180705232552-e381e9ecf2e3 // indirect
 	go.uber.org/zap v1.19.1
 	golang.org/x/sys v0.0.0-20211102192858-4dd72447c267 // indirect
 	golang.org/x/text v0.3.7 // indirect

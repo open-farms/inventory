@@ -22,6 +22,71 @@ type Category struct {
 	UpdateTime time.Time `json:"update_time,omitempty"`
 	// Name holds the value of the "name" field.
 	Name string `json:"name,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the CategoryQuery when eager-loading is set.
+	Edges CategoryEdges `json:"edges"`
+}
+
+// CategoryEdges holds the relations/edges for other nodes in the graph.
+type CategoryEdges struct {
+	// Vehicle holds the value of the vehicle edge.
+	Vehicle []*Vehicle `json:"vehicle,omitempty"`
+	// Tool holds the value of the tool edge.
+	Tool []*Tool `json:"tool,omitempty"`
+	// Implement holds the value of the implement edge.
+	Implement []*Implement `json:"implement,omitempty"`
+	// Equipment holds the value of the equipment edge.
+	Equipment []*Equipment `json:"equipment,omitempty"`
+	// Location holds the value of the location edge.
+	Location []*Location `json:"location,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [5]bool
+}
+
+// VehicleOrErr returns the Vehicle value or an error if the edge
+// was not loaded in eager-loading.
+func (e CategoryEdges) VehicleOrErr() ([]*Vehicle, error) {
+	if e.loadedTypes[0] {
+		return e.Vehicle, nil
+	}
+	return nil, &NotLoadedError{edge: "vehicle"}
+}
+
+// ToolOrErr returns the Tool value or an error if the edge
+// was not loaded in eager-loading.
+func (e CategoryEdges) ToolOrErr() ([]*Tool, error) {
+	if e.loadedTypes[1] {
+		return e.Tool, nil
+	}
+	return nil, &NotLoadedError{edge: "tool"}
+}
+
+// ImplementOrErr returns the Implement value or an error if the edge
+// was not loaded in eager-loading.
+func (e CategoryEdges) ImplementOrErr() ([]*Implement, error) {
+	if e.loadedTypes[2] {
+		return e.Implement, nil
+	}
+	return nil, &NotLoadedError{edge: "implement"}
+}
+
+// EquipmentOrErr returns the Equipment value or an error if the edge
+// was not loaded in eager-loading.
+func (e CategoryEdges) EquipmentOrErr() ([]*Equipment, error) {
+	if e.loadedTypes[3] {
+		return e.Equipment, nil
+	}
+	return nil, &NotLoadedError{edge: "equipment"}
+}
+
+// LocationOrErr returns the Location value or an error if the edge
+// was not loaded in eager-loading.
+func (e CategoryEdges) LocationOrErr() ([]*Location, error) {
+	if e.loadedTypes[4] {
+		return e.Location, nil
+	}
+	return nil, &NotLoadedError{edge: "location"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -77,6 +142,31 @@ func (c *Category) assignValues(columns []string, values []interface{}) error {
 		}
 	}
 	return nil
+}
+
+// QueryVehicle queries the "vehicle" edge of the Category entity.
+func (c *Category) QueryVehicle() *VehicleQuery {
+	return (&CategoryClient{config: c.config}).QueryVehicle(c)
+}
+
+// QueryTool queries the "tool" edge of the Category entity.
+func (c *Category) QueryTool() *ToolQuery {
+	return (&CategoryClient{config: c.config}).QueryTool(c)
+}
+
+// QueryImplement queries the "implement" edge of the Category entity.
+func (c *Category) QueryImplement() *ImplementQuery {
+	return (&CategoryClient{config: c.config}).QueryImplement(c)
+}
+
+// QueryEquipment queries the "equipment" edge of the Category entity.
+func (c *Category) QueryEquipment() *EquipmentQuery {
+	return (&CategoryClient{config: c.config}).QueryEquipment(c)
+}
+
+// QueryLocation queries the "location" edge of the Category entity.
+func (c *Category) QueryLocation() *LocationQuery {
+	return (&CategoryClient{config: c.config}).QueryLocation(c)
 }
 
 // Update returns a builder for updating this Category.

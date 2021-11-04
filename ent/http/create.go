@@ -38,6 +38,21 @@ func (h CategoryHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if d.Name != nil {
 		b.SetName(*d.Name)
 	}
+	if d.Vehicle != nil {
+		b.AddVehicleIDs(d.Vehicle...)
+	}
+	if d.Tool != nil {
+		b.AddToolIDs(d.Tool...)
+	}
+	if d.Implement != nil {
+		b.AddImplementIDs(d.Implement...)
+	}
+	if d.Equipment != nil {
+		b.AddEquipmentIDs(d.Equipment...)
+	}
+	if d.Location != nil {
+		b.AddLocationIDs(d.Location...)
+	}
 	e, err := b.Save(r.Context())
 	if err != nil {
 		switch {
@@ -92,6 +107,9 @@ func (h EquipmentHandler) Create(w http.ResponseWriter, r *http.Request) {
 	} else if err := equipment.ConditionValidator(*d.Condition); err != nil {
 		errs["condition"] = strings.TrimPrefix(err.Error(), "equipment: ")
 	}
+	if d.Location == nil {
+		errs["location"] = `missing required edge: "location"`
+	}
 	if len(errs) > 0 {
 		l.Info("validation failed", zapFields(errs)...)
 		BadRequest(w, errs)
@@ -110,6 +128,12 @@ func (h EquipmentHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 	if d.Condition != nil {
 		b.SetCondition(*d.Condition)
+	}
+	if d.Location != nil {
+		b.SetLocationID(*d.Location)
+	}
+	if d.Category != nil {
+		b.SetCategoryID(*d.Category)
 	}
 	e, err := b.Save(r.Context())
 	if err != nil {
@@ -165,6 +189,12 @@ func (h ImplementHandler) Create(w http.ResponseWriter, r *http.Request) {
 	}
 	if d.Name != nil {
 		b.SetName(*d.Name)
+	}
+	if d.Location != nil {
+		b.SetLocationID(*d.Location)
+	}
+	if d.Category != nil {
+		b.SetCategoryID(*d.Category)
 	}
 	e, err := b.Save(r.Context())
 	if err != nil {
@@ -227,6 +257,18 @@ func (h LocationHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if d.Vehicle != nil {
 		b.AddVehicleIDs(d.Vehicle...)
 	}
+	if d.Tool != nil {
+		b.AddToolIDs(d.Tool...)
+	}
+	if d.Implement != nil {
+		b.AddImplementIDs(d.Implement...)
+	}
+	if d.Equipment != nil {
+		b.AddEquipmentIDs(d.Equipment...)
+	}
+	if d.Category != nil {
+		b.SetCategoryID(*d.Category)
+	}
 	e, err := b.Save(r.Context())
 	if err != nil {
 		switch {
@@ -285,6 +327,12 @@ func (h ToolHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if d.Powered != nil {
 		b.SetPowered(*d.Powered)
 	}
+	if d.Location != nil {
+		b.SetLocationID(*d.Location)
+	}
+	if d.Category != nil {
+		b.SetCategoryID(*d.Category)
+	}
 	e, err := b.Save(r.Context())
 	if err != nil {
 		switch {
@@ -340,6 +388,11 @@ func (h VehicleHandler) Create(w http.ResponseWriter, r *http.Request) {
 	if d.Hours != nil {
 		if err := vehicle.HoursValidator(*d.Hours); err != nil {
 			errs["hours"] = strings.TrimPrefix(err.Error(), "vehicle: ")
+		}
+	}
+	if d.Year != nil {
+		if err := vehicle.YearValidator(*d.Year); err != nil {
+			errs["year"] = strings.TrimPrefix(err.Error(), "vehicle: ")
 		}
 	}
 	if d.Power != nil {

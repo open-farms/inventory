@@ -10,7 +10,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/open-farms/inventory/ent/category"
 	"github.com/open-farms/inventory/ent/implement"
+	"github.com/open-farms/inventory/ent/location"
 )
 
 // ImplementCreate is the builder for creating a Implement entity.
@@ -52,6 +54,36 @@ func (ic *ImplementCreate) SetNillableUpdateTime(t *time.Time) *ImplementCreate 
 func (ic *ImplementCreate) SetName(s string) *ImplementCreate {
 	ic.mutation.SetName(s)
 	return ic
+}
+
+// SetLocationID sets the "location" edge to the Location entity by ID.
+func (ic *ImplementCreate) SetLocationID(id int) *ImplementCreate {
+	ic.mutation.SetLocationID(id)
+	return ic
+}
+
+// SetLocation sets the "location" edge to the Location entity.
+func (ic *ImplementCreate) SetLocation(l *Location) *ImplementCreate {
+	return ic.SetLocationID(l.ID)
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (ic *ImplementCreate) SetCategoryID(id int) *ImplementCreate {
+	ic.mutation.SetCategoryID(id)
+	return ic
+}
+
+// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
+func (ic *ImplementCreate) SetNillableCategoryID(id *int) *ImplementCreate {
+	if id != nil {
+		ic = ic.SetCategoryID(*id)
+	}
+	return ic
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (ic *ImplementCreate) SetCategory(c *Category) *ImplementCreate {
+	return ic.SetCategoryID(c.ID)
 }
 
 // Mutation returns the ImplementMutation object of the builder.
@@ -146,6 +178,9 @@ func (ic *ImplementCreate) check() error {
 	if _, ok := ic.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "name"`)}
 	}
+	if _, ok := ic.mutation.LocationID(); !ok {
+		return &ValidationError{Name: "location", err: errors.New("ent: missing required edge \"location\"")}
+	}
 	return nil
 }
 
@@ -196,6 +231,46 @@ func (ic *ImplementCreate) createSpec() (*Implement, *sqlgraph.CreateSpec) {
 			Column: implement.FieldName,
 		})
 		_node.Name = value
+	}
+	if nodes := ic.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   implement.LocationTable,
+			Columns: []string{implement.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.location_implement = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := ic.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   implement.CategoryTable,
+			Columns: []string{implement.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.category_implement = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

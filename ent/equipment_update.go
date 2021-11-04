@@ -4,13 +4,16 @@ package ent
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/open-farms/inventory/ent/category"
 	"github.com/open-farms/inventory/ent/equipment"
+	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/predicate"
 )
 
@@ -59,9 +62,51 @@ func (eu *EquipmentUpdate) SetCondition(s string) *EquipmentUpdate {
 	return eu
 }
 
+// SetLocationID sets the "location" edge to the Location entity by ID.
+func (eu *EquipmentUpdate) SetLocationID(id int) *EquipmentUpdate {
+	eu.mutation.SetLocationID(id)
+	return eu
+}
+
+// SetLocation sets the "location" edge to the Location entity.
+func (eu *EquipmentUpdate) SetLocation(l *Location) *EquipmentUpdate {
+	return eu.SetLocationID(l.ID)
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (eu *EquipmentUpdate) SetCategoryID(id int) *EquipmentUpdate {
+	eu.mutation.SetCategoryID(id)
+	return eu
+}
+
+// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
+func (eu *EquipmentUpdate) SetNillableCategoryID(id *int) *EquipmentUpdate {
+	if id != nil {
+		eu = eu.SetCategoryID(*id)
+	}
+	return eu
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (eu *EquipmentUpdate) SetCategory(c *Category) *EquipmentUpdate {
+	return eu.SetCategoryID(c.ID)
+}
+
 // Mutation returns the EquipmentMutation object of the builder.
 func (eu *EquipmentUpdate) Mutation() *EquipmentMutation {
 	return eu.mutation
+}
+
+// ClearLocation clears the "location" edge to the Location entity.
+func (eu *EquipmentUpdate) ClearLocation() *EquipmentUpdate {
+	eu.mutation.ClearLocation()
+	return eu
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (eu *EquipmentUpdate) ClearCategory() *EquipmentUpdate {
+	eu.mutation.ClearCategory()
+	return eu
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -140,6 +185,9 @@ func (eu *EquipmentUpdate) check() error {
 			return &ValidationError{Name: "condition", err: fmt.Errorf("ent: validator failed for field \"condition\": %w", err)}
 		}
 	}
+	if _, ok := eu.mutation.LocationID(); eu.mutation.LocationCleared() && !ok {
+		return errors.New("ent: clearing a required unique edge \"location\"")
+	}
 	return nil
 }
 
@@ -188,6 +236,76 @@ func (eu *EquipmentUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Value:  value,
 			Column: equipment.FieldCondition,
 		})
+	}
+	if eu.mutation.LocationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   equipment.LocationTable,
+			Columns: []string{equipment.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := eu.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   equipment.LocationTable,
+			Columns: []string{equipment.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if eu.mutation.CategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   equipment.CategoryTable,
+			Columns: []string{equipment.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := eu.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   equipment.CategoryTable,
+			Columns: []string{equipment.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if n, err = sqlgraph.UpdateNodes(ctx, eu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -240,9 +358,51 @@ func (euo *EquipmentUpdateOne) SetCondition(s string) *EquipmentUpdateOne {
 	return euo
 }
 
+// SetLocationID sets the "location" edge to the Location entity by ID.
+func (euo *EquipmentUpdateOne) SetLocationID(id int) *EquipmentUpdateOne {
+	euo.mutation.SetLocationID(id)
+	return euo
+}
+
+// SetLocation sets the "location" edge to the Location entity.
+func (euo *EquipmentUpdateOne) SetLocation(l *Location) *EquipmentUpdateOne {
+	return euo.SetLocationID(l.ID)
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (euo *EquipmentUpdateOne) SetCategoryID(id int) *EquipmentUpdateOne {
+	euo.mutation.SetCategoryID(id)
+	return euo
+}
+
+// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
+func (euo *EquipmentUpdateOne) SetNillableCategoryID(id *int) *EquipmentUpdateOne {
+	if id != nil {
+		euo = euo.SetCategoryID(*id)
+	}
+	return euo
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (euo *EquipmentUpdateOne) SetCategory(c *Category) *EquipmentUpdateOne {
+	return euo.SetCategoryID(c.ID)
+}
+
 // Mutation returns the EquipmentMutation object of the builder.
 func (euo *EquipmentUpdateOne) Mutation() *EquipmentMutation {
 	return euo.mutation
+}
+
+// ClearLocation clears the "location" edge to the Location entity.
+func (euo *EquipmentUpdateOne) ClearLocation() *EquipmentUpdateOne {
+	euo.mutation.ClearLocation()
+	return euo
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (euo *EquipmentUpdateOne) ClearCategory() *EquipmentUpdateOne {
+	euo.mutation.ClearCategory()
+	return euo
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
@@ -328,6 +488,9 @@ func (euo *EquipmentUpdateOne) check() error {
 			return &ValidationError{Name: "condition", err: fmt.Errorf("ent: validator failed for field \"condition\": %w", err)}
 		}
 	}
+	if _, ok := euo.mutation.LocationID(); euo.mutation.LocationCleared() && !ok {
+		return errors.New("ent: clearing a required unique edge \"location\"")
+	}
 	return nil
 }
 
@@ -393,6 +556,76 @@ func (euo *EquipmentUpdateOne) sqlSave(ctx context.Context) (_node *Equipment, e
 			Value:  value,
 			Column: equipment.FieldCondition,
 		})
+	}
+	if euo.mutation.LocationCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   equipment.LocationTable,
+			Columns: []string{equipment.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := euo.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   equipment.LocationTable,
+			Columns: []string{equipment.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if euo.mutation.CategoryCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   equipment.CategoryTable,
+			Columns: []string{equipment.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := euo.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   equipment.CategoryTable,
+			Columns: []string{equipment.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Equipment{config: euo.config}
 	_spec.Assign = _node.assignValues

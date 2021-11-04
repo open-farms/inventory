@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/open-farms/inventory/ent/category"
 	"github.com/open-farms/inventory/ent/location"
 )
 
@@ -26,16 +27,25 @@ type Location struct {
 	Zone int32 `json:"zone,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the LocationQuery when eager-loading is set.
-	Edges LocationEdges `json:"edges"`
+	Edges             LocationEdges `json:"edges"`
+	category_location *int
 }
 
 // LocationEdges holds the relations/edges for other nodes in the graph.
 type LocationEdges struct {
 	// Vehicle holds the value of the vehicle edge.
 	Vehicle []*Vehicle `json:"vehicle,omitempty"`
+	// Tool holds the value of the tool edge.
+	Tool []*Tool `json:"tool,omitempty"`
+	// Implement holds the value of the implement edge.
+	Implement []*Implement `json:"implement,omitempty"`
+	// Equipment holds the value of the equipment edge.
+	Equipment []*Equipment `json:"equipment,omitempty"`
+	// Category holds the value of the category edge.
+	Category *Category `json:"category,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [5]bool
 }
 
 // VehicleOrErr returns the Vehicle value or an error if the edge
@@ -45,6 +55,47 @@ func (e LocationEdges) VehicleOrErr() ([]*Vehicle, error) {
 		return e.Vehicle, nil
 	}
 	return nil, &NotLoadedError{edge: "vehicle"}
+}
+
+// ToolOrErr returns the Tool value or an error if the edge
+// was not loaded in eager-loading.
+func (e LocationEdges) ToolOrErr() ([]*Tool, error) {
+	if e.loadedTypes[1] {
+		return e.Tool, nil
+	}
+	return nil, &NotLoadedError{edge: "tool"}
+}
+
+// ImplementOrErr returns the Implement value or an error if the edge
+// was not loaded in eager-loading.
+func (e LocationEdges) ImplementOrErr() ([]*Implement, error) {
+	if e.loadedTypes[2] {
+		return e.Implement, nil
+	}
+	return nil, &NotLoadedError{edge: "implement"}
+}
+
+// EquipmentOrErr returns the Equipment value or an error if the edge
+// was not loaded in eager-loading.
+func (e LocationEdges) EquipmentOrErr() ([]*Equipment, error) {
+	if e.loadedTypes[3] {
+		return e.Equipment, nil
+	}
+	return nil, &NotLoadedError{edge: "equipment"}
+}
+
+// CategoryOrErr returns the Category value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e LocationEdges) CategoryOrErr() (*Category, error) {
+	if e.loadedTypes[4] {
+		if e.Category == nil {
+			// The edge category was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: category.Label}
+		}
+		return e.Category, nil
+	}
+	return nil, &NotLoadedError{edge: "category"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -58,6 +109,8 @@ func (*Location) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullString)
 		case location.FieldCreateTime, location.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
+		case location.ForeignKeys[0]: // category_location
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Location", columns[i])
 		}
@@ -103,6 +156,13 @@ func (l *Location) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				l.Zone = int32(value.Int64)
 			}
+		case location.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field category_location", value)
+			} else if value.Valid {
+				l.category_location = new(int)
+				*l.category_location = int(value.Int64)
+			}
 		}
 	}
 	return nil
@@ -111,6 +171,26 @@ func (l *Location) assignValues(columns []string, values []interface{}) error {
 // QueryVehicle queries the "vehicle" edge of the Location entity.
 func (l *Location) QueryVehicle() *VehicleQuery {
 	return (&LocationClient{config: l.config}).QueryVehicle(l)
+}
+
+// QueryTool queries the "tool" edge of the Location entity.
+func (l *Location) QueryTool() *ToolQuery {
+	return (&LocationClient{config: l.config}).QueryTool(l)
+}
+
+// QueryImplement queries the "implement" edge of the Location entity.
+func (l *Location) QueryImplement() *ImplementQuery {
+	return (&LocationClient{config: l.config}).QueryImplement(l)
+}
+
+// QueryEquipment queries the "equipment" edge of the Location entity.
+func (l *Location) QueryEquipment() *EquipmentQuery {
+	return (&LocationClient{config: l.config}).QueryEquipment(l)
+}
+
+// QueryCategory queries the "category" edge of the Location entity.
+func (l *Location) QueryCategory() *CategoryQuery {
+	return (&LocationClient{config: l.config}).QueryCategory(l)
 }
 
 // Update returns a builder for updating this Location.

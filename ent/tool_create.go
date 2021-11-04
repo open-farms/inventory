@@ -10,6 +10,8 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/open-farms/inventory/ent/category"
+	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/tool"
 )
 
@@ -66,6 +68,36 @@ func (tc *ToolCreate) SetNillablePowered(b *bool) *ToolCreate {
 		tc.SetPowered(*b)
 	}
 	return tc
+}
+
+// SetLocationID sets the "location" edge to the Location entity by ID.
+func (tc *ToolCreate) SetLocationID(id int) *ToolCreate {
+	tc.mutation.SetLocationID(id)
+	return tc
+}
+
+// SetLocation sets the "location" edge to the Location entity.
+func (tc *ToolCreate) SetLocation(l *Location) *ToolCreate {
+	return tc.SetLocationID(l.ID)
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by ID.
+func (tc *ToolCreate) SetCategoryID(id int) *ToolCreate {
+	tc.mutation.SetCategoryID(id)
+	return tc
+}
+
+// SetNillableCategoryID sets the "category" edge to the Category entity by ID if the given value is not nil.
+func (tc *ToolCreate) SetNillableCategoryID(id *int) *ToolCreate {
+	if id != nil {
+		tc = tc.SetCategoryID(*id)
+	}
+	return tc
+}
+
+// SetCategory sets the "category" edge to the Category entity.
+func (tc *ToolCreate) SetCategory(c *Category) *ToolCreate {
+	return tc.SetCategoryID(c.ID)
 }
 
 // Mutation returns the ToolMutation object of the builder.
@@ -167,6 +199,9 @@ func (tc *ToolCreate) check() error {
 	if _, ok := tc.mutation.Powered(); !ok {
 		return &ValidationError{Name: "powered", err: errors.New(`ent: missing required field "powered"`)}
 	}
+	if _, ok := tc.mutation.LocationID(); !ok {
+		return &ValidationError{Name: "location", err: errors.New("ent: missing required edge \"location\"")}
+	}
 	return nil
 }
 
@@ -225,6 +260,46 @@ func (tc *ToolCreate) createSpec() (*Tool, *sqlgraph.CreateSpec) {
 			Column: tool.FieldPowered,
 		})
 		_node.Powered = value
+	}
+	if nodes := tc.mutation.LocationIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   tool.LocationTable,
+			Columns: []string{tool.LocationColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: location.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.location_tool = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := tc.mutation.CategoryIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   tool.CategoryTable,
+			Columns: []string{tool.CategoryColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: &sqlgraph.FieldSpec{
+					Type:   field.TypeInt,
+					Column: category.FieldID,
+				},
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.category_tool = &nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

@@ -3,17 +3,9 @@ repos:
     rev: v0.4.0
     hooks:
       - id: go-fmt
-      - id: go-vet
       - id: go-imports
-      - id: go-mod-tidy
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.0.1
     hooks:
       - id: check-yaml
-
-  - repo: https://github.com/tekwizely/pre-commit-golang
-    rev: v1.0.0-beta.4
-    hooks:
-      - id: my-cmd-repo
-        args: ["go", "generate", "./..."]

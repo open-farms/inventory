@@ -48,7 +48,7 @@ func toProtoVehicle(e *ent.Vehicle) (*Vehicle, error) {
 	v.Power = power
 	updatetime := timestamppb.New(e.UpdateTime)
 	v.UpdateTime = updatetime
-	year := wrapperspb.String(e.Year)
+	year := wrapperspb.Int64(e.Year)
 	v.Year = year
 	if edg := e.Edges.Location; edg != nil {
 		id := int32(edg.ID)
@@ -80,7 +80,7 @@ func (svc *VehicleService) Create(ctx context.Context, req *CreateVehicleRequest
 	vehicleUpdateTime := runtime.ExtractTime(vehicle.GetUpdateTime())
 	m.SetUpdateTime(vehicleUpdateTime)
 	if vehicle.GetYear() != nil {
-		vehicleYear := vehicle.GetYear().GetValue()
+		vehicleYear := int64(vehicle.GetYear().GetValue())
 		m.SetYear(vehicleYear)
 	}
 	vehicleLocation := int(vehicle.GetLocation().GetId())
@@ -157,7 +157,7 @@ func (svc *VehicleService) Update(ctx context.Context, req *UpdateVehicleRequest
 	vehicleUpdateTime := runtime.ExtractTime(vehicle.GetUpdateTime())
 	m.SetUpdateTime(vehicleUpdateTime)
 	if vehicle.GetYear() != nil {
-		vehicleYear := vehicle.GetYear().GetValue()
+		vehicleYear := int64(vehicle.GetYear().GetValue())
 		m.SetYear(vehicleYear)
 	}
 	vehicleLocation := int(vehicle.GetLocation().GetId())

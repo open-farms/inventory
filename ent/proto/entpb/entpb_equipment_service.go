@@ -7,7 +7,9 @@ import (
 	sqlgraph "entgo.io/ent/dialect/sql/sqlgraph"
 	empty "github.com/golang/protobuf/ptypes/empty"
 	ent "github.com/open-farms/inventory/ent"
+	category "github.com/open-farms/inventory/ent/category"
 	equipment "github.com/open-farms/inventory/ent/equipment"
+	location "github.com/open-farms/inventory/ent/location"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
@@ -40,6 +42,18 @@ func toProtoEquipment(e *ent.Equipment) (*Equipment, error) {
 	v.Name = name
 	updatetime := timestamppb.New(e.UpdateTime)
 	v.UpdateTime = updatetime
+	if edg := e.Edges.Category; edg != nil {
+		id := int32(edg.ID)
+		v.Category = &Category{
+			Id: id,
+		}
+	}
+	if edg := e.Edges.Location; edg != nil {
+		id := int32(edg.ID)
+		v.Location = &Location{
+			Id: id,
+		}
+	}
 	return v, nil
 }
 
@@ -55,6 +69,10 @@ func (svc *EquipmentService) Create(ctx context.Context, req *CreateEquipmentReq
 	m.SetName(equipmentName)
 	equipmentUpdateTime := runtime.ExtractTime(equipment.GetUpdateTime())
 	m.SetUpdateTime(equipmentUpdateTime)
+	equipmentCategory := int(equipment.GetCategory().GetId())
+	m.SetCategoryID(equipmentCategory)
+	equipmentLocation := int(equipment.GetLocation().GetId())
+	m.SetLocationID(equipmentLocation)
 	res, err := m.Save(ctx)
 	switch {
 	case err == nil:
@@ -86,6 +104,12 @@ func (svc *EquipmentService) Get(ctx context.Context, req *GetEquipmentRequest) 
 	case GetEquipmentRequest_WITH_EDGE_IDS:
 		get, err = svc.client.Equipment.Query().
 			Where(equipment.ID(id)).
+			WithCategory(func(query *ent.CategoryQuery) {
+				query.Select(category.FieldID)
+			}).
+			WithLocation(func(query *ent.LocationQuery) {
+				query.Select(location.FieldID)
+			}).
 			Only(ctx)
 	default:
 		return nil, status.Error(codes.InvalidArgument, "invalid argument: unknown view")
@@ -115,6 +139,10 @@ func (svc *EquipmentService) Update(ctx context.Context, req *UpdateEquipmentReq
 	m.SetName(equipmentName)
 	equipmentUpdateTime := runtime.ExtractTime(equipment.GetUpdateTime())
 	m.SetUpdateTime(equipmentUpdateTime)
+	equipmentCategory := int(equipment.GetCategory().GetId())
+	m.SetCategoryID(equipmentCategory)
+	equipmentLocation := int(equipment.GetLocation().GetId())
+	m.SetLocationID(equipmentLocation)
 	res, err := m.Save(ctx)
 	switch {
 	case err == nil:

@@ -11,6 +11,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/open-farms/inventory/ent/category"
+	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/predicate"
 	"github.com/open-farms/inventory/ent/tool"
 )
@@ -24,6 +26,10 @@ type ToolQuery struct {
 	order      []OrderFunc
 	fields     []string
 	predicates []predicate.Tool
+	// eager-loading edges.
+	withLocation *LocationQuery
+	withCategory *CategoryQuery
+	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -58,6 +64,50 @@ func (tq *ToolQuery) Unique(unique bool) *ToolQuery {
 func (tq *ToolQuery) Order(o ...OrderFunc) *ToolQuery {
 	tq.order = append(tq.order, o...)
 	return tq
+}
+
+// QueryLocation chains the current query on the "location" edge.
+func (tq *ToolQuery) QueryLocation() *LocationQuery {
+	query := &LocationQuery{config: tq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := tq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := tq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(tool.Table, tool.FieldID, selector),
+			sqlgraph.To(location.Table, location.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, tool.LocationTable, tool.LocationColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryCategory chains the current query on the "category" edge.
+func (tq *ToolQuery) QueryCategory() *CategoryQuery {
+	query := &CategoryQuery{config: tq.config}
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := tq.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := tq.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(tool.Table, tool.FieldID, selector),
+			sqlgraph.To(category.Table, category.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, tool.CategoryTable, tool.CategoryColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(tq.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first Tool entity from the query.
@@ -236,15 +286,39 @@ func (tq *ToolQuery) Clone() *ToolQuery {
 		return nil
 	}
 	return &ToolQuery{
-		config:     tq.config,
-		limit:      tq.limit,
-		offset:     tq.offset,
-		order:      append([]OrderFunc{}, tq.order...),
-		predicates: append([]predicate.Tool{}, tq.predicates...),
+		config:       tq.config,
+		limit:        tq.limit,
+		offset:       tq.offset,
+		order:        append([]OrderFunc{}, tq.order...),
+		predicates:   append([]predicate.Tool{}, tq.predicates...),
+		withLocation: tq.withLocation.Clone(),
+		withCategory: tq.withCategory.Clone(),
 		// clone intermediate query.
 		sql:  tq.sql.Clone(),
 		path: tq.path,
 	}
+}
+
+// WithLocation tells the query-builder to eager-load the nodes that are connected to
+// the "location" edge. The optional arguments are used to configure the query builder of the edge.
+func (tq *ToolQuery) WithLocation(opts ...func(*LocationQuery)) *ToolQuery {
+	query := &LocationQuery{config: tq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	tq.withLocation = query
+	return tq
+}
+
+// WithCategory tells the query-builder to eager-load the nodes that are connected to
+// the "category" edge. The optional arguments are used to configure the query builder of the edge.
+func (tq *ToolQuery) WithCategory(opts ...func(*CategoryQuery)) *ToolQuery {
+	query := &CategoryQuery{config: tq.config}
+	for _, opt := range opts {
+		opt(query)
+	}
+	tq.withCategory = query
+	return tq
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -310,9 +384,20 @@ func (tq *ToolQuery) prepareQuery(ctx context.Context) error {
 
 func (tq *ToolQuery) sqlAll(ctx context.Context) ([]*Tool, error) {
 	var (
-		nodes = []*Tool{}
-		_spec = tq.querySpec()
+		nodes       = []*Tool{}
+		withFKs     = tq.withFKs
+		_spec       = tq.querySpec()
+		loadedTypes = [2]bool{
+			tq.withLocation != nil,
+			tq.withCategory != nil,
+		}
 	)
+	if tq.withLocation != nil || tq.withCategory != nil {
+		withFKs = true
+	}
+	if withFKs {
+		_spec.Node.Columns = append(_spec.Node.Columns, tool.ForeignKeys...)
+	}
 	_spec.ScanValues = func(columns []string) ([]interface{}, error) {
 		node := &Tool{config: tq.config}
 		nodes = append(nodes, node)
@@ -323,6 +408,7 @@ func (tq *ToolQuery) sqlAll(ctx context.Context) ([]*Tool, error) {
 			return fmt.Errorf("ent: Assign called without calling ScanValues")
 		}
 		node := nodes[len(nodes)-1]
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	if err := sqlgraph.QueryNodes(ctx, tq.driver, _spec); err != nil {
@@ -331,6 +417,65 @@ func (tq *ToolQuery) sqlAll(ctx context.Context) ([]*Tool, error) {
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+
+	if query := tq.withLocation; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Tool)
+		for i := range nodes {
+			if nodes[i].location_tool == nil {
+				continue
+			}
+			fk := *nodes[i].location_tool
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(location.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "location_tool" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Location = n
+			}
+		}
+	}
+
+	if query := tq.withCategory; query != nil {
+		ids := make([]int, 0, len(nodes))
+		nodeids := make(map[int][]*Tool)
+		for i := range nodes {
+			if nodes[i].category_tool == nil {
+				continue
+			}
+			fk := *nodes[i].category_tool
+			if _, ok := nodeids[fk]; !ok {
+				ids = append(ids, fk)
+			}
+			nodeids[fk] = append(nodeids[fk], nodes[i])
+		}
+		query.Where(category.IDIn(ids...))
+		neighbors, err := query.All(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, n := range neighbors {
+			nodes, ok := nodeids[n.ID]
+			if !ok {
+				return nil, fmt.Errorf(`unexpected foreign-key "category_tool" returned %v`, n.ID)
+			}
+			for i := range nodes {
+				nodes[i].Edges.Category = n
+			}
+		}
+	}
+
 	return nodes, nil
 }
 

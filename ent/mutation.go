@@ -39,16 +39,31 @@ const (
 // CategoryMutation represents an operation that mutates the Category nodes in the graph.
 type CategoryMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	create_time   *time.Time
-	update_time   *time.Time
-	name          *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Category, error)
-	predicates    []predicate.Category
+	op               Op
+	typ              string
+	id               *int
+	create_time      *time.Time
+	update_time      *time.Time
+	name             *string
+	clearedFields    map[string]struct{}
+	vehicle          map[int]struct{}
+	removedvehicle   map[int]struct{}
+	clearedvehicle   bool
+	tool             map[int]struct{}
+	removedtool      map[int]struct{}
+	clearedtool      bool
+	implement        map[int]struct{}
+	removedimplement map[int]struct{}
+	clearedimplement bool
+	equipment        map[int]struct{}
+	removedequipment map[int]struct{}
+	clearedequipment bool
+	location         map[int]struct{}
+	removedlocation  map[int]struct{}
+	clearedlocation  bool
+	done             bool
+	oldValue         func(context.Context) (*Category, error)
+	predicates       []predicate.Category
 }
 
 var _ ent.Mutation = (*CategoryMutation)(nil)
@@ -238,6 +253,276 @@ func (m *CategoryMutation) ResetName() {
 	m.name = nil
 }
 
+// AddVehicleIDs adds the "vehicle" edge to the Vehicle entity by ids.
+func (m *CategoryMutation) AddVehicleIDs(ids ...int) {
+	if m.vehicle == nil {
+		m.vehicle = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.vehicle[ids[i]] = struct{}{}
+	}
+}
+
+// ClearVehicle clears the "vehicle" edge to the Vehicle entity.
+func (m *CategoryMutation) ClearVehicle() {
+	m.clearedvehicle = true
+}
+
+// VehicleCleared reports if the "vehicle" edge to the Vehicle entity was cleared.
+func (m *CategoryMutation) VehicleCleared() bool {
+	return m.clearedvehicle
+}
+
+// RemoveVehicleIDs removes the "vehicle" edge to the Vehicle entity by IDs.
+func (m *CategoryMutation) RemoveVehicleIDs(ids ...int) {
+	if m.removedvehicle == nil {
+		m.removedvehicle = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.vehicle, ids[i])
+		m.removedvehicle[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedVehicle returns the removed IDs of the "vehicle" edge to the Vehicle entity.
+func (m *CategoryMutation) RemovedVehicleIDs() (ids []int) {
+	for id := range m.removedvehicle {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// VehicleIDs returns the "vehicle" edge IDs in the mutation.
+func (m *CategoryMutation) VehicleIDs() (ids []int) {
+	for id := range m.vehicle {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetVehicle resets all changes to the "vehicle" edge.
+func (m *CategoryMutation) ResetVehicle() {
+	m.vehicle = nil
+	m.clearedvehicle = false
+	m.removedvehicle = nil
+}
+
+// AddToolIDs adds the "tool" edge to the Tool entity by ids.
+func (m *CategoryMutation) AddToolIDs(ids ...int) {
+	if m.tool == nil {
+		m.tool = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.tool[ids[i]] = struct{}{}
+	}
+}
+
+// ClearTool clears the "tool" edge to the Tool entity.
+func (m *CategoryMutation) ClearTool() {
+	m.clearedtool = true
+}
+
+// ToolCleared reports if the "tool" edge to the Tool entity was cleared.
+func (m *CategoryMutation) ToolCleared() bool {
+	return m.clearedtool
+}
+
+// RemoveToolIDs removes the "tool" edge to the Tool entity by IDs.
+func (m *CategoryMutation) RemoveToolIDs(ids ...int) {
+	if m.removedtool == nil {
+		m.removedtool = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.tool, ids[i])
+		m.removedtool[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedTool returns the removed IDs of the "tool" edge to the Tool entity.
+func (m *CategoryMutation) RemovedToolIDs() (ids []int) {
+	for id := range m.removedtool {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ToolIDs returns the "tool" edge IDs in the mutation.
+func (m *CategoryMutation) ToolIDs() (ids []int) {
+	for id := range m.tool {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetTool resets all changes to the "tool" edge.
+func (m *CategoryMutation) ResetTool() {
+	m.tool = nil
+	m.clearedtool = false
+	m.removedtool = nil
+}
+
+// AddImplementIDs adds the "implement" edge to the Implement entity by ids.
+func (m *CategoryMutation) AddImplementIDs(ids ...int) {
+	if m.implement == nil {
+		m.implement = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.implement[ids[i]] = struct{}{}
+	}
+}
+
+// ClearImplement clears the "implement" edge to the Implement entity.
+func (m *CategoryMutation) ClearImplement() {
+	m.clearedimplement = true
+}
+
+// ImplementCleared reports if the "implement" edge to the Implement entity was cleared.
+func (m *CategoryMutation) ImplementCleared() bool {
+	return m.clearedimplement
+}
+
+// RemoveImplementIDs removes the "implement" edge to the Implement entity by IDs.
+func (m *CategoryMutation) RemoveImplementIDs(ids ...int) {
+	if m.removedimplement == nil {
+		m.removedimplement = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.implement, ids[i])
+		m.removedimplement[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedImplement returns the removed IDs of the "implement" edge to the Implement entity.
+func (m *CategoryMutation) RemovedImplementIDs() (ids []int) {
+	for id := range m.removedimplement {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ImplementIDs returns the "implement" edge IDs in the mutation.
+func (m *CategoryMutation) ImplementIDs() (ids []int) {
+	for id := range m.implement {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetImplement resets all changes to the "implement" edge.
+func (m *CategoryMutation) ResetImplement() {
+	m.implement = nil
+	m.clearedimplement = false
+	m.removedimplement = nil
+}
+
+// AddEquipmentIDs adds the "equipment" edge to the Equipment entity by ids.
+func (m *CategoryMutation) AddEquipmentIDs(ids ...int) {
+	if m.equipment == nil {
+		m.equipment = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.equipment[ids[i]] = struct{}{}
+	}
+}
+
+// ClearEquipment clears the "equipment" edge to the Equipment entity.
+func (m *CategoryMutation) ClearEquipment() {
+	m.clearedequipment = true
+}
+
+// EquipmentCleared reports if the "equipment" edge to the Equipment entity was cleared.
+func (m *CategoryMutation) EquipmentCleared() bool {
+	return m.clearedequipment
+}
+
+// RemoveEquipmentIDs removes the "equipment" edge to the Equipment entity by IDs.
+func (m *CategoryMutation) RemoveEquipmentIDs(ids ...int) {
+	if m.removedequipment == nil {
+		m.removedequipment = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.equipment, ids[i])
+		m.removedequipment[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedEquipment returns the removed IDs of the "equipment" edge to the Equipment entity.
+func (m *CategoryMutation) RemovedEquipmentIDs() (ids []int) {
+	for id := range m.removedequipment {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// EquipmentIDs returns the "equipment" edge IDs in the mutation.
+func (m *CategoryMutation) EquipmentIDs() (ids []int) {
+	for id := range m.equipment {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetEquipment resets all changes to the "equipment" edge.
+func (m *CategoryMutation) ResetEquipment() {
+	m.equipment = nil
+	m.clearedequipment = false
+	m.removedequipment = nil
+}
+
+// AddLocationIDs adds the "location" edge to the Location entity by ids.
+func (m *CategoryMutation) AddLocationIDs(ids ...int) {
+	if m.location == nil {
+		m.location = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.location[ids[i]] = struct{}{}
+	}
+}
+
+// ClearLocation clears the "location" edge to the Location entity.
+func (m *CategoryMutation) ClearLocation() {
+	m.clearedlocation = true
+}
+
+// LocationCleared reports if the "location" edge to the Location entity was cleared.
+func (m *CategoryMutation) LocationCleared() bool {
+	return m.clearedlocation
+}
+
+// RemoveLocationIDs removes the "location" edge to the Location entity by IDs.
+func (m *CategoryMutation) RemoveLocationIDs(ids ...int) {
+	if m.removedlocation == nil {
+		m.removedlocation = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.location, ids[i])
+		m.removedlocation[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedLocation returns the removed IDs of the "location" edge to the Location entity.
+func (m *CategoryMutation) RemovedLocationIDs() (ids []int) {
+	for id := range m.removedlocation {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// LocationIDs returns the "location" edge IDs in the mutation.
+func (m *CategoryMutation) LocationIDs() (ids []int) {
+	for id := range m.location {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetLocation resets all changes to the "location" edge.
+func (m *CategoryMutation) ResetLocation() {
+	m.location = nil
+	m.clearedlocation = false
+	m.removedlocation = nil
+}
+
 // Where appends a list predicates to the CategoryMutation builder.
 func (m *CategoryMutation) Where(ps ...predicate.Category) {
 	m.predicates = append(m.predicates, ps...)
@@ -390,66 +675,210 @@ func (m *CategoryMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *CategoryMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 5)
+	if m.vehicle != nil {
+		edges = append(edges, category.EdgeVehicle)
+	}
+	if m.tool != nil {
+		edges = append(edges, category.EdgeTool)
+	}
+	if m.implement != nil {
+		edges = append(edges, category.EdgeImplement)
+	}
+	if m.equipment != nil {
+		edges = append(edges, category.EdgeEquipment)
+	}
+	if m.location != nil {
+		edges = append(edges, category.EdgeLocation)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *CategoryMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case category.EdgeVehicle:
+		ids := make([]ent.Value, 0, len(m.vehicle))
+		for id := range m.vehicle {
+			ids = append(ids, id)
+		}
+		return ids
+	case category.EdgeTool:
+		ids := make([]ent.Value, 0, len(m.tool))
+		for id := range m.tool {
+			ids = append(ids, id)
+		}
+		return ids
+	case category.EdgeImplement:
+		ids := make([]ent.Value, 0, len(m.implement))
+		for id := range m.implement {
+			ids = append(ids, id)
+		}
+		return ids
+	case category.EdgeEquipment:
+		ids := make([]ent.Value, 0, len(m.equipment))
+		for id := range m.equipment {
+			ids = append(ids, id)
+		}
+		return ids
+	case category.EdgeLocation:
+		ids := make([]ent.Value, 0, len(m.location))
+		for id := range m.location {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *CategoryMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 5)
+	if m.removedvehicle != nil {
+		edges = append(edges, category.EdgeVehicle)
+	}
+	if m.removedtool != nil {
+		edges = append(edges, category.EdgeTool)
+	}
+	if m.removedimplement != nil {
+		edges = append(edges, category.EdgeImplement)
+	}
+	if m.removedequipment != nil {
+		edges = append(edges, category.EdgeEquipment)
+	}
+	if m.removedlocation != nil {
+		edges = append(edges, category.EdgeLocation)
+	}
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *CategoryMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	case category.EdgeVehicle:
+		ids := make([]ent.Value, 0, len(m.removedvehicle))
+		for id := range m.removedvehicle {
+			ids = append(ids, id)
+		}
+		return ids
+	case category.EdgeTool:
+		ids := make([]ent.Value, 0, len(m.removedtool))
+		for id := range m.removedtool {
+			ids = append(ids, id)
+		}
+		return ids
+	case category.EdgeImplement:
+		ids := make([]ent.Value, 0, len(m.removedimplement))
+		for id := range m.removedimplement {
+			ids = append(ids, id)
+		}
+		return ids
+	case category.EdgeEquipment:
+		ids := make([]ent.Value, 0, len(m.removedequipment))
+		for id := range m.removedequipment {
+			ids = append(ids, id)
+		}
+		return ids
+	case category.EdgeLocation:
+		ids := make([]ent.Value, 0, len(m.removedlocation))
+		for id := range m.removedlocation {
+			ids = append(ids, id)
+		}
+		return ids
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *CategoryMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 5)
+	if m.clearedvehicle {
+		edges = append(edges, category.EdgeVehicle)
+	}
+	if m.clearedtool {
+		edges = append(edges, category.EdgeTool)
+	}
+	if m.clearedimplement {
+		edges = append(edges, category.EdgeImplement)
+	}
+	if m.clearedequipment {
+		edges = append(edges, category.EdgeEquipment)
+	}
+	if m.clearedlocation {
+		edges = append(edges, category.EdgeLocation)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *CategoryMutation) EdgeCleared(name string) bool {
+	switch name {
+	case category.EdgeVehicle:
+		return m.clearedvehicle
+	case category.EdgeTool:
+		return m.clearedtool
+	case category.EdgeImplement:
+		return m.clearedimplement
+	case category.EdgeEquipment:
+		return m.clearedequipment
+	case category.EdgeLocation:
+		return m.clearedlocation
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *CategoryMutation) ClearEdge(name string) error {
+	switch name {
+	}
 	return fmt.Errorf("unknown Category unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *CategoryMutation) ResetEdge(name string) error {
+	switch name {
+	case category.EdgeVehicle:
+		m.ResetVehicle()
+		return nil
+	case category.EdgeTool:
+		m.ResetTool()
+		return nil
+	case category.EdgeImplement:
+		m.ResetImplement()
+		return nil
+	case category.EdgeEquipment:
+		m.ResetEquipment()
+		return nil
+	case category.EdgeLocation:
+		m.ResetLocation()
+		return nil
+	}
 	return fmt.Errorf("unknown Category edge %s", name)
 }
 
 // EquipmentMutation represents an operation that mutates the Equipment nodes in the graph.
 type EquipmentMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	create_time   *time.Time
-	update_time   *time.Time
-	name          *string
-	condition     *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Equipment, error)
-	predicates    []predicate.Equipment
+	op              Op
+	typ             string
+	id              *int
+	create_time     *time.Time
+	update_time     *time.Time
+	name            *string
+	condition       *string
+	clearedFields   map[string]struct{}
+	location        *int
+	clearedlocation bool
+	category        *int
+	clearedcategory bool
+	done            bool
+	oldValue        func(context.Context) (*Equipment, error)
+	predicates      []predicate.Equipment
 }
 
 var _ ent.Mutation = (*EquipmentMutation)(nil)
@@ -675,6 +1104,84 @@ func (m *EquipmentMutation) ResetCondition() {
 	m.condition = nil
 }
 
+// SetLocationID sets the "location" edge to the Location entity by id.
+func (m *EquipmentMutation) SetLocationID(id int) {
+	m.location = &id
+}
+
+// ClearLocation clears the "location" edge to the Location entity.
+func (m *EquipmentMutation) ClearLocation() {
+	m.clearedlocation = true
+}
+
+// LocationCleared reports if the "location" edge to the Location entity was cleared.
+func (m *EquipmentMutation) LocationCleared() bool {
+	return m.clearedlocation
+}
+
+// LocationID returns the "location" edge ID in the mutation.
+func (m *EquipmentMutation) LocationID() (id int, exists bool) {
+	if m.location != nil {
+		return *m.location, true
+	}
+	return
+}
+
+// LocationIDs returns the "location" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// LocationID instead. It exists only for internal usage by the builders.
+func (m *EquipmentMutation) LocationIDs() (ids []int) {
+	if id := m.location; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetLocation resets all changes to the "location" edge.
+func (m *EquipmentMutation) ResetLocation() {
+	m.location = nil
+	m.clearedlocation = false
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by id.
+func (m *EquipmentMutation) SetCategoryID(id int) {
+	m.category = &id
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (m *EquipmentMutation) ClearCategory() {
+	m.clearedcategory = true
+}
+
+// CategoryCleared reports if the "category" edge to the Category entity was cleared.
+func (m *EquipmentMutation) CategoryCleared() bool {
+	return m.clearedcategory
+}
+
+// CategoryID returns the "category" edge ID in the mutation.
+func (m *EquipmentMutation) CategoryID() (id int, exists bool) {
+	if m.category != nil {
+		return *m.category, true
+	}
+	return
+}
+
+// CategoryIDs returns the "category" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// CategoryID instead. It exists only for internal usage by the builders.
+func (m *EquipmentMutation) CategoryIDs() (ids []int) {
+	if id := m.category; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetCategory resets all changes to the "category" edge.
+func (m *EquipmentMutation) ResetCategory() {
+	m.category = nil
+	m.clearedcategory = false
+}
+
 // Where appends a list predicates to the EquipmentMutation builder.
 func (m *EquipmentMutation) Where(ps ...predicate.Equipment) {
 	m.predicates = append(m.predicates, ps...)
@@ -844,65 +1351,115 @@ func (m *EquipmentMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *EquipmentMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.location != nil {
+		edges = append(edges, equipment.EdgeLocation)
+	}
+	if m.category != nil {
+		edges = append(edges, equipment.EdgeCategory)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *EquipmentMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case equipment.EdgeLocation:
+		if id := m.location; id != nil {
+			return []ent.Value{*id}
+		}
+	case equipment.EdgeCategory:
+		if id := m.category; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *EquipmentMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *EquipmentMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *EquipmentMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.clearedlocation {
+		edges = append(edges, equipment.EdgeLocation)
+	}
+	if m.clearedcategory {
+		edges = append(edges, equipment.EdgeCategory)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *EquipmentMutation) EdgeCleared(name string) bool {
+	switch name {
+	case equipment.EdgeLocation:
+		return m.clearedlocation
+	case equipment.EdgeCategory:
+		return m.clearedcategory
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *EquipmentMutation) ClearEdge(name string) error {
+	switch name {
+	case equipment.EdgeLocation:
+		m.ClearLocation()
+		return nil
+	case equipment.EdgeCategory:
+		m.ClearCategory()
+		return nil
+	}
 	return fmt.Errorf("unknown Equipment unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *EquipmentMutation) ResetEdge(name string) error {
+	switch name {
+	case equipment.EdgeLocation:
+		m.ResetLocation()
+		return nil
+	case equipment.EdgeCategory:
+		m.ResetCategory()
+		return nil
+	}
 	return fmt.Errorf("unknown Equipment edge %s", name)
 }
 
 // ImplementMutation represents an operation that mutates the Implement nodes in the graph.
 type ImplementMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	create_time   *time.Time
-	update_time   *time.Time
-	name          *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Implement, error)
-	predicates    []predicate.Implement
+	op              Op
+	typ             string
+	id              *int
+	create_time     *time.Time
+	update_time     *time.Time
+	name            *string
+	clearedFields   map[string]struct{}
+	location        *int
+	clearedlocation bool
+	category        *int
+	clearedcategory bool
+	done            bool
+	oldValue        func(context.Context) (*Implement, error)
+	predicates      []predicate.Implement
 }
 
 var _ ent.Mutation = (*ImplementMutation)(nil)
@@ -1092,6 +1649,84 @@ func (m *ImplementMutation) ResetName() {
 	m.name = nil
 }
 
+// SetLocationID sets the "location" edge to the Location entity by id.
+func (m *ImplementMutation) SetLocationID(id int) {
+	m.location = &id
+}
+
+// ClearLocation clears the "location" edge to the Location entity.
+func (m *ImplementMutation) ClearLocation() {
+	m.clearedlocation = true
+}
+
+// LocationCleared reports if the "location" edge to the Location entity was cleared.
+func (m *ImplementMutation) LocationCleared() bool {
+	return m.clearedlocation
+}
+
+// LocationID returns the "location" edge ID in the mutation.
+func (m *ImplementMutation) LocationID() (id int, exists bool) {
+	if m.location != nil {
+		return *m.location, true
+	}
+	return
+}
+
+// LocationIDs returns the "location" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// LocationID instead. It exists only for internal usage by the builders.
+func (m *ImplementMutation) LocationIDs() (ids []int) {
+	if id := m.location; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetLocation resets all changes to the "location" edge.
+func (m *ImplementMutation) ResetLocation() {
+	m.location = nil
+	m.clearedlocation = false
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by id.
+func (m *ImplementMutation) SetCategoryID(id int) {
+	m.category = &id
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (m *ImplementMutation) ClearCategory() {
+	m.clearedcategory = true
+}
+
+// CategoryCleared reports if the "category" edge to the Category entity was cleared.
+func (m *ImplementMutation) CategoryCleared() bool {
+	return m.clearedcategory
+}
+
+// CategoryID returns the "category" edge ID in the mutation.
+func (m *ImplementMutation) CategoryID() (id int, exists bool) {
+	if m.category != nil {
+		return *m.category, true
+	}
+	return
+}
+
+// CategoryIDs returns the "category" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// CategoryID instead. It exists only for internal usage by the builders.
+func (m *ImplementMutation) CategoryIDs() (ids []int) {
+	if id := m.category; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetCategory resets all changes to the "category" edge.
+func (m *ImplementMutation) ResetCategory() {
+	m.category = nil
+	m.clearedcategory = false
+}
+
 // Where appends a list predicates to the ImplementMutation builder.
 func (m *ImplementMutation) Where(ps ...predicate.Implement) {
 	m.predicates = append(m.predicates, ps...)
@@ -1244,70 +1879,127 @@ func (m *ImplementMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ImplementMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.location != nil {
+		edges = append(edges, implement.EdgeLocation)
+	}
+	if m.category != nil {
+		edges = append(edges, implement.EdgeCategory)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *ImplementMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case implement.EdgeLocation:
+		if id := m.location; id != nil {
+			return []ent.Value{*id}
+		}
+	case implement.EdgeCategory:
+		if id := m.category; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ImplementMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *ImplementMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ImplementMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.clearedlocation {
+		edges = append(edges, implement.EdgeLocation)
+	}
+	if m.clearedcategory {
+		edges = append(edges, implement.EdgeCategory)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *ImplementMutation) EdgeCleared(name string) bool {
+	switch name {
+	case implement.EdgeLocation:
+		return m.clearedlocation
+	case implement.EdgeCategory:
+		return m.clearedcategory
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *ImplementMutation) ClearEdge(name string) error {
+	switch name {
+	case implement.EdgeLocation:
+		m.ClearLocation()
+		return nil
+	case implement.EdgeCategory:
+		m.ClearCategory()
+		return nil
+	}
 	return fmt.Errorf("unknown Implement unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *ImplementMutation) ResetEdge(name string) error {
+	switch name {
+	case implement.EdgeLocation:
+		m.ResetLocation()
+		return nil
+	case implement.EdgeCategory:
+		m.ResetCategory()
+		return nil
+	}
 	return fmt.Errorf("unknown Implement edge %s", name)
 }
 
 // LocationMutation represents an operation that mutates the Location nodes in the graph.
 type LocationMutation struct {
 	config
-	op             Op
-	typ            string
-	id             *int
-	create_time    *time.Time
-	update_time    *time.Time
-	name           *string
-	zone           *int32
-	addzone        *int32
-	clearedFields  map[string]struct{}
-	vehicle        map[int]struct{}
-	removedvehicle map[int]struct{}
-	clearedvehicle bool
-	done           bool
-	oldValue       func(context.Context) (*Location, error)
-	predicates     []predicate.Location
+	op               Op
+	typ              string
+	id               *int
+	create_time      *time.Time
+	update_time      *time.Time
+	name             *string
+	zone             *int32
+	addzone          *int32
+	clearedFields    map[string]struct{}
+	vehicle          map[int]struct{}
+	removedvehicle   map[int]struct{}
+	clearedvehicle   bool
+	tool             map[int]struct{}
+	removedtool      map[int]struct{}
+	clearedtool      bool
+	implement        map[int]struct{}
+	removedimplement map[int]struct{}
+	clearedimplement bool
+	equipment        map[int]struct{}
+	removedequipment map[int]struct{}
+	clearedequipment bool
+	category         *int
+	clearedcategory  bool
+	done             bool
+	oldValue         func(context.Context) (*Location, error)
+	predicates       []predicate.Location
 }
 
 var _ ent.Mutation = (*LocationMutation)(nil)
@@ -1607,6 +2299,207 @@ func (m *LocationMutation) ResetVehicle() {
 	m.removedvehicle = nil
 }
 
+// AddToolIDs adds the "tool" edge to the Tool entity by ids.
+func (m *LocationMutation) AddToolIDs(ids ...int) {
+	if m.tool == nil {
+		m.tool = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.tool[ids[i]] = struct{}{}
+	}
+}
+
+// ClearTool clears the "tool" edge to the Tool entity.
+func (m *LocationMutation) ClearTool() {
+	m.clearedtool = true
+}
+
+// ToolCleared reports if the "tool" edge to the Tool entity was cleared.
+func (m *LocationMutation) ToolCleared() bool {
+	return m.clearedtool
+}
+
+// RemoveToolIDs removes the "tool" edge to the Tool entity by IDs.
+func (m *LocationMutation) RemoveToolIDs(ids ...int) {
+	if m.removedtool == nil {
+		m.removedtool = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.tool, ids[i])
+		m.removedtool[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedTool returns the removed IDs of the "tool" edge to the Tool entity.
+func (m *LocationMutation) RemovedToolIDs() (ids []int) {
+	for id := range m.removedtool {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ToolIDs returns the "tool" edge IDs in the mutation.
+func (m *LocationMutation) ToolIDs() (ids []int) {
+	for id := range m.tool {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetTool resets all changes to the "tool" edge.
+func (m *LocationMutation) ResetTool() {
+	m.tool = nil
+	m.clearedtool = false
+	m.removedtool = nil
+}
+
+// AddImplementIDs adds the "implement" edge to the Implement entity by ids.
+func (m *LocationMutation) AddImplementIDs(ids ...int) {
+	if m.implement == nil {
+		m.implement = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.implement[ids[i]] = struct{}{}
+	}
+}
+
+// ClearImplement clears the "implement" edge to the Implement entity.
+func (m *LocationMutation) ClearImplement() {
+	m.clearedimplement = true
+}
+
+// ImplementCleared reports if the "implement" edge to the Implement entity was cleared.
+func (m *LocationMutation) ImplementCleared() bool {
+	return m.clearedimplement
+}
+
+// RemoveImplementIDs removes the "implement" edge to the Implement entity by IDs.
+func (m *LocationMutation) RemoveImplementIDs(ids ...int) {
+	if m.removedimplement == nil {
+		m.removedimplement = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.implement, ids[i])
+		m.removedimplement[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedImplement returns the removed IDs of the "implement" edge to the Implement entity.
+func (m *LocationMutation) RemovedImplementIDs() (ids []int) {
+	for id := range m.removedimplement {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ImplementIDs returns the "implement" edge IDs in the mutation.
+func (m *LocationMutation) ImplementIDs() (ids []int) {
+	for id := range m.implement {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetImplement resets all changes to the "implement" edge.
+func (m *LocationMutation) ResetImplement() {
+	m.implement = nil
+	m.clearedimplement = false
+	m.removedimplement = nil
+}
+
+// AddEquipmentIDs adds the "equipment" edge to the Equipment entity by ids.
+func (m *LocationMutation) AddEquipmentIDs(ids ...int) {
+	if m.equipment == nil {
+		m.equipment = make(map[int]struct{})
+	}
+	for i := range ids {
+		m.equipment[ids[i]] = struct{}{}
+	}
+}
+
+// ClearEquipment clears the "equipment" edge to the Equipment entity.
+func (m *LocationMutation) ClearEquipment() {
+	m.clearedequipment = true
+}
+
+// EquipmentCleared reports if the "equipment" edge to the Equipment entity was cleared.
+func (m *LocationMutation) EquipmentCleared() bool {
+	return m.clearedequipment
+}
+
+// RemoveEquipmentIDs removes the "equipment" edge to the Equipment entity by IDs.
+func (m *LocationMutation) RemoveEquipmentIDs(ids ...int) {
+	if m.removedequipment == nil {
+		m.removedequipment = make(map[int]struct{})
+	}
+	for i := range ids {
+		delete(m.equipment, ids[i])
+		m.removedequipment[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedEquipment returns the removed IDs of the "equipment" edge to the Equipment entity.
+func (m *LocationMutation) RemovedEquipmentIDs() (ids []int) {
+	for id := range m.removedequipment {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// EquipmentIDs returns the "equipment" edge IDs in the mutation.
+func (m *LocationMutation) EquipmentIDs() (ids []int) {
+	for id := range m.equipment {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetEquipment resets all changes to the "equipment" edge.
+func (m *LocationMutation) ResetEquipment() {
+	m.equipment = nil
+	m.clearedequipment = false
+	m.removedequipment = nil
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by id.
+func (m *LocationMutation) SetCategoryID(id int) {
+	m.category = &id
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (m *LocationMutation) ClearCategory() {
+	m.clearedcategory = true
+}
+
+// CategoryCleared reports if the "category" edge to the Category entity was cleared.
+func (m *LocationMutation) CategoryCleared() bool {
+	return m.clearedcategory
+}
+
+// CategoryID returns the "category" edge ID in the mutation.
+func (m *LocationMutation) CategoryID() (id int, exists bool) {
+	if m.category != nil {
+		return *m.category, true
+	}
+	return
+}
+
+// CategoryIDs returns the "category" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// CategoryID instead. It exists only for internal usage by the builders.
+func (m *LocationMutation) CategoryIDs() (ids []int) {
+	if id := m.category; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetCategory resets all changes to the "category" edge.
+func (m *LocationMutation) ResetCategory() {
+	m.category = nil
+	m.clearedcategory = false
+}
+
 // Where appends a list predicates to the LocationMutation builder.
 func (m *LocationMutation) Where(ps ...predicate.Location) {
 	m.predicates = append(m.predicates, ps...)
@@ -1791,9 +2684,21 @@ func (m *LocationMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *LocationMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 5)
 	if m.vehicle != nil {
 		edges = append(edges, location.EdgeVehicle)
+	}
+	if m.tool != nil {
+		edges = append(edges, location.EdgeTool)
+	}
+	if m.implement != nil {
+		edges = append(edges, location.EdgeImplement)
+	}
+	if m.equipment != nil {
+		edges = append(edges, location.EdgeEquipment)
+	}
+	if m.category != nil {
+		edges = append(edges, location.EdgeCategory)
 	}
 	return edges
 }
@@ -1808,15 +2713,46 @@ func (m *LocationMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case location.EdgeTool:
+		ids := make([]ent.Value, 0, len(m.tool))
+		for id := range m.tool {
+			ids = append(ids, id)
+		}
+		return ids
+	case location.EdgeImplement:
+		ids := make([]ent.Value, 0, len(m.implement))
+		for id := range m.implement {
+			ids = append(ids, id)
+		}
+		return ids
+	case location.EdgeEquipment:
+		ids := make([]ent.Value, 0, len(m.equipment))
+		for id := range m.equipment {
+			ids = append(ids, id)
+		}
+		return ids
+	case location.EdgeCategory:
+		if id := m.category; id != nil {
+			return []ent.Value{*id}
+		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *LocationMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 5)
 	if m.removedvehicle != nil {
 		edges = append(edges, location.EdgeVehicle)
+	}
+	if m.removedtool != nil {
+		edges = append(edges, location.EdgeTool)
+	}
+	if m.removedimplement != nil {
+		edges = append(edges, location.EdgeImplement)
+	}
+	if m.removedequipment != nil {
+		edges = append(edges, location.EdgeEquipment)
 	}
 	return edges
 }
@@ -1831,15 +2767,45 @@ func (m *LocationMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case location.EdgeTool:
+		ids := make([]ent.Value, 0, len(m.removedtool))
+		for id := range m.removedtool {
+			ids = append(ids, id)
+		}
+		return ids
+	case location.EdgeImplement:
+		ids := make([]ent.Value, 0, len(m.removedimplement))
+		for id := range m.removedimplement {
+			ids = append(ids, id)
+		}
+		return ids
+	case location.EdgeEquipment:
+		ids := make([]ent.Value, 0, len(m.removedequipment))
+		for id := range m.removedequipment {
+			ids = append(ids, id)
+		}
+		return ids
 	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *LocationMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
+	edges := make([]string, 0, 5)
 	if m.clearedvehicle {
 		edges = append(edges, location.EdgeVehicle)
+	}
+	if m.clearedtool {
+		edges = append(edges, location.EdgeTool)
+	}
+	if m.clearedimplement {
+		edges = append(edges, location.EdgeImplement)
+	}
+	if m.clearedequipment {
+		edges = append(edges, location.EdgeEquipment)
+	}
+	if m.clearedcategory {
+		edges = append(edges, location.EdgeCategory)
 	}
 	return edges
 }
@@ -1850,6 +2816,14 @@ func (m *LocationMutation) EdgeCleared(name string) bool {
 	switch name {
 	case location.EdgeVehicle:
 		return m.clearedvehicle
+	case location.EdgeTool:
+		return m.clearedtool
+	case location.EdgeImplement:
+		return m.clearedimplement
+	case location.EdgeEquipment:
+		return m.clearedequipment
+	case location.EdgeCategory:
+		return m.clearedcategory
 	}
 	return false
 }
@@ -1858,6 +2832,9 @@ func (m *LocationMutation) EdgeCleared(name string) bool {
 // if that edge is not defined in the schema.
 func (m *LocationMutation) ClearEdge(name string) error {
 	switch name {
+	case location.EdgeCategory:
+		m.ClearCategory()
+		return nil
 	}
 	return fmt.Errorf("unknown Location unique edge %s", name)
 }
@@ -1869,6 +2846,18 @@ func (m *LocationMutation) ResetEdge(name string) error {
 	case location.EdgeVehicle:
 		m.ResetVehicle()
 		return nil
+	case location.EdgeTool:
+		m.ResetTool()
+		return nil
+	case location.EdgeImplement:
+		m.ResetImplement()
+		return nil
+	case location.EdgeEquipment:
+		m.ResetEquipment()
+		return nil
+	case location.EdgeCategory:
+		m.ResetCategory()
+		return nil
 	}
 	return fmt.Errorf("unknown Location edge %s", name)
 }
@@ -1876,17 +2865,21 @@ func (m *LocationMutation) ResetEdge(name string) error {
 // ToolMutation represents an operation that mutates the Tool nodes in the graph.
 type ToolMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	create_time   *time.Time
-	update_time   *time.Time
-	name          *string
-	powered       *bool
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Tool, error)
-	predicates    []predicate.Tool
+	op              Op
+	typ             string
+	id              *int
+	create_time     *time.Time
+	update_time     *time.Time
+	name            *string
+	powered         *bool
+	clearedFields   map[string]struct{}
+	location        *int
+	clearedlocation bool
+	category        *int
+	clearedcategory bool
+	done            bool
+	oldValue        func(context.Context) (*Tool, error)
+	predicates      []predicate.Tool
 }
 
 var _ ent.Mutation = (*ToolMutation)(nil)
@@ -2112,6 +3105,84 @@ func (m *ToolMutation) ResetPowered() {
 	m.powered = nil
 }
 
+// SetLocationID sets the "location" edge to the Location entity by id.
+func (m *ToolMutation) SetLocationID(id int) {
+	m.location = &id
+}
+
+// ClearLocation clears the "location" edge to the Location entity.
+func (m *ToolMutation) ClearLocation() {
+	m.clearedlocation = true
+}
+
+// LocationCleared reports if the "location" edge to the Location entity was cleared.
+func (m *ToolMutation) LocationCleared() bool {
+	return m.clearedlocation
+}
+
+// LocationID returns the "location" edge ID in the mutation.
+func (m *ToolMutation) LocationID() (id int, exists bool) {
+	if m.location != nil {
+		return *m.location, true
+	}
+	return
+}
+
+// LocationIDs returns the "location" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// LocationID instead. It exists only for internal usage by the builders.
+func (m *ToolMutation) LocationIDs() (ids []int) {
+	if id := m.location; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetLocation resets all changes to the "location" edge.
+func (m *ToolMutation) ResetLocation() {
+	m.location = nil
+	m.clearedlocation = false
+}
+
+// SetCategoryID sets the "category" edge to the Category entity by id.
+func (m *ToolMutation) SetCategoryID(id int) {
+	m.category = &id
+}
+
+// ClearCategory clears the "category" edge to the Category entity.
+func (m *ToolMutation) ClearCategory() {
+	m.clearedcategory = true
+}
+
+// CategoryCleared reports if the "category" edge to the Category entity was cleared.
+func (m *ToolMutation) CategoryCleared() bool {
+	return m.clearedcategory
+}
+
+// CategoryID returns the "category" edge ID in the mutation.
+func (m *ToolMutation) CategoryID() (id int, exists bool) {
+	if m.category != nil {
+		return *m.category, true
+	}
+	return
+}
+
+// CategoryIDs returns the "category" edge IDs in the mutation.
+// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
+// CategoryID instead. It exists only for internal usage by the builders.
+func (m *ToolMutation) CategoryIDs() (ids []int) {
+	if id := m.category; id != nil {
+		ids = append(ids, *id)
+	}
+	return
+}
+
+// ResetCategory resets all changes to the "category" edge.
+func (m *ToolMutation) ResetCategory() {
+	m.category = nil
+	m.clearedcategory = false
+}
+
 // Where appends a list predicates to the ToolMutation builder.
 func (m *ToolMutation) Where(ps ...predicate.Tool) {
 	m.predicates = append(m.predicates, ps...)
@@ -2281,49 +3352,95 @@ func (m *ToolMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *ToolMutation) AddedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.location != nil {
+		edges = append(edges, tool.EdgeLocation)
+	}
+	if m.category != nil {
+		edges = append(edges, tool.EdgeCategory)
+	}
 	return edges
 }
 
 // AddedIDs returns all IDs (to other nodes) that were added for the given edge
 // name in this mutation.
 func (m *ToolMutation) AddedIDs(name string) []ent.Value {
+	switch name {
+	case tool.EdgeLocation:
+		if id := m.location; id != nil {
+			return []ent.Value{*id}
+		}
+	case tool.EdgeCategory:
+		if id := m.category; id != nil {
+			return []ent.Value{*id}
+		}
+	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *ToolMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
 	return edges
 }
 
 // RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
 // the given name in this mutation.
 func (m *ToolMutation) RemovedIDs(name string) []ent.Value {
+	switch name {
+	}
 	return nil
 }
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *ToolMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 0)
+	edges := make([]string, 0, 2)
+	if m.clearedlocation {
+		edges = append(edges, tool.EdgeLocation)
+	}
+	if m.clearedcategory {
+		edges = append(edges, tool.EdgeCategory)
+	}
 	return edges
 }
 
 // EdgeCleared returns a boolean which indicates if the edge with the given name
 // was cleared in this mutation.
 func (m *ToolMutation) EdgeCleared(name string) bool {
+	switch name {
+	case tool.EdgeLocation:
+		return m.clearedlocation
+	case tool.EdgeCategory:
+		return m.clearedcategory
+	}
 	return false
 }
 
 // ClearEdge clears the value of the edge with the given name. It returns an error
 // if that edge is not defined in the schema.
 func (m *ToolMutation) ClearEdge(name string) error {
+	switch name {
+	case tool.EdgeLocation:
+		m.ClearLocation()
+		return nil
+	case tool.EdgeCategory:
+		m.ClearCategory()
+		return nil
+	}
 	return fmt.Errorf("unknown Tool unique edge %s", name)
 }
 
 // ResetEdge resets all changes to the edge with the given name in this mutation.
 // It returns an error if the edge is not defined in the schema.
 func (m *ToolMutation) ResetEdge(name string) error {
+	switch name {
+	case tool.EdgeLocation:
+		m.ResetLocation()
+		return nil
+	case tool.EdgeCategory:
+		m.ResetCategory()
+		return nil
+	}
 	return fmt.Errorf("unknown Tool edge %s", name)
 }
 
@@ -2339,7 +3456,8 @@ type VehicleMutation struct {
 	model           *string
 	hours           *int64
 	addhours        *int64
-	year            *string
+	year            *int64
+	addyear         *int64
 	active          *bool
 	power           *string
 	clearedFields   map[string]struct{}
@@ -2630,12 +3748,13 @@ func (m *VehicleMutation) ResetHours() {
 }
 
 // SetYear sets the "year" field.
-func (m *VehicleMutation) SetYear(s string) {
-	m.year = &s
+func (m *VehicleMutation) SetYear(i int64) {
+	m.year = &i
+	m.addyear = nil
 }
 
 // Year returns the value of the "year" field in the mutation.
-func (m *VehicleMutation) Year() (r string, exists bool) {
+func (m *VehicleMutation) Year() (r int64, exists bool) {
 	v := m.year
 	if v == nil {
 		return
@@ -2646,7 +3765,7 @@ func (m *VehicleMutation) Year() (r string, exists bool) {
 // OldYear returns the old "year" field's value of the Vehicle entity.
 // If the Vehicle object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *VehicleMutation) OldYear(ctx context.Context) (v string, err error) {
+func (m *VehicleMutation) OldYear(ctx context.Context) (v int64, err error) {
 	if !m.op.Is(OpUpdateOne) {
 		return v, fmt.Errorf("OldYear is only allowed on UpdateOne operations")
 	}
@@ -2660,9 +3779,28 @@ func (m *VehicleMutation) OldYear(ctx context.Context) (v string, err error) {
 	return oldValue.Year, nil
 }
 
+// AddYear adds i to the "year" field.
+func (m *VehicleMutation) AddYear(i int64) {
+	if m.addyear != nil {
+		*m.addyear += i
+	} else {
+		m.addyear = &i
+	}
+}
+
+// AddedYear returns the value that was added to the "year" field in this mutation.
+func (m *VehicleMutation) AddedYear() (r int64, exists bool) {
+	v := m.addyear
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
 // ClearYear clears the value of the "year" field.
 func (m *VehicleMutation) ClearYear() {
 	m.year = nil
+	m.addyear = nil
 	m.clearedFields[vehicle.FieldYear] = struct{}{}
 }
 
@@ -2675,6 +3813,7 @@ func (m *VehicleMutation) YearCleared() bool {
 // ResetYear resets all changes to the "year" field.
 func (m *VehicleMutation) ResetYear() {
 	m.year = nil
+	m.addyear = nil
 	delete(m.clearedFields, vehicle.FieldYear)
 }
 
@@ -2940,7 +4079,7 @@ func (m *VehicleMutation) SetField(name string, value ent.Value) error {
 		m.SetHours(v)
 		return nil
 	case vehicle.FieldYear:
-		v, ok := value.(string)
+		v, ok := value.(int64)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
@@ -2971,6 +4110,9 @@ func (m *VehicleMutation) AddedFields() []string {
 	if m.addhours != nil {
 		fields = append(fields, vehicle.FieldHours)
 	}
+	if m.addyear != nil {
+		fields = append(fields, vehicle.FieldYear)
+	}
 	return fields
 }
 
@@ -2981,6 +4123,8 @@ func (m *VehicleMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case vehicle.FieldHours:
 		return m.AddedHours()
+	case vehicle.FieldYear:
+		return m.AddedYear()
 	}
 	return nil, false
 }
@@ -2996,6 +4140,13 @@ func (m *VehicleMutation) AddField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.AddHours(v)
+		return nil
+	case vehicle.FieldYear:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddYear(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Vehicle numeric field %s", name)

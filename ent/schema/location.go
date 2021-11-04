@@ -36,6 +36,16 @@ func (Location) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("vehicle", Vehicle.Type).
 			Annotations(entproto.Field(6)),
+		edge.To("tool", Tool.Type).
+			Annotations(entproto.Field(7)),
+		edge.To("implement", Implement.Type).
+			Annotations(entproto.Field(8)),
+		edge.To("equipment", Equipment.Type).
+			Annotations(entproto.Field(9)),
+		edge.From("category", Category.Type).
+			Ref("location").
+			Unique().
+			Annotations(entproto.Field(10)),
 	}
 }
 

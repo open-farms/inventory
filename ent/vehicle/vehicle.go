@@ -56,6 +56,7 @@ var Columns = []string{
 // ForeignKeys holds the SQL foreign-keys that are owned by the "vehicles"
 // table and are not defined as standalone fields in the schema.
 var ForeignKeys = []string{
+	"category_vehicle",
 	"location_vehicle",
 }
 
@@ -85,6 +86,8 @@ var (
 	DefaultHours int64
 	// HoursValidator is a validator for the "hours" field. It is called by the builders before save.
 	HoursValidator func(int64) error
+	// YearValidator is a validator for the "year" field. It is called by the builders before save.
+	YearValidator func(int64) error
 	// DefaultActive holds the default value on creation for the "active" field.
 	DefaultActive bool
 	// DefaultPower holds the default value on creation for the "power" field.

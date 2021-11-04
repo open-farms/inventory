@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"github.com/open-farms/inventory/ent/category"
+	"github.com/open-farms/inventory/ent/location"
 	"github.com/open-farms/inventory/ent/tool"
 )
 
@@ -24,6 +26,50 @@ type Tool struct {
 	Name string `json:"name,omitempty"`
 	// Powered holds the value of the "powered" field.
 	Powered bool `json:"powered,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the ToolQuery when eager-loading is set.
+	Edges         ToolEdges `json:"edges"`
+	category_tool *int
+	location_tool *int
+}
+
+// ToolEdges holds the relations/edges for other nodes in the graph.
+type ToolEdges struct {
+	// Location holds the value of the location edge.
+	Location *Location `json:"location,omitempty"`
+	// Category holds the value of the category edge.
+	Category *Category `json:"category,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [2]bool
+}
+
+// LocationOrErr returns the Location value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ToolEdges) LocationOrErr() (*Location, error) {
+	if e.loadedTypes[0] {
+		if e.Location == nil {
+			// The edge location was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: location.Label}
+		}
+		return e.Location, nil
+	}
+	return nil, &NotLoadedError{edge: "location"}
+}
+
+// CategoryOrErr returns the Category value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e ToolEdges) CategoryOrErr() (*Category, error) {
+	if e.loadedTypes[1] {
+		if e.Category == nil {
+			// The edge category was loaded in eager-loading,
+			// but was not found.
+			return nil, &NotFoundError{label: category.Label}
+		}
+		return e.Category, nil
+	}
+	return nil, &NotLoadedError{edge: "category"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -39,6 +85,10 @@ func (*Tool) scanValues(columns []string) ([]interface{}, error) {
 			values[i] = new(sql.NullString)
 		case tool.FieldCreateTime, tool.FieldUpdateTime:
 			values[i] = new(sql.NullTime)
+		case tool.ForeignKeys[0]: // category_tool
+			values[i] = new(sql.NullInt64)
+		case tool.ForeignKeys[1]: // location_tool
+			values[i] = new(sql.NullInt64)
 		default:
 			return nil, fmt.Errorf("unexpected column %q for type Tool", columns[i])
 		}
@@ -84,9 +134,33 @@ func (t *Tool) assignValues(columns []string, values []interface{}) error {
 			} else if value.Valid {
 				t.Powered = value.Bool
 			}
+		case tool.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field category_tool", value)
+			} else if value.Valid {
+				t.category_tool = new(int)
+				*t.category_tool = int(value.Int64)
+			}
+		case tool.ForeignKeys[1]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field location_tool", value)
+			} else if value.Valid {
+				t.location_tool = new(int)
+				*t.location_tool = int(value.Int64)
+			}
 		}
 	}
 	return nil
+}
+
+// QueryLocation queries the "location" edge of the Tool entity.
+func (t *Tool) QueryLocation() *LocationQuery {
+	return (&ToolClient{config: t.config}).QueryLocation(t)
+}
+
+// QueryCategory queries the "category" edge of the Tool entity.
+func (t *Tool) QueryCategory() *CategoryQuery {
+	return (&ToolClient{config: t.config}).QueryCategory(t)
 }
 
 // Update returns a builder for updating this Tool.

@@ -7,6 +7,8 @@ import (
 	sqlgraph "entgo.io/ent/dialect/sql/sqlgraph"
 	empty "github.com/golang/protobuf/ptypes/empty"
 	ent "github.com/open-farms/inventory/ent"
+	category "github.com/open-farms/inventory/ent/category"
+	location "github.com/open-farms/inventory/ent/location"
 	tool "github.com/open-farms/inventory/ent/tool"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -40,6 +42,18 @@ func toProtoTool(e *ent.Tool) (*Tool, error) {
 	v.Powered = powered
 	updatetime := timestamppb.New(e.UpdateTime)
 	v.UpdateTime = updatetime
+	if edg := e.Edges.Category; edg != nil {
+		id := int32(edg.ID)
+		v.Category = &Category{
+			Id: id,
+		}
+	}
+	if edg := e.Edges.Location; edg != nil {
+		id := int32(edg.ID)
+		v.Location = &Location{
+			Id: id,
+		}
+	}
 	return v, nil
 }
 
@@ -55,6 +69,10 @@ func (svc *ToolService) Create(ctx context.Context, req *CreateToolRequest) (*To
 	m.SetPowered(toolPowered)
 	toolUpdateTime := runtime.ExtractTime(tool.GetUpdateTime())
 	m.SetUpdateTime(toolUpdateTime)
+	toolCategory := int(tool.GetCategory().GetId())
+	m.SetCategoryID(toolCategory)
+	toolLocation := int(tool.GetLocation().GetId())
+	m.SetLocationID(toolLocation)
 	res, err := m.Save(ctx)
 	switch {
 	case err == nil:
@@ -86,6 +104,12 @@ func (svc *ToolService) Get(ctx context.Context, req *GetToolRequest) (*Tool, er
 	case GetToolRequest_WITH_EDGE_IDS:
 		get, err = svc.client.Tool.Query().
 			Where(tool.ID(id)).
+			WithCategory(func(query *ent.CategoryQuery) {
+				query.Select(category.FieldID)
+			}).
+			WithLocation(func(query *ent.LocationQuery) {
+				query.Select(location.FieldID)
+			}).
 			Only(ctx)
 	default:
 		return nil, status.Error(codes.InvalidArgument, "invalid argument: unknown view")
@@ -115,6 +139,10 @@ func (svc *ToolService) Update(ctx context.Context, req *UpdateToolRequest) (*To
 	m.SetPowered(toolPowered)
 	toolUpdateTime := runtime.ExtractTime(tool.GetUpdateTime())
 	m.SetUpdateTime(toolUpdateTime)
+	toolCategory := int(tool.GetCategory().GetId())
+	m.SetCategoryID(toolCategory)
+	toolLocation := int(tool.GetLocation().GetId())
+	m.SetLocationID(toolLocation)
 	res, err := m.Save(ctx)
 	switch {
 	case err == nil:

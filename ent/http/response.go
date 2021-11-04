@@ -268,7 +268,7 @@ type (
 		Make       string    `json:"make,omitempty"`
 		Model      string    `json:"model,omitempty"`
 		Hours      int64     `json:"hours,omitempty"`
-		Year       string    `json:"year,omitempty"`
+		Year       int64     `json:"year,omitempty"`
 		Active     bool      `json:"active,omitempty"`
 		Power      string    `json:"power,omitempty"`
 	}
