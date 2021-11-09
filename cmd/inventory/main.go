@@ -67,10 +67,14 @@ func grpcService(client *ent.Client, address string, timeout time.Duration) *tra
 	return grpcServer
 }
 
-func httpService(c *ent.Client, address string, timeout time.Duration) *transhttp.Server {
+func httpService(c *ent.Client, address string, timeout time.Duration, auth settings.Auth) *transhttp.Server {
 	r := chi.NewRouter()
 	r.Use(logging.Logger(logger))
 	r.Use(middleware.StripSlashes)
+	r.Use(middleware.Timeout(timeout))
+	if auth.Enabled {
+		r.Use(middleware.BasicAuth("Open Farms Inventory Database", map[string]string{"token": auth.Token}))
+	}
 	r.Route("/v1", func(r chi.Router) {
 		elk.NewEquipmentHandler(c, logger).MountRoutes(r)
 		elk.NewVehicleHandler(c, logger).MountRoutes(r)
@@ -109,7 +113,7 @@ func main() {
 	defer c.Close()
 
 	// Create servers with context and graceful shutdown timer
-	httpServer := httpService(c, httpAddress, httpTimeout)
+	httpServer := httpService(c, httpAddress, httpTimeout, cfg.HTTP.Auth)
 	grpcServer := grpcService(c, grpcAddress, grpcTimeout)
 	app := kratos.New(
 		kratos.Name("inventory"),

@@ -13,10 +13,16 @@ import (
 	"github.com/open-farms/inventory/ent"
 )
 
+type Auth struct {
+	Enabled bool   `default:"false"`
+	Token   string `default:"inventory"`
+}
+
 type Config struct {
 	HTTP struct {
 		Addr    string        `default:"0.0.0.0:8000"`
 		Timeout time.Duration `default:"5s"`
+		Auth    Auth
 	}
 	GRPC struct {
 		Addr    string        `default:"0.0.0.0:9000"`

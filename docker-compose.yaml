@@ -15,5 +15,6 @@ services:
       - 9000:9000
     environment:
       INVENTORY_STORAGE_URI: postgres://postgres:changemerightaway@db/postgres?sslmode=disable
+      INVENTORY_HTTP_AUTH_ENABLED: true
     depends_on:
       - "db"

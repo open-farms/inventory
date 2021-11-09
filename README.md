@@ -56,6 +56,8 @@ Configure the application with the following environment variables
 # HTTP Settings
 INVENTORY_HTTP_ADDR # default:"0.0.0.0:8000"
 INVENTORY_HTTP_TIMEOUT # default:"5s"
+INVENTORY_HTTP_AUTH_ENABLED # default:"false"
+INVENTORY_HTTP_AUTH_TOKEN # default:"inventory" - use "token:inventory" if basic auth enabled with default token
 
 # GRPC Settings
 INVENTORY_GRPC_ADDR # default:"0.0.0.0:9000"
