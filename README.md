@@ -24,7 +24,7 @@ The inventory service enables users to keep track of farm inventory across multi
 
 ## Quickstart ⚡
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https%3A%2F%2Fgithub.com%2Fopen-farms%2Finventory&plugins=postgresql&envs=PORT%2CINVENTORY_STORAGE_MIGRATE%2CINVENTORY_STORAGE_DEBUG&optionalEnvs=INVENTORY_STORAGE_MIGRATE%2CINVENTORY_STORAGE_DEBUG&PORTDesc=Exposed+application+port&INVENTORY_STORAGE_MIGRATEDesc=Migrate+application+on+startup&INVENTORY_STORAGE_DEBUGDesc=Print+debug+logs+for+storage+interactions&PORTDefault=8000&referralCode=XwTg6R)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https%3A%2F%2Fgithub.com%2Fopen-farms%2Finventory&plugins=postgresql&envs=PORT%2CINVENTORY_HTTP_AUTH_ENABLED%2CINVENTORY_HTTP_AUTH_TOKEN&PORTDesc=Exposed+application+port&INVENTORY_HTTP_AUTH_ENABLEDDesc=Enable+basic+auth+for+api&INVENTORY_HTTP_AUTH_TOKENDesc=Token+used+for+basic+authentication&PORTDefault=8000&INVENTORY_HTTP_AUTH_ENABLEDDefault=false&referralCode=XwTg6R)
 
 You can either install inventory directly with go, build the project from source, or [download a binary from the latest release](https://github.com/open-farms/inventory/releases)
 
