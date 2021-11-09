@@ -25,6 +25,8 @@ The inventory service enables users to keep track of farm inventory across multi
 
 ## Quickstart ⚡
 
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https%3A%2F%2Fgithub.com%2Fopen-farms%2Finventory&plugins=postgresql&referralCode=XwTg6R)
+
 You can either install inventory directly with go, build the project from source, or [download a binary from the latest release](https://github.com/open-farms/inventory/releases)
 
 ### Docker Compose

@@ -7,7 +7,7 @@ server:
     timeout: 5s
 storage:
   database:
-    driver: "${DB_DRIVER:postgres}"
-    source: "${DB_URI:postgres://postgres:changemerightaway@localhost/postgres?sslmode=disable}"
+    driver: "${DATABASE_DRIVER:postgres}"
+    source: "${DATABASE_URL:postgres://postgres:changemerightaway@localhost/postgres?sslmode=disable}"
     migrate: true
     debug: false
