@@ -17,7 +17,6 @@ The inventory service enables users to keep track of farm inventory across multi
 ```shell
 /cmd/inventory # http api server
 /cmd/inventoryctl # cli tool for service administration
-/config # default application configurations
 /ent # database models, migrations, and drivers
 /ent/schemas # editable database models
 /internal/settings # settings package to read in application configs
@@ -25,7 +24,7 @@ The inventory service enables users to keep track of farm inventory across multi
 
 ## Quickstart ⚡
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https%3A%2F%2Fgithub.com%2Fopen-farms%2Finventory&plugins=postgresql&referralCode=XwTg6R)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template?template=https%3A%2F%2Fgithub.com%2Fopen-farms%2Finventory&plugins=postgresql&envs=PORT%2CINVENTORY_STORAGE_MIGRATE%2CINVENTORY_STORAGE_DEBUG&optionalEnvs=INVENTORY_STORAGE_MIGRATE%2CINVENTORY_STORAGE_DEBUG&PORTDesc=Exposed+application+port&INVENTORY_STORAGE_MIGRATEDesc=Migrate+application+on+startup&INVENTORY_STORAGE_DEBUGDesc=Print+debug+logs+for+storage+interactions&PORTDefault=8000&referralCode=XwTg6R)
 
 You can either install inventory directly with go, build the project from source, or [download a binary from the latest release](https://github.com/open-farms/inventory/releases)
 
@@ -47,6 +46,26 @@ go install github.com/open-farms/inventory/cmd/inventory@latest
 
 # Install the admin cli
 go install github.com/open-farms/inventory/cmd/inventoryctl@latest
+```
+
+## Configuration ⚙️
+
+Configure the application with the following environment variables
+
+```shell
+# HTTP Settings
+INVENTORY_HTTP_ADDR # default:"0.0.0.0:8000"
+INVENTORY_HTTP_TIMEOUT # default:"5s"
+
+# GRPC Settings
+INVENTORY_GRPC_ADDR # default:"0.0.0.0:9000"
+INVENTORY_GRPC_TIMEOUT # default:"5s"
+
+# Storage Settings
+INVENTORY_STORAGE_DRIVER # default:"postgres"
+INVENTORY_STORAGE_URI # default:"" - Automatically configured if deploying to railway
+INVENTORY_STORAGE_MIGRATE # default:true
+INVENTORY_STORAGE_DEBUG # default:true
 ```
 
 ## Start the service 🏃
