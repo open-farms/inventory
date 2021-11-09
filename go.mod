@@ -13,7 +13,6 @@ require (
 	github.com/kr/pretty v0.3.0 // indirect
 	github.com/lib/pq v1.10.3
 	github.com/mailru/easyjson v0.7.7
-	github.com/masseelch/elk v0.5.2 // indirect
 	github.com/mattn/go-sqlite3 v1.14.9
 	github.com/mitchellh/mapstructure v1.4.2 // indirect
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
