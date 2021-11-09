@@ -14,8 +14,6 @@ services:
       - 8000:8000
       - 9000:9000
     environment:
-      INVENTORY_DATABASE_URL: postgres://postgres:changemerightaway@db/postgres?sslmode=disable
-    volumes:
-      - ./config:/data/config
+      INVENTORY_STORAGE_URI: postgres://postgres:changemerightaway@db/postgres?sslmode=disable
     depends_on:
       - "db"

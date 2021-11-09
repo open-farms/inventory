@@ -39,7 +39,7 @@ func (m *MigrateCmd) Run(globals *Globals) error {
 	}
 
 	t, done := timetrack(defaultDelay)
-	err := settings.Migrate(globals.Config, m.Dry)
+	err := settings.Migrate(m.Dry)
 	if err != nil {
 		return err
 	}

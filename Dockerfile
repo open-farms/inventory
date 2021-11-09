@@ -15,10 +15,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 COPY --from=builder /src/bin /app
 
+ARG DATABASE_URL
+
+ENV INVENTORY_STORAGE_URI ${DATABASE_URL}
+
 WORKDIR /app
 
 EXPOSE 8000
 EXPOSE 9000
-VOLUME /data/config
 
-CMD ["./inventory", "-config", "/data/config"]
+CMD ["./inventory"]

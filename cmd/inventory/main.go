@@ -12,7 +12,6 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-kratos/kratos/v2"
-	"github.com/go-kratos/kratos/v2/config"
 
 	transgrpc "github.com/go-kratos/kratos/v2/transport/grpc"
 	transhttp "github.com/go-kratos/kratos/v2/transport/http"
@@ -29,41 +28,28 @@ var (
 	// Version is the version of the compiled software.
 	Version string = "x.y.z"
 
-	// flagconf is the config flag.
-	flagconf string
-
 	logger *zap.Logger
 )
 
-func init() {
-	flag.StringVar(&flagconf, "config", "./config", "config path, eg: -config config.yaml")
-}
-
-func setup() (config.Config, error) {
+func setup() (*settings.Config, error) {
 	flag.Parse()
 	logger = zap.NewExample(
 		zap.Fields(zap.String("service", Name)),
 	)
 
-	cfg, err := settings.Configure(flagconf)
+	c, err := settings.Configure()
 	if err != nil {
 		return nil, err
 	}
 
-	migrate, err := cfg.Value("storage.database.migrate").Bool()
-	if err != nil {
-		logger.Error(err.Error())
-		return nil, err
-	}
-
-	if migrate {
-		err = settings.Migrate(flagconf, false)
+	if c.Storage.Migrate {
+		err = settings.Migrate(false)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	return cfg, nil
+	return c, nil
 }
 
 func grpcService(client *ent.Client, address string, timeout time.Duration) *transgrpc.Server {
@@ -108,12 +94,12 @@ func main() {
 		logger.Fatal(err.Error())
 	}
 
-	driver, _ := cfg.Value("storage.database.driver").String()
-	source, _ := cfg.Value("storage.database.source").String()
-	httpAddress, _ := cfg.Value("server.http.addr").String()
-	httpTimeout, _ := cfg.Value("server.http.timeout").Duration()
-	grpcAddress, _ := cfg.Value("server.grpc.addr").String()
-	grpcTimeout, _ := cfg.Value("server.grpc.timeout").Duration()
+	driver := cfg.Storage.Driver
+	source := cfg.Storage.URI
+	httpAddress := cfg.HTTP.Addr
+	httpTimeout := cfg.HTTP.Timeout
+	grpcAddress := cfg.GRPC.Addr
+	grpcTimeout := cfg.HTTP.Timeout
 
 	// Connect to database
 	c, err := ent.Open(driver, source)

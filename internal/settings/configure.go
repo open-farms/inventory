@@ -3,49 +3,43 @@ package settings
 import (
 	"context"
 	"os"
+	"time"
 
 	"entgo.io/ent/dialect/sql/schema"
+	"github.com/kelseyhightower/envconfig"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 
-	"github.com/go-kratos/kratos/v2/config"
-	"github.com/go-kratos/kratos/v2/config/env"
-	"github.com/go-kratos/kratos/v2/config/file"
 	"github.com/open-farms/inventory/ent"
 )
 
-const (
-	DefaultConfigPath string = "./config/config.yaml"
-)
-
-func Migrate(configPath string, dry bool) error {
-	if configPath == "" {
-		configPath = DefaultConfigPath
+type Config struct {
+	HTTP struct {
+		Addr    string        `default:"0.0.0.0:8000"`
+		Timeout time.Duration `default:"5s"`
 	}
+	GRPC struct {
+		Addr    string        `default:"0.0.0.0:9000"`
+		Timeout time.Duration `default:"5s"`
+	}
+	Storage struct {
+		Driver  string `default:"postgres"`
+		URI     string `required:"true"`
+		Migrate bool   `default:"true"`
+		Debug   bool   `default:"false"`
+	}
+}
+
+func Migrate(dry bool) error {
 
 	// Initialize configuration
-	cfg, err := Configure(configPath)
-	if err != nil {
-		return err
-	}
-
-	dbDriver, err := cfg.Value("storage.database.driver").String()
-	if err != nil {
-		return err
-	}
-
-	dbURI, err := cfg.Value("storage.database.source").String()
-	if err != nil {
-		return err
-	}
-
-	dbDebug, err := cfg.Value("storage.database.debug").Bool()
+	c, err := Configure()
 	if err != nil {
 		return err
 	}
 
 	// Setup client for database
-	client, err := ent.Open(dbDriver, dbURI)
+	client, err := ent.Open(c.Storage.Driver, c.Storage.URI)
 	if err != nil {
 		return err
 	}
@@ -60,7 +54,7 @@ func Migrate(configPath string, dry bool) error {
 
 	// Run the auto migration tool
 	ctx := context.Background()
-	if dbDebug {
+	if c.Storage.Debug {
 		err = client.Debug().Schema.Create(ctx)
 		if err != nil {
 			return err
@@ -79,17 +73,12 @@ func Migrate(configPath string, dry bool) error {
 	return nil
 }
 
-func Configure(cfgFile string) (config.Config, error) {
-	// Setup config from file
-	source := config.WithSource(
-		env.NewSource("INVENTORY_"),
-		file.NewSource(cfgFile),
-	)
-	c := config.New(source)
-	err := c.Load()
+func Configure() (*Config, error) {
+	var c Config
+	err := envconfig.Process("INVENTORY", &c)
 	if err != nil {
 		return nil, err
 	}
 
-	return c, nil
+	return &c, nil
 }
